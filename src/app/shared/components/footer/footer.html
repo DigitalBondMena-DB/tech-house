@@ -1,0 +1,116 @@
+<footer class="flex w-full flex-col justify-center md:justify-end h-auto ">
+    <div class="bg-linear ">
+        <div
+            class="container mx-auto px-5 lg:px-20 bg-hero-footer flex flex-col items-start justify-center space-y-12  pb-8 pt-12 md:flex-row md:space-y-0 md:space-x-12 ">
+            <div class="flex w-full flex-col space-y-4 md:w-1/2 lg:w-2/5">
+                <div class="w-full text-lg font-extrabold md:w-fit">
+                    <img [src]="getResponsiveImage(contactUsData()?.logo)" alt="logo">
+                </div>
+                <div class="text-sm max-w-xs text-white" [innerHTML]="getSanitizedHtml(contactUsData()?.footer_text)">
+                </div>
+                <div class="flex flex-col space-y-2 text-white text-xs">
+                    <span class="flex items-center justify-start">
+                        <img src="/images/social-icons/call-outline (1).webp" alt="phone " class="w-5 h-5 me-2">
+                        <a [href]="'tel:' + contactUsData()?.phone" class="hover:underline">
+                            {{ contactUsData()?.phone }}
+                        </a>
+                    </span>
+                    <span class="flex items-center justify-start">
+                        <img src="/images/social-icons/call-outline (2).webp" alt="email " class="w-5 h-5 me-2">
+                        <a [href]="'mailto:' + contactUsData()?.email" class="hover:underline">
+                            {{ contactUsData()?.email }}
+                        </a>
+                    </span>
+                    <span class="flex items-center justify-start">
+                        <img src="/images/social-icons/call-outline (3).webp" alt="address " class="w-5 h-5 me-2">
+                        @if (contactUsData()?.address) {
+                        <a [href]="contactUsData()?.social?.map_url || getGoogleMapsUrl(contactUsData()?.address)"
+                            target="_blank" rel="noopener noreferrer" class="hover:underline">
+                            {{ contactUsData()?.address }}
+                        </a>
+                        }
+                    </span>
+                </div>
+                <div class="flex flex-row-reverse items-center justify-end gap-4">
+                    @if (contactUsData()?.social?.facebook_url) {
+                    <a [href]="contactUsData()?.social?.facebook_url" target="_blank" rel="noopener noreferrer">
+                        <img src="/images/social-icons/facebook.webp" alt="facebook" class="w-5.5 h-5.5">
+                    </a>
+                    }
+                    @if (contactUsData()?.social?.instagram_url) {
+                    <a [href]="contactUsData()?.social?.instagram_url" target="_blank" rel="noopener noreferrer">
+                        <img src="/images/social-icons/instagram.webp" alt="instagram" class="w-8 h-8">
+                    </a>
+                    }
+                    @if (contactUsData()?.whatsapp_number) {
+                    <a [href]="contactUsData()?.whatsapp_number" target="_blank" rel="noopener noreferrer">
+                        <img src="/images/social-icons/whatsapp.webp" alt="whatsapp" class="w-6 h-6">
+                    </a>
+                    }
+                    @if (contactUsData()?.social?.linkedin_url) {
+                    <a [href]="contactUsData()?.social?.linkedin_url" target="_blank" rel="noopener noreferrer">
+                        <img src="/images/social-icons/linked-in.webp" alt="linkedin" class="w-5 h-5">
+                    </a>
+                    }
+                    @if (contactUsData()?.social?.tiktok_url) {
+                    <a [href]="contactUsData()?.social?.tiktok_url" target="_blank" rel="noopener noreferrer">
+                        <img src="/images/social-icons/tiktok.webp" alt="tiktok" class="w-6 h-6">
+                    </a>
+                    }
+
+                </div>
+            </div>
+            <div class="flex w-full flex-col space-y-4 md:w-1/2 lg:w-2/5">
+                <div class="text-sm font-semibold text-white">خدماتنا</div>
+                <ul class="text-sm text-white space-y-2">
+                    @if (servicesSection(); as services) {
+                    @if (services && services.length > 0) {
+                    @for (service of services; track service.slug || service.title) {
+                    <li>
+                        {{ service.title }}
+                    </li>
+                    }
+                    } @else {
+                    <li class="text-gray-400">جاري التحميل...</li>
+                    }
+                    } @else {
+                    <li class="text-gray-400">جاري التحميل...</li>
+                    }
+                </ul>
+            </div>
+            <div class="flex w-full flex-col space-y-4 md:w-1/2 lg:w-2/5">
+                <div class="text-sm font-semibold text-white">روابط سريعة</div>
+                <ul class="text-sm text-white space-y-2">
+                    <li>
+                        <a routerLink="/about-us" class="hover:underline">من نحن</a>
+                    </li>
+                    <li>
+                        <a routerLink="/projects" class="hover:underline">المشاريع</a>
+                    </li>
+                    <li>
+                        <a routerLink="/jobs" class="hover:underline">الوظائف</a>
+                    </li>
+                    <li>
+                        <a routerLink="/blogs" class="hover:underline">المقالات</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="bg-[#2B0000]  py-4  text-sm text-white  md:flex-row ">
+        <div class="container mx-auto px-5 lg:px-20 flex justify-center md:justify-between  items-end">
+            <div class="flex items-end">
+
+                <!-- {{ contactUsData()?.copyright || 'جميع الحقوق محفوظة © 2025' }} -->
+                <span class="text-xs flex items-end justify-center ">جميع الحقوق محفوظة <img src="/images/logo/logo-light2.webp"
+                        alt="logo" class="mx-5  w-16">
+                    © 2025</span>
+
+            </div>
+            <div class="mx-3">
+                <a routerLink="/privacy-policy"
+                    class="text-xs md:text-base underline text-white ">سياسة الخصوصية</a>
+            </div>
+        </div>
+    </div>
+</footer>

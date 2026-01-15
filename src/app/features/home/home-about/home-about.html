@@ -1,0 +1,73 @@
+<section #aboutSection class="container mx-auto px-5 lg:px-20 py-20  lg:min-h-[100vh]">
+  <!-- Skeleton Loader -->
+  @if (isLoading()) {
+  <div class="flex justify-between items-center min-h-[60px] mb-10">
+    <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
+    <p-skeleton width="150px" height="30px" styleClass="rounded-lg"></p-skeleton>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 items-start mt-10 min-h-[500px] gap-10">
+    <!-- TEXT + COUNTERS Skeleton -->
+    <div class="min-h-[400px]">
+      <p-skeleton width="100%" height="80px" styleClass="mb-6 rounded-lg"></p-skeleton>
+      <div class="flex items-center justify-start mt-10 min-h-[200px]">
+        @for (i of [1,2,3]; track i) {
+        <p-skeleton [shape]="'circle'" width="140px" height="140px" styleClass="m-6"></p-skeleton>
+        }
+      </div>
+    </div>
+    <!-- IMAGE Skeleton -->
+    <div class="ms-auto min-h-[500px] min-w-[500px]">
+      <p-skeleton width="500px" height="500px" styleClass="rounded-lg"></p-skeleton>
+    </div>
+  </div>
+  } @else {
+  <div class="flex justify-between items-center min-h-[60px]">
+    <app-section-title [title]="aboutData?.title || ''"></app-section-title>
+
+    <a routerLink="/about-us" class="underline text-[#ED2924] font-semibold text-xl flex items-center cursor-pointer">
+      معرفة المزيد
+      <img ngSrc="images/icons/arrow-left.webp" alt="" width="22" height="22" class="mx-1 w-[14px] h-[14px] md:w-[18px] md:h-[18px]">
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 items-start  mt-10 min-h-[500px]">
+
+    <!-- TEXT + COUNTERS -->
+    <div class="min-h-[400px]">
+      <p class="text-xl font-semibold mt-6 text-[#440000] max-w-xl min-h-[80px]">
+        {{ aboutData?.text || '' }}
+      </p>
+
+      <div class="flex items-center justify-start text-[#440000] mt-10 min-h-[200px]">
+
+        @for (counter of (counters() || []).slice(0, 3); track $index; let i = $index) {
+
+        <span #counterElement class="md:w-[140px] w-[100px] h-[100px] md:h-[140px] lg:w-[180px] lg:h-[100px] xl:w-[120px] xl:h-[120px] 2xl:w-[140px] 2xl:h-[140px] rounded-full bg-[#FEF8F8]
+                           border border-[#B90000]
+                           flex flex-col items-center justify-center
+                           m-6 relative" [class]="
+                      i === 0 ? 'z-30' :
+                      i === 1 ? 'z-20 translate-x-16' :
+                                'z-10 translate-x-32' 
+                    ">
+          <h3 class="text-2xl lg:text-3xl font-bold">
+            {{ animatedCounters[i] }}
+          </h3>
+          <p class="text-center px-2 text-xs xl:text-lg ">{{ counter.title }}</p>
+        </span>
+
+        }
+
+      </div>
+    </div>
+
+    <!-- IMAGE -->
+    <div class="flex justify-end ">
+      <img [ngSrc]="getResponsiveImage() || '/images/placeholder.webp'" [alt]="aboutData?.title || ''" width="800"
+        height="600" class="w-[400px] lg:w-[500px]  object-contain" />
+    </div>
+
+  </div>
+  }
+</section>

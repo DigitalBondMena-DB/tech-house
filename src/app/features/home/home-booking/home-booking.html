@@ -1,0 +1,30 @@
+<section class="py-20 bg-booking flex items-center justify-center video-background min-h-[500px]" 
+         [style.background-image]="ctasection()?.video ? 'none' : 'url(\'/images/book.webp\')'">
+  <!-- Skeleton Loader -->
+  @if (isLoading()) {
+    <div class="container mx-auto px-5 lg:px-20 flex items-center justify-center flex-col text-center relative z-10 min-h-[500px]">
+      <p-skeleton width="400px" height="60px" styleClass="rounded-lg mb-20"></p-skeleton>
+      <p-skeleton width="250px" height="50px" styleClass="rounded-full"></p-skeleton>
+    </div>
+  } @else {
+    <video #videoElement 
+           class="video-bg" 
+           [src]="ctasection()?.video || ''"
+           autoplay 
+           muted 
+           loop 
+           playsinline 
+           preload="auto"
+           webkit-playsinline
+           [hidden]="!ctasection()?.video">
+    </video>
+    <div class="video-overlay" [hidden]="!ctasection()?.video"></div>
+    <div class="container mx-auto px-5 lg:px-20 flex items-center justify-center flex-col text-center relative z-10">
+        <h2 class="text-4xl font-bold text-white">{{ ctasection()?.title || 'لديك مشروع؟' }}</h2>
+        <app-app-button [btnText]="btnText"
+            routerLink="/contact-us"
+            customClass="mt-20 ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 cursor-pointer">
+        </app-app-button>
+    </div>
+  }
+</section>

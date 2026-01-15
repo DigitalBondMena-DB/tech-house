@@ -1,0 +1,18 @@
+@if (routerLink) {
+  <button
+      [routerLink]="routerLink"
+      [class]="customClass || 'ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 cursor-pointer'">
+    {{ btnText }}
+    <img src="images/icons/arrow-left.webp" alt="" width="22" height="22" loading="lazy" decoding="async" class="h-[16px] w-[16px] md:h-[20px] md:w-[20px] ms-5 bg-white rounded-full p-0.5" style="aspect-ratio: 1/1;">
+  </button>
+} @else {
+  <button
+      [disabled]="disabled"
+      (click)="onClick()"
+      [class]="customClass || 'ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 cursor-pointer'"
+      [class.opacity-50]="disabled"
+      [class.cursor-not-allowed]="disabled">
+    {{ btnText }}
+    <img src="images/icons/arrow-left.webp" alt="" width="22" height="22" loading="lazy" decoding="async" class="h-[16px] w-[16px] md:h-[20px] md:w-[20px] ms-5 bg-white rounded-full p-0.5" style="aspect-ratio: 1/1;">
+  </button>
+}

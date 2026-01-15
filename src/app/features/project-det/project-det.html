@@ -1,0 +1,282 @@
+<!-- Loading State -->
+@if (isLoading()) {
+<section class="container mx-auto px-5 lg:px-20 py-20">
+  <div class="flex flex-col items-center justify-center min-h-[60vh]" dir="rtl">
+    <div class="loading-spinner mb-6"></div>
+    <p class="text-xl text-[#440000]">جاري تحميل بيانات المشروع...</p>
+  </div>
+</section>
+}
+
+<!-- Error State -->
+@else if (hasError() && !hasProject()) {
+<section class="container mx-auto px-5 lg:px-20 py-20">
+  <div class="flex flex-col items-center justify-center min-h-[60vh] text-center" dir="rtl">
+    <div class="mb-6">
+      <svg class="w-24 h-24 text-[#ED2924] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+        </path>
+      </svg>
+    </div>
+    <h2 class="text-2xl md:text-3xl font-bold text-[#440000] mb-4">المشروع غير موجود</h2>
+    <p class="text-lg text-[#666] mb-8 max-w-md">{{ errorMessage() || 'المشروع المطلوب غير موجود أو تم حذفه.' }}</p>
+    <button (click)="router.navigate(['/projects'])"
+      class="bg-[#B91C17] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#c41e1a] transition-colors">
+      العودة إلى المشاريع
+    </button>
+  </div>
+</section>
+}
+
+<!-- Project Content -->
+@else if (hasProject()) {
+<!-- Hero Section -->
+<section class="project-hero-section" [style.background-image]="'url(' + heroImage() + ')'">
+  <div class="project-hero-overlay"></div>
+  <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+    <div class="project-hero-content h-full flex items-end justify-start pb-8 md:pb-12 gap-4" dir="rtl">
+      <!-- Logo Circle -->
+      @if (projectLogo()) {
+      <div class="project-logo-circle">
+        <img [src]="projectLogo()" [alt]="project()?.client_name" class="logo-image">
+      </div>
+      }
+      <!-- Project Info Boxes -->
+      <div class="project-info-boxes flex flex-col gap-4">
+        <!-- Client Box -->
+        <div class="project-info-box backdrop-blur-2xl">
+          <div class="info-label">عميل</div>
+          <div class="info-value">
+            @if (project()?.client_name) {
+            {{ project()?.client_name }}
+            } @else {
+            <span class="text-gray-400">المحتوى غير موجود</span>
+            }
+          </div>
+        </div>
+
+        <!-- Year Box -->
+        <div class="project-info-box backdrop-blur-2xl">
+          <div class="info-label">سنة</div>
+          <div class="info-value">
+            @if (project()?.year_creation) {
+            {{ project()?.year_creation }}
+            } @else {
+            <span class="text-gray-400">المحتوى غير موجود</span>
+            }
+          </div>
+        </div>
+
+
+      </div>
+      <!-- Type Box -->
+      <div class="project-info-box backdrop-blur-2xl">
+        <div class="info-label">نوع العمل</div>
+        <div class="info-value">
+          @if (project()?.category_name) {
+          {{ project()?.category_name }}
+          } @else {
+          <span class="text-gray-400">لا يوجد بيانات </span>
+          }
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
+}
+
+@if (hasProject()) {
+<section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-left">
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
+    <!-- Main Content Area -->
+    <div class="lg:col-span-2">
+      <!-- Navigation Tabs -->
+      <div class="project-nav-tabs flex flex-wrap gap-4 mb-8 md:mb-12">
+        @if (sections().length > 0) {
+        @for (section of sections(); track section.id || $index; let i = $index) {
+        <button class="nav-tab" [class.nav-tab-active]="isSectionActive(i)" (click)="navigateToSection(i)">
+          {{ section.title || section.name }}
+        </button>
+        }
+        } @else {
+        <div class="w-full text-center py-4">
+          <p class="text-gray-400">لا يوجد بيانات </p>
+        </div>
+        }
+      </div>
+
+      <!-- Project Content -->
+      <div class="project-main-content">
+        <!-- Active Section Content -->
+        @if (activeSection()) {
+        <div class="project-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed"
+          [innerHTML]="sanitizeHtml(activeSection()?.content || activeSection()?.text || '')">
+        </div>
+        } @else if (project()?.text) {
+        <!-- Fallback to full text if no sections -->
+        <div class="project-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed"
+          [innerHTML]="fullContent()">
+        </div>
+        } @else {
+        <!-- No content available -->
+        <div
+          class="project-content prose prose-lg max-w-none text-base md:text-lg text-gray-400 leading-relaxed text-center py-8">
+          <p>لا يوجد بيانات </p>
+        </div>
+        }
+      </div>
+    </div>
+    <!-- Left Sidebar -->
+    <div class="lg:col-span-1">
+      <!-- Project Pillars -->
+      <div class="project-pillars-box mb-8 md:mb-12 border border-[#ED2924] rounded-2xl p-6 md:p-8">
+        <div class="flex items-center gap-2 mb-4 md:mb-6">
+          <img src="images/title/title.webp" alt="title-icon">
+          <h2 class="box-title">ركائز المشروع</h2>
+        </div>
+        @if (projectTechnologies().length > 0) {
+        <div class="technologies-grid grid grid-cols-2 gap-4">
+          @for (tech of projectTechnologies(); track tech.id || $index) {
+          <div class="technology-item flex flex-col items-center gap-2">
+            @if (getTechnologyLogo(tech)) {
+            <img [src]="getTechnologyLogo(tech)" [alt]="getTechnologyName(tech)" class="tech-logo">
+            }
+            <span class="tech-name">{{ getTechnologyName(tech) }}</span>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="text-center py-8">
+          <p class="text-gray-400">لا يوجد بيانات </p>
+        </div>
+        }
+      </div>
+
+      <!-- Project Information -->
+      <div class="project-info-box-detail border border-[#ED2924] rounded-2xl p-6 md:p-8">
+        <div class="flex items-center gap-2 mb-4 md:mb-6">
+          <img src="images/title/title.webp" alt="title-icon">
+          <h2 class="box-title">معلومات عن المشروع</h2>
+        </div>
+        @if (projectInformation().length > 0) {
+        <div class="project-info-list space-y-4">
+          @for (info of projectInformation(); track info.id || $index) {
+          <div class="info-item flex items-center gap-3">
+            @if (info.icon) {
+            <img [src]="getResponsiveImage(info.icon)" alt="info-icon" class="info-icon">
+            } @else {
+            <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                clip-rule="evenodd"></path>
+            </svg>
+            }
+            <div>
+              <div class="info-item-label">{{ info.label || info.title }}</div>
+              <div class="info-item-value">
+                @if (info.value || info.text) {
+                {{ info.value || info.text }}
+                } @else {
+                <span class="text-gray-400">لا يوجد بيانات </span>
+                }
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+        } @else {
+        <div class="text-center py-8">
+          <p class="text-gray-400">لا يوجد بيانات </p>
+        </div>
+        }
+      </div>
+    </div>
+
+
+  </div>
+</section>
+}
+
+<!-- Project Images Carousel -->
+@if (hasProject() && projectImages().length > 0) {
+@defer {
+<section class="container mx-auto px-5 py-20 md:py-26">
+  <owl-carousel-o #owlCarousel [options]="customOptions" (translated)="onCarouselTranslated($event)">
+
+    @for (slide of projectImages(); track slide.id) {
+    <ng-template carouselSlide [id]="slide.id.toString()">
+      <img (click)="openImagePopup(slide)" class="carousel-project-image w-full! mx-auto!" [src]="slide.main_image"
+        [alt]="slide.main_image" [title]="slide.main_image">
+    </ng-template>
+    }
+
+  </owl-carousel-o>
+
+  <!-- Custom Navigation: Left Arrow + Dots + Right Arrow -->
+  <div class="carousel-nav-container">
+    <button class="carousel-arrow" (click)="carouselNext()" aria-label="التالي">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      </svg>
+    </button>
+
+    <!-- Custom Dots -->
+    <div class="carousel-dots-container">
+      @for (slide of projectImages(); track slide.id; let i = $index) {
+      <button class="carousel-dot" [class.active]="activeSlideIndex() === i" (click)="goToSlide(i)"
+        [attr.aria-label]="'الانتقال للصورة ' + (i + 1)">
+      </button>
+      }
+    </div>
+
+    <button class="carousel-arrow" (click)="carouselPrev()" aria-label="السابق">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+    </button>
+  </div>
+
+</section>
+}
+}
+
+@if (hasProject() || hasError()) {
+<!-- Contact Us Section -->
+<app-contact-us-sec />
+}
+
+<!-- Image Popup Modal -->
+@if (popupImage()) {
+<div class="image-popup-overlay">
+  <div class="image-popup-container h-[80vh]!" (click)="$event.stopPropagation()">
+    <!-- Previous Button -->
+    <button class="popup-nav-btn popup-nav-prev" (click)="prevPopupImage()" aria-label="السابق">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+      </svg>
+    </button>
+
+    <!-- Image -->
+    <img [src]="popupImage()" alt="صورة المشروع"
+      class="popup-image  object-contain object-center  w-[400px] rounded-2xl!">
+
+    <!-- Next Button -->
+    <button class="popup-nav-btn popup-nav-next" (click)="nextPopupImage()" aria-label="التالي">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+      </svg>
+    </button>
+
+    <!-- Close Button -->
+    <button class="popup-close-btn p-2" (click)="closeImagePopup()" aria-label="إغلاق">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+  </div>
+</div>
+}

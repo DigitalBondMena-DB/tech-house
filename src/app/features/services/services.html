@@ -1,0 +1,78 @@
+<!-- Main content wrapper with min-height to prevent footer from appearing at top -->
+<div class="min-h-screen">
+@if (bannerSection()) {
+<app-hero-section 
+    [title]="bannerSection()?.title || ''" 
+    [paragraph]="bannerSection()?.text || ''"
+    [subtitle]="bannerSection()?.small_title || ''"
+    [subtitleAboveTitle]="true"
+    [image]="bannerSection()?.image ? getResponsiveImage(bannerSection()?.image) : undefined"
+    [imagePosition]="bannerSection()?.image ? 'left' : 'none'"
+    imageClass=" absolute -bottom-[0px]! -left-[0px]! lg:-left-[0px]!"
+    customClass=" h-[90vh] lg:h-[80vh]!">
+</app-hero-section>
+} @else {
+<!-- Hero Section Skeleton -->
+<section class="bg-linear min-h-[90vh] lg:min-h-[80vh] relative flex items-center">
+  <div class="container mx-auto px-5 lg:px-20 hero-skeleton">
+    <p-skeleton width="40%" height="25px" styleClass="rounded-lg mb-4"></p-skeleton>
+    <p-skeleton width="60%" height="50px" styleClass="rounded-lg mb-4"></p-skeleton>
+    <p-skeleton width="80%" height="30px" styleClass="rounded-lg"></p-skeleton>
+  </div>
+</section>
+}
+
+@if (services().length > 0) {
+<section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
+    @for (service of services(); track service.title; let i = $index) {
+    <div class="service-card mb-16 md:mb-20 last:mb-0">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            <!-- Content Side -->
+            <div [class]="i % 2 === 0 ? 'order-2 lg:order-1' : 'order-2 lg:order-2'" dir="rtl">
+                <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-[#440000] mb-4 md:mb-6">{{ service.title }}</h2>
+                <div class="text-base md:text-lg text-[#440000] leading-relaxed mb-6" [innerHTML]="service.text"></div>
+                
+                <!-- Service Keywords (Buttons) -->
+                @if (service.keywords && service.keywords.length > 0) {
+                <div class=" flex flex-wrap gap-3 mb-6">
+                    @for (keyword of service.keywords; track keyword) {
+                    <span class="bg-linear-rev text-white px-5 py-2 md:px-6 md:py-2.5 rounded-full text-sm md:text-base font-medium whitespace-nowrap">
+                        {{ keyword }}
+                    </span>
+                    }
+                </div>
+                }
+                
+                <!-- View Projects Link -->
+                <a [routerLink]="getProjectsUrl(service)" 
+                   [queryParams]="getServiceQueryParams(service)"
+                   class="text-[#B90000] text-base md:text-lg font-semibold hover:underline mt-4 transition-colors flex items-center gap-2">
+                    عرض المشاريع
+                    <svg class="w-4 h-4 rtl:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </a>
+            </div>
+            
+            <!-- Image Side - Alternates between right and left -->
+            <div [class]="i % 2 === 0 ? 'order-1 lg:order-2 flex justify-center lg:justify-end' : 'order-1 lg:order-1 flex justify-center lg:justify-start'">
+                @if (service.image) {
+                <div class="service-icon-wrapper relative">
+                    <img [ngSrc]="getResponsiveImage(service.image)" 
+                         [alt]="service.title" 
+                         width="300" 
+                         height="300"
+                         class="w-full max-w-[200px] md:max-w-[250px] lg:max-w-[420px] h-auto rounded-2xl">
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+    }
+</section>
+}
+
+@if (isAllDataLoaded()) {
+  <app-contact-us-sec></app-contact-us-sec>
+}
+</div>

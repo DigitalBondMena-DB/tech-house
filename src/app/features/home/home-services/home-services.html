@@ -1,0 +1,140 @@
+<section class="min-h-[1200px]">
+  <!-- Skeleton Loader -->
+  @if (isLoading()) {
+    <div class="flex justify-center mb-20 min-h-[60px]">
+      <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 container mx-auto px-5 lg:px-20 gap-10 min-h-[1000px]">
+      <!-- Right Column Skeleton -->
+      <div class="col-span-1 lg:col-span-2 flex flex-col items-center lg:items-end gap-10">
+        <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
+        <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
+        <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
+      </div>
+      <!-- Middle Column Skeleton -->
+      <div class="hidden lg:flex lg:col-span-1 flex-col items-center h-full relative">
+        <p-skeleton width="2px" height="100%" styleClass="rounded-full"></p-skeleton>
+      </div>
+      <!-- Left Column Skeleton -->
+      <div class="col-span-1 lg:col-span-2 flex flex-col items-center lg:items-start gap-10">
+        <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
+        <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
+      </div>
+    </div>
+
+    <div class="flex justify-center mt-20">
+      <p-skeleton width="200px" height="50px" styleClass="rounded-full"></p-skeleton>
+    </div>
+  } @else {
+    <app-section-title [title]="servicesTitle" customClass="flex justify-center mb-20 min-h-[60px]">
+    </app-section-title>
+
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 container mx-auto px-5 lg:px-20 gap-10 min-h-[1000px]">
+
+
+        <!-- Right Column -->
+        <div class="col-span-1 lg:col-span-2 flex flex-col items-center lg:items-end relative">
+            <!-- @if (services.length > 0) { -->
+                <!-- First Image (service 0) - Right side -->
+                <div class="card  service-card relative z-10 min-h-[250px] xl:min-h-[400px]">
+                    <img [ngSrc]="getResponsiveImage(services[0]?.image) || '/images/placeholder.webp'" [alt]="services[0]?.title || ''" width="500" height="370" class="service-img w-[500px] h-[238px] xl:h-[370px]  rounded-2xl object-cover center" #imgEl>
+                </div>
+            <!-- } -->
+
+            <!-- First Title (service 1) - Right side -->
+            <div class="title h-[238px] xl:h-[370px] flex items-center justify-end text-2xl xl:text-4xl font-bold text-[#940000] relative z-0" #titleRight1 [hidden]="services.length <= 1">
+                <h3 class="service-title px-4 relative z-20">{{ services[1]?.title || '' }}</h3>
+                <div class="absolute inset-0 left-[-100%] z-10" #titleBgRight1></div>
+            </div>
+
+            <!-- @if (services.length > 2) { -->
+                <!-- Second Image (service 2) - Right side -->
+                <div class="card  service-card relative z-10 min-h-[250px] xl:min-h-[400px]">
+                    <img [ngSrc]="getResponsiveImage(services[2]?.image) || '/images/placeholder.webp'" [alt]="services[2]?.title || ''" width="500" height="370" class="service-img w-[500px] h-[238px] xl:h-[370px]  rounded-2xl object-cover" #imgEl>
+                </div>
+            <!-- } -->
+
+            <!-- @if (services.length > 3) { -->
+                <!-- Second Title (service 3) - Right side -->
+                <div class="title h-[238px] xl:h-[370px] flex items-center justify-end text-2xl xl:text-4xl font-bold text-[#940000] relative z-0" #titleRight2>
+                    <h3 class="service-title   px-4 relative z-20">{{ services[3]?.title }}</h3>
+                    <div class="absolute inset-0  left-[-100%] z-10" #titleBgRight2></div>
+                </div>
+            <!-- } -->
+        </div>
+
+
+        <!-- العمود النص -->
+        <div class="hidden lg:flex lg:col-span-1 flex-col items-center h-full relative">
+            <div class="w-[1.6px] bg-linear-rev h-full mx-auto rounded-full"></div>
+
+
+            <div class="loader absolute -top-5">
+                <span class="pulse pulse-1"></span>
+            </div>
+
+
+            <div class="loader absolute top-1/4">
+                <span class="pulse pulse-1"></span>
+            </div>
+
+
+            <div class="loader absolute top-1/2">
+                <span class="pulse pulse-1"></span>
+            </div>
+
+
+            <div class="loader absolute top-3/4">
+                <span class="pulse pulse-1"></span>
+            </div>
+        </div>
+
+
+        <!-- Left Column -->
+        <div class="col-span-1 lg:col-span-2 flex flex-col-reverse lg:flex-col items-center lg:items-start relative">
+            <!-- @if (services.length > 0) { -->
+                <!-- First Title (service 0) - Left side -->
+                <div class="title h-[238px] xl:h-[370px] flex items-center justify-start text-2xl xl:text-4xl font-bold text-[#940000] relative z-0" #titleLeft1>
+                    <h3 class="service-title   px-4 relative z-20">{{ services[0]?.title }}</h3>
+                    <div class="absolute inset-0  right-[-100%] z-10" #titleBgLeft1></div>
+                </div>
+            <!-- } -->
+
+            <!-- @if (services.length > 1) { -->
+                <!-- First Image (service 1) - Left side -->
+                <div class="card  service-card relative z-10 min-h-[250px] xl:min-h-[400px]">
+                    <img [ngSrc]="getResponsiveImage(services[1]?.image) || '/images/placeholder.webp'" [alt]="services[1]?.title || ''" width="500" height="370" class="service-img w-[500px] h-[238px] xl:h-[370px]  rounded-2xl object-cover" #imgEl>
+                </div>
+            <!-- } -->
+
+            <!-- @if (services.length > 2) { -->
+                <!-- Second Title (service 2) - Left side -->
+                <div class="title h-[238px] xl:h-[370px] flex items-center justify-start text-2xl xl:text-4xl font-bold text-[#940000] relative z-0" #titleLeft2>
+                    <h3 class="service-title   px-4 relative z-20">{{ services[2]?.title }}</h3>
+                    <div class="absolute inset-0  right-[-100%] z-10" #titleBgLeft2></div>
+                </div>
+            <!-- } -->
+
+            <!-- @if (services.length > 3) { -->
+                <!-- Second Image (service 3) - Left side -->       
+                <div class="card  service-card relative z-10 min-h-[250px] xl:min-h-[400px]">
+                    <img [ngSrc]="getResponsiveImage(services[3]?.image) || '/images/placeholder.webp'" [alt]="services[3]?.title || ''" width="500" height="370" class="service-img w-[500px] h-[238px] xl:h-[370px]  rounded-2xl object-cover" #imgEl>
+                </div>
+            <!-- } -->
+        </div>
+    </div>
+
+
+    <div class="flex justify-center">
+        <app-app-button [btnText]="btnText"
+            routerLink="/services"
+            customClass="mt-20 ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 cursor-pointer">
+        </app-app-button>
+    </div>
+  }
+</section>  

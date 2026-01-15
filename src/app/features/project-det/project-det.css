@@ -1,0 +1,892 @@
+/* Hero Section */
+.project-hero-section {
+  position: relative;
+  width: 100%;
+  height: 80vh;
+  min-height: 500px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.project-hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(68, 0, 0, 0.4), rgba(237, 41, 36, 0.3));
+  z-index: 1;
+}
+
+
+
+/* Project Info Boxes */
+.project-info-boxes {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+}
+
+.project-info-box {
+
+  border-radius: 1rem;
+  padding: 1rem 1.5rem;
+  min-width: 150px;
+  text-align: right;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: "Cairo", sans-serif;
+  margin-bottom: 0.5rem;
+}
+
+.info-value {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+
+}
+
+/* Project Logo Circle */
+.project-logo-circle {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.logo-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+/* Content Section */
+.project-content {
+  color: #440000;
+  line-height: 1.8;
+  font-family: "Cairo", sans-serif !important;
+  direction: rtl !important;
+  overflow-wrap: break-word !important;
+  text-align: justify !important;
+  font-weight: 600 !important;
+}
+
+.project-content :deep(*),
+.project-content * {
+  font-family: "Cairo", sans-serif !important;
+}
+
+.project-content :deep(h1),
+.project-content :deep(h2),
+.project-content :deep(h3),
+.project-content :deep(h4),
+.project-content :deep(h5),
+.project-content :deep(h6),
+.project-content h1,
+.project-content h2,
+.project-content h3,
+.project-content h4,
+.project-content h5,
+.project-content h6 {
+  font-family: "Changa", sans-serif !important;
+  color: #440000 !important;
+  margin-top: 2rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.project-content :deep(p),
+.project-content p {
+  margin-bottom: 1.5rem !important;
+  font-size: 1rem !important;
+  line-height: 1.8 !important;
+  color: #440000 !important;
+  font-family: "Cairo", sans-serif !important;
+  direction: rtl !important;
+  text-align: justify !important;
+  font-weight: 400 !important;
+}
+
+.project-content :deep(img),
+.project-content img {
+  max-width: 100% !important;
+  height: auto !important;
+  border-radius: 0.5rem !important;
+  margin: 1.5rem 0 !important;
+  display: block !important;
+}
+
+/* Navigation Tabs */
+.project-nav-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+}
+
+.project-main-content {
+  min-height: 300px;
+}
+
+.nav-tab {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: #666;
+  font-size: 1.5rem;
+  font-weight: 700 !important;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.nav-tab:hover {
+  color: #940000;
+}
+
+.nav-tab-active {
+  color: #440000 !important;
+  border-bottom-color: #ED2924;
+  font-weight: 800;
+}
+
+/* Project Pillars Box */
+.project-pillars-box {
+  border-radius: 16px;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(to bottom, #440000, #ED2924) border-box;
+  padding: 2rem;
+  /* background: #ffffff; */
+}
+
+.box-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #440000;
+  margin: 0;
+}
+
+.technologies-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.technology-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.technology-item:hover {
+  background: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.tech-logo {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.tech-name {
+  font-size: 0.875rem;
+  color: #440000;
+  font-family: "Cairo", sans-serif;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Project Information Box */
+.project-info-box-detail {
+  border-radius: 16px;
+  border: 3px solid transparent;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(to bottom, #440000, #ED2924) border-box;
+  padding: 2rem;
+}
+
+.project-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.info-icon {
+  width: 24px;
+  height: 24px;
+  color: #ED2924;
+  flex-shrink: 0;
+}
+
+.info-item-label {
+  font-size: 0.875rem;
+  color: #666;
+  font-family: "Cairo", sans-serif;
+  margin-bottom: 0.25rem;
+}
+
+.info-item-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ED2924;
+
+}
+
+/* Loading Spinner */
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #440000;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .project-hero-section {
+    height: 70vh;
+    min-height: 400px;
+  }
+
+  .project-info-boxes {
+    margin-left: 1rem;
+  }
+
+  .project-logo-circle {
+    width: 120px;
+    height: 120px;
+  }
+
+  .project-info-box {
+    min-width: 120px;
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .project-hero-section {
+    height: 60vh;
+    min-height: 350px;
+  }
+
+  .project-hero-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .project-info-boxes {
+    margin-left: 0;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .project-info-box {
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .project-logo-circle {
+    width: 100px;
+    height: 100px;
+  }
+
+  .technologies-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .tech-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .nav-tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .box-title {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .project-hero-section {
+    height: 50vh;
+    min-height: 300px;
+  }
+
+  .project-info-boxes {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .project-info-box {
+    width: 100%;
+  }
+
+  .technologies-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== PROJECT IMAGES CAROUSEL (PrimeNG) ===== */
+.project-images-carousel {
+  width: 100%;
+  padding: 20px 0px;
+}
+
+
+.carousel-project-image {
+  /* width: 100%; */
+  width: 472px;
+  height: 378px;
+  object-fit: cover;
+  object-position: top;
+  border-radius: 16px;
+  transition: all 0.5s ease;
+  display: block;
+  cursor: pointer;
+}
+
+.carousel-project-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+/* Responsive Carousel Images - 3 images on large screens */
+@media (min-width: 1401px) {
+  .carousel-project-image {
+    max-width: 400px;
+    height: 320px;
+  }
+}
+
+/* PrimeNG Carousel Custom Styles */
+.project-images-carousel :deep(.p-carousel) {
+  padding: 0;
+}
+
+.project-images-carousel :deep(.p-carousel-content) {
+  padding: 20px 0;
+  flex-direction: column;
+}
+
+.project-images-carousel :deep(.p-carousel-items-content) {
+  overflow: visible;
+}
+
+/* Hide default side navigation - move to bottom */
+.project-images-carousel :deep(.p-carousel-prev),
+.project-images-carousel :deep(.p-carousel-next) {
+  position: static;
+  width: 32px;
+  height: 32px;
+  color: #ED2924;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.project-images-carousel :deep(.p-carousel-prev:hover),
+.project-images-carousel :deep(.p-carousel-next:hover) {
+  color: #440000;
+  background: transparent;
+}
+
+.project-images-carousel :deep(.p-carousel-prev:focus),
+.project-images-carousel :deep(.p-carousel-next:focus) {
+  box-shadow: none;
+}
+
+/* Carousel Footer - Arrows + Indicators */
+.project-images-carousel :deep(.p-carousel-footer) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+/* Carousel Indicators (Dots) */
+.project-images-carousel :deep(.p-carousel-indicators) {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.project-images-carousel :deep(.p-carousel-indicator) {
+  margin: 0;
+  padding: 0;
+}
+
+.project-images-carousel :deep(.p-carousel-indicator button) {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid #ccc;
+  padding: 0;
+  transition: all 0.3s ease;
+}
+
+.project-images-carousel :deep(.p-carousel-indicator button:hover) {
+  border-color: #ED2924;
+}
+
+.project-images-carousel :deep(.p-carousel-indicator.p-highlight button) {
+  background: #ED2924;
+  border-color: #ED2924;
+}
+
+/* Hide default indicators since we're using custom ones */
+.project-images-carousel :deep(.p-carousel-indicators) {
+  display: none;
+}
+
+/* Custom Navigation Styles */
+.carousel-custom-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.carousel-arrow {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #ED2924;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.carousel-arrow:hover {
+  color: #440000;
+}
+
+.carousel-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.carousel-custom-dots {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.carousel-custom-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid #ccc;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.carousel-custom-dot:hover {
+  border-color: #ED2924;
+}
+
+.carousel-custom-dot.active {
+  background: #ED2924;
+  border-color: #ED2924;
+}
+
+/* ===== OWL CAROUSEL CUSTOM STYLES ===== */
+/* Hide default owl-nav - we use custom arrows */
+::ng-deep .owl-carousel .owl-nav {
+  display: none !important;
+}
+
+/* Hide the dots rendered inside owl-carousel - we'll show them in our container */
+::ng-deep owl-carousel-o .owl-dots {
+  display: none !important;
+}
+
+/* Custom Carousel Navigation Container - Arrows + Dots inline */
+.carousel-nav-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+/* Custom dot indicators */
+.carousel-dots-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.carousel-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: transparent;
+  border: 2px solid #d1d5db;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.carousel-dot:hover {
+  border-color: #ED2924;
+}
+
+.carousel-dot.active {
+  background: #ED2924;
+  border-color: #ED2924;
+}
+
+/* Custom Navigation Arrows - inline with dots */
+.carousel-arrow {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #ED2924;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.carousel-arrow:hover {
+  color: #c41e1a;
+}
+
+.carousel-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Owl Carousel Slide Images */
+::ng-deep .owl-carousel .owl-item img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+::ng-deep .owl-carousel .owl-item img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive Owl Carousel */
+@media (max-width: 768px) {
+  .carousel-nav-container {
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .carousel-dots-container {
+    gap: 8px;
+  }
+
+  .carousel-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .carousel-arrow {
+    width: 20px;
+    height: 20px;
+  }
+
+  .carousel-arrow svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  ::ng-deep .owl-carousel .owl-item img {
+    height: 280px;
+    border-radius: 12px;
+  }
+}
+
+/* Responsive Carousel Images */
+@media (max-width: 1030px) {
+  .carousel-project-image {
+    width: 350px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 900px) {
+  .carousel-project-image {
+    width: 340px;
+    height: 500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .carousel-project-image {
+    width: 100%;
+    max-width: 472px;
+    height: auto;
+    aspect-ratio: 472 / 378;
+  }
+
+  .carousel-image-wrapper {
+    padding: 0 8px;
+  }
+
+  .carousel-custom-nav {
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .carousel-arrow {
+    width: 28px;
+    height: 28px;
+  }
+
+  .carousel-arrow svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .carousel-custom-dots {
+    gap: 8px;
+  }
+
+  .carousel-custom-dot {
+    width: 8px;
+    height: 8px;
+    border-width: 1.5px;
+  }
+}
+
+/* ===== IMAGE POPUP MODAL ===== */
+.image-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.image-popup-container {
+  position: relative;
+  width: 70vw;
+  max-width: 70vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup-image {
+  width: auto;
+  max-width: 100%;
+  height: 70vh;
+  object-fit: cover;
+  border-radius: 16px;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Navigation Buttons */
+.popup-nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.popup-nav-btn:hover {
+  background: rgba(237, 41, 36, 0.8);
+}
+
+.popup-nav-btn svg {
+  width: 24px;
+  height: 24px;
+}
+
+.popup-nav-prev {
+  right: -70px;
+}
+
+.popup-nav-next {
+  left: -70px;
+}
+
+/* Image Counter */
+.popup-counter {
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #fff;
+  font-size: 14px;
+  font-family: "Cairo", sans-serif;
+}
+
+/* Cursor for clickable images */
+.carousel-image-wrapper {
+  cursor: pointer;
+  padding: 20px 0px;
+}
+
+/* Responsive Popup */
+@media (max-width: 768px) {
+  .image-popup-container {
+    width: 95vw;
+    max-width: 95vw;
+  }
+
+  .popup-image {
+    width: 100%;
+    height: 350px;
+    border-radius: 12px;
+  }
+
+  .popup-nav-prev {
+    right: 10px;
+    top: auto;
+    bottom: -60px;
+    transform: none;
+  }
+
+  .popup-nav-next {
+    left: 10px;
+    top: auto;
+    bottom: -60px;
+    transform: none;
+  }
+
+  .popup-nav-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .popup-counter {
+    bottom: -100px;
+  }
+}
+
+.popup-close-btn {
+
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+}

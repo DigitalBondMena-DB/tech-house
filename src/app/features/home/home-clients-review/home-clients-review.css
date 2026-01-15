@@ -1,0 +1,77 @@
+.bg-clients {
+    background-image: url('/images/k.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    height: 80vh;
+    width: 100%;
+}
+
+
+.bg-client-linear{
+      background: linear-gradient(to top, #440000, #ED2924);
+}
+
+/* Testimonials container with slide animation */
+.testimonials-container {
+    perspective: 1000px;
+    position: relative;
+}
+
+.testimonial-image {
+    transform-style: preserve-3d;
+    will-change: transform, scale, opacity;
+    backface-visibility: hidden;
+    position: relative;
+}
+
+/* Smooth transitions - scale happens first, then position */
+.testimonial-image {
+    transition: 
+        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+        filter 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* When transitioning from center to side, scale down happens first (faster transition) */
+.testimonial-image.scale-100:not(:hover) {
+    transition: 
+        transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s,
+        opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+        filter 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+}
+
+/* Left image (index 0) - smaller */
+.testimonial-image:first-child:not(.scale-100) {
+    transform: translateX(0) scale(0.9);
+    opacity: 0.85;
+    filter: brightness(1);
+}
+
+.testimonial-image:first-child:not(.scale-100):hover {
+    transform: translateX(5px) scale(0.95);
+}
+
+/* Right image (index 2) - smaller */
+.testimonial-image:last-child:not(.scale-100) {
+    transform: translateX(0) scale(0.9);
+    opacity: 0.85;
+    filter: brightness(1);
+}
+
+.testimonial-image:last-child:not(.scale-100):hover {
+    transform: translateX(-5px) scale(0.95);
+}
+
+/* Center image (index 1) - larger, prominent */
+.testimonial-image.scale-100 {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    filter: brightness(1.05);
+}
+
+
+
+/* No animations - only transitions for smooth movement */
+/* Images will smoothly transition from their current position to new position */

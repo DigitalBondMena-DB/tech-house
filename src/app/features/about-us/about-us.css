@@ -1,0 +1,15 @@
+.timeline-card {
+  transition: transform 0.3s ease;
+}
+
+/* Semi-transparent white skeleton styling */
+:host ::ng-deep .hero-skeleton .p-skeleton {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .hero-skeleton .p-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
+}

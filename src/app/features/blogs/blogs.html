@@ -1,0 +1,76 @@
+<!-- Main content wrapper with min-height to prevent footer from appearing at top -->
+<div class="min-h-screen">
+@if (bannerSection()) {
+<app-hero-section [title]="bannerSection()?.title || ''" [paragraph]="bannerSection()?.text || ''"
+    customClass=" h-[90vh] lg:h-[80vh]!"
+    [image]="bannerSection()?.image ? getResponsiveImage(bannerSection()?.image) : undefined"
+    [imagePosition]="bannerSection()?.image ? 'left' : 'none'"
+    imageClass=" absolute -bottom-[0px]! -left-[0px]! lg:-left-[0px]!">
+</app-hero-section>
+} @else {
+<!-- Hero Section Skeleton -->
+<section class="bg-linear min-h-[90vh] lg:min-h-[80vh] relative flex items-center">
+  <div class="container mx-auto px-5 lg:px-20 hero-skeleton">
+    <p-skeleton width="60%" height="50px" styleClass="rounded-lg mb-4"></p-skeleton>
+    <p-skeleton width="80%" height="30px" styleClass="rounded-lg"></p-skeleton>
+  </div>
+</section>
+}
+<section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
+    <app-section-title [title]="articlesTitle" customClass=" mb-8 md:mb-10">
+    </app-section-title>
+    
+    @if (blogItems().length > 0) {
+    <div class="blogs-list">
+        @for (blog of blogItems(); track blog.id) {
+        <div class="blog-item mb-12 md:mb-16 last:mb-0 cursor-pointer transition-all duration-500 hover:opacity-90" (click)="navigateToBlogDetail(blog)">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                <!-- Image Side (Left in RTL) -->
+                <div class="blog-image">
+                    @if (blog.image) {
+                    <img [src]="getResponsiveImage(blog.image)" [alt]="blog.title"
+                        class="w-full h-[400px] rounded-2xl object-cover  transition-all duration-800 ">
+                    }
+                </div>
+                <!-- Content Side (Right in RTL) -->
+                <div class="blog-content flex flex-col gap-4 xl:justify-evenly h-full">
+                    <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-[#440000] mb-4 md:mb-6 xl:mb-12">
+                        {{ blog.title }}
+                    </h2>
+                    <p class="text-base md:text-xl text-[#440000] leading-relaxed mb-4 md:mb-6">
+                        {{ blog.small_text }}
+                    </p>
+                    <div class="flex items-center justify-between ">
+
+                        <div class="text-[#ED2924] text-base md:text-lg font-semibold underline transition-colors flex items-center gap-2">
+                            عرض التفاصيل
+                            <img src="images/icons/arrow-left.webp" alt="" width="22" height="22" class="h-[14px] w-[14px] md:h-[18px] md:w-[18px] ms-1">
+                        </div>
+                        <div class="text-sm md:text-base text-gray-500 ">
+                            {{ blog.publish_at_ar }}
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+        }
+    </div>
+    }
+
+    <!-- Pagination -->
+    @if (blogs() && totalRecords() > 0) {
+    <div class="flex justify-center mt-12 md:mt-16" dir="ltr">
+        <p-paginator [first]="first()" [rows]="rows()" [totalRecords]="totalRecords()" 
+            (onPageChange)="onPageChange($event)" styleClass="custom-paginator">
+        </p-paginator>
+    </div>
+    }
+</section>
+
+@if (isAllDataLoaded()) {
+  <app-contact-us-sec></app-contact-us-sec>
+}
+</div>

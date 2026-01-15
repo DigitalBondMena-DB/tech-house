@@ -1,0 +1,52 @@
+<!-- Main content wrapper with min-height to prevent footer from appearing at top -->
+<div class="min-h-screen">
+@if (privacyPolicyData()) {
+    <!-- Hero Section -->
+    <app-hero-section 
+        [title]="heroTitle()" 
+        [paragraph]="heroParagraph()" 
+        [image]="getMobileImage(heroImageData())" 
+        imagePosition="left" 
+        [subtitleAboveTitle]="false"
+        imageClass="  absolute -bottom-[0px]! -left-[0px]! lg:-left-[0px]!"
+        customClass=" h-[90vh] lg:h-[80vh]!" >
+    </app-hero-section>
+
+    <!-- Content Sections -->
+    <section class="container mx-auto px-5 lg:px-20 py-20 section-pattern section-pattern-right" dir="rtl">
+        <!-- Privacy Policy Content -->
+        @if (privacyPolicyContent()) {
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-[#440000] mb-6">{{ privacyPolicyContent()!.title }}</h2>
+                <ul class="list-disc list-inside space-y-4 text-[#440000] text-lg">
+                    @for (line of splitTextByLines(privacyPolicyContent()!.text); track $index) {
+                        <li class="leading-relaxed">{{ line }}</li>
+                    }
+                </ul>
+            </div>
+        }
+        
+        <!-- Sections -->
+        @if (sections().length > 0) {
+            @for (section of sections(); track $index) {
+                <div class="mb-12">
+                    <h2 class="text-3xl font-bold text-[#440000] mb-6">{{ section.title }}</h2>
+                    <ul class="list-disc list-inside space-y-4 text-[#440000] text-lg">
+                        @for (item of section.content; track $index) {
+                            <li class="leading-relaxed">{{ item }}</li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+    </section>
+} @else {
+<!-- Hero Section Skeleton -->
+<section class="bg-linear min-h-[90vh] lg:min-h-[80vh] relative flex items-center">
+  <div class="container mx-auto px-5 lg:px-20 hero-skeleton">
+    <p-skeleton width="60%" height="50px" styleClass="rounded-lg mb-4"></p-skeleton>
+    <p-skeleton width="80%" height="30px" styleClass="rounded-lg"></p-skeleton>
+  </div>
+</section>
+}
+</div>

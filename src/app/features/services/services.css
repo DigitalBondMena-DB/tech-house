@@ -1,0 +1,52 @@
+.bg-linear-rev {
+    background: linear-gradient(to top, #440000, #ED2924);
+}
+.service-card {
+    padding: 2rem 0;
+}
+
+.service-card:not(:last-child) {
+    border-bottom: 1px solid rgba(68, 0, 0, 0.1);
+    padding-bottom: 3rem;
+}
+
+.service-icon-wrapper {
+    position: relative;
+}
+
+.service-icon-wrapper img {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .service-card {
+        padding: 1.5rem 0;
+    }
+    
+    .service-card:not(:last-child) {
+        padding-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .service-card {
+        padding: 1rem 0;
+    }
+    
+    .service-card:not(:last-child) {
+        padding-bottom: 1.5rem;
+    }
+}
+
+/* Semi-transparent white skeleton styling */
+:host ::ng-deep .hero-skeleton .p-skeleton {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .hero-skeleton .p-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
+}

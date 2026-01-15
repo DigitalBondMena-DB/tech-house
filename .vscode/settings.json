@@ -1,0 +1,33 @@
+{
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.classAttributes": [
+    "class",
+    "ngClass",
+    "className",
+    "[class]",
+    "[ngClass]",
+    "classList"
+  ],
+  "tailwindCSS.lint.cssConflict": "warning",
+  "tailwindCSS.lint.invalidApply": "warning",
+  "tailwindCSS.lint.invalidScreen": "warning",
+  "tailwindCSS.suggestions": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "off"
+  },
+  "files.watcherExclude": {
+    "**/node_modules": true
+  }
+}

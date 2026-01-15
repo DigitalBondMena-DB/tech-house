@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /admin/       # منع الوصول لمجلد الإدارة
+Disallow: /private/     # منع الوصول لأي محتوى خاص أو تجريبي
+Disallow: /login/       # منع صفحات تسجيل الدخول
+Disallow: /register/    # منع صفحات التسجيل
+
+Allow: /
+
+Sitemap: https://www.techhouseksa.com/sitemap.xml

@@ -1,0 +1,32 @@
+/* Contact Us Page Styles */
+
+/* Ensure proper spacing and layout */
+section {
+    position: relative;
+}
+
+/* Counter boxes styling */
+.bg-\[#ED2924\] {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.bg-\[#ED2924\]:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(237, 41, 36, 0.3);
+}
+
+.bg-counter {
+    background: linear-gradient(to bottom, #440000, #ED2924);
+}
+
+/* Semi-transparent white skeleton styling */
+:host ::ng-deep .hero-skeleton .p-skeleton {
+  background: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .hero-skeleton .p-skeleton::after {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
+}

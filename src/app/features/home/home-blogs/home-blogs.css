@@ -1,0 +1,92 @@
+.slide-active {
+  opacity: 0;
+  transform: translateX(20px);
+  animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.blog-card {
+  position: relative;
+  cursor: pointer;
+}
+
+.blog-card * {
+  pointer-events: none;
+}
+
+.blog-hover-overlay {
+  pointer-events: none !important;
+}
+
+.blog-hover-image {
+  pointer-events: none !important;
+}
+
+.blog-image-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-image-container > img {
+  position: relative;
+  z-index: 1;
+}
+
+.blog-hover-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
+  border-radius: 1.5rem;
+  pointer-events: none;
+}
+
+.blog-card:hover .blog-image-container .blog-hover-overlay,
+.blog-image-container:hover .blog-hover-overlay {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.blog-hover-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 1.5rem;
+  z-index: 1;
+}
+
+.blog-hover-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  object-fit: cover;
+  z-index: 2;
+  pointer-events: auto;
+}

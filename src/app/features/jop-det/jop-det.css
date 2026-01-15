@@ -1,0 +1,562 @@
+/* Loading Spinner */
+.loading-spinner {
+  width: 50px !important;
+  height: 50px !important;
+  border: 4px solid #f3f3f3 !important;
+  border-top: 4px solid #ED2924 !important;
+  border-radius: 50% !important;
+  animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg) !important;
+  }
+
+  100% {
+    transform: rotate(360deg) !important;
+  }
+}
+
+/* Job Hero Section */
+.job-hero-section {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 80vh !important;
+  height: 80vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Hero Background Image for LCP Optimization */
+.job-hero-section .hero-background-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+
+.job-hero-content {
+  width: 100% !important;
+  color: white !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-end !important;
+}
+
+.job-hero-title {
+  font-size: 2.5rem !important;
+  font-weight: bold !important;
+  color: white !important;
+  margin-bottom: 1rem !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2) !important;
+  font-family: "Changa", sans-serif !important;
+}
+
+@media (max-width: 768px) {
+  .job-hero-title {
+    font-size: 2rem !important;
+  }
+}
+
+.job-hero-description {
+  font-size: 1.5rem !important;
+  color: white !important;
+  line-height: 1.8 !important;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2) !important;
+  font-weight: 600 !important;
+}
+
+@media (max-width: 768px) {
+  .job-hero-description {
+    font-size: 1rem !important;
+  }
+}
+
+.job-hero-actions {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.job-apply-btn {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  color: white !important;
+  padding: 1rem 2.5rem !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  transition: all 0.3s ease !important;
+  font-family: "Cairo", sans-serif !important;
+}
+
+.job-apply-btn:hover {
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.apply-arrow {
+  width: 40px !important;
+  height: 40px !important;
+  background-color: white !important;
+  border-radius: 50% !important;
+  transition: transform 0.3s ease !important;
+}
+
+.job-apply-btn:hover .apply-arrow {
+  transform: translateY(4px) !important;
+}
+
+/* Job Info Cards */
+.job-info-cards {
+  display: flex !important;
+  gap: 0.75rem !important;
+  margin-top: 1rem !important;
+  margin-bottom: 1.5rem !important;
+  /* justify-content: center !important; */
+  flex-wrap: wrap !important;
+}
+
+.job-info-card {
+  background: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  border-radius: 40px !important;
+  padding: 0.75rem 1.25rem !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  color: white !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.job-info-card:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-2px) !important;
+}
+
+.job-info-text {
+  font-family: "Cairo", sans-serif !important;
+}
+
+.job-info-icon {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+}
+
+.job-info-icon svg {
+  width: 100% !important;
+  height: 100% !important;
+  stroke: currentColor !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .job-hero-section {
+    min-height: 60vh !important;
+    padding: 2rem 0 !important;
+  }
+
+  .job-info-cards {
+    gap: 0.5rem !important;
+  }
+
+  .job-info-card {
+    padding: 0.625rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .job-apply-btn {
+    padding: 0.875rem 2rem !important;
+    font-size: 1.1rem !important;
+  }
+}
+
+.apply-now-btn {
+  background-color: #ED2924 !important;
+  color: white !important;
+  padding: 1rem 2.5rem !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  transition: all 0.3s ease !important;
+  font-family: "Cairo", sans-serif !important;
+}
+
+.apply-now-btn:hover {
+  background-color: #c41e1a !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.apply-arrow {
+  width: 20px !important;
+  height: 20px !important;
+  transition: transform 0.3s ease !important;
+}
+
+.apply-now-btn:hover .apply-arrow {
+  transform: translateY(4px) !important;
+}
+
+/* Content Section */
+.job-content-section {
+  background-color: white !important;
+}
+
+.job-section {
+  margin-bottom: 3rem !important;
+  border-radius: 16px !important;
+  border: 3px solid transparent !important;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(to top, #440000, #ED2924) border-box !important;
+  padding: 2rem !important;
+}
+
+.job-section:last-child {
+  margin-bottom: 0 !important;
+}
+
+.job-section-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  margin-bottom: 1.5rem !important;
+}
+
+.section-icon {
+  width: 30px !important;
+  height: 30px !important;
+  object-fit: contain !important;
+}
+
+.job-section-title {
+  font-size: 1.75rem !important;
+  font-weight: bold !important;
+  color: #440000 !important;
+  font-family: "Changa", sans-serif !important;
+}
+
+@media (max-width: 768px) {
+  .job-section-title {
+    font-size: 1.5rem !important;
+  }
+}
+
+.job-section-content {
+  color: #440000 !important;
+  line-height: 1.8 !important;
+  font-family: "Cairo", sans-serif !important;
+  direction: rtl !important;
+  text-align: justify !important;
+  overflow-wrap: break-word !important;
+  text-justify: inter-word !important;
+  font-size: 1.1rem !important;
+}
+
+.job-section-content :deep(*),
+.job-section-content * {
+  font-family: "Cairo", sans-serif !important;
+}
+
+.job-section-content :deep(p) {
+  margin-bottom: 1rem !important;
+  line-height: 1.8 !important;
+}
+
+.job-section-content :deep(ul),
+.job-section-content :deep(ol) {
+  margin-right: 1.5rem !important;
+  margin-bottom: 1rem !important;
+  padding-right: 1.5rem !important;
+}
+
+.job-section-content :deep(li) {
+  margin-bottom: 0.5rem !important;
+  line-height: 1.8 !important;
+}
+
+.job-section-content :deep(strong),
+.job-section-content :deep(b) {
+  font-weight: 600 !important;
+  color: #440000 !important;
+}
+
+.job-section-content :deep(a) {
+  color: #ED2924 !important;
+  text-decoration: underline !important;
+}
+
+.job-section-content :deep(a:hover) {
+  color: #c41e1a !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .apply-now-btn {
+    padding: 0.875rem 2rem !important;
+    font-size: 1.1rem !important;
+  }
+}
+
+/* Job Application Form Section */
+.job-apply-header {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+  margin-bottom: 2rem !important;
+}
+
+.job-apply-title {
+  font-size: 1.75rem !important;
+  font-weight: bold !important;
+  color: #ED2924 !important;
+  font-family: "Changa", sans-serif !important;
+}
+
+@media (max-width: 768px) {
+  .job-apply-title {
+    font-size: 1.5rem !important;
+  }
+
+  .job-apply-form-container {
+    padding: 1.5rem !important;
+  }
+}
+
+/* PrimeNG Input Styles - Same as contact-us */
+
+
+
+
+ .p-inputtext,
+ .p-inputtextarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-size: 1rem;
+  color: var(--p-inputtext-color);
+  background: #FAFAFA !important;
+  padding: 15px !important;
+  border: none !important;
+  transition: all 0.3s ease;
+  appearance: none;
+  border-radius: var(--p-inputtext-border-radius);
+  outline-color: transparent;
+  box-shadow: none;
+
+}
+
+/* Active state (focus) - No background, gray border */
+ .p-inputtext:focus,
+ .p-inputtextarea:focus,
+ .p-inputtext.p-focus,
+ .p-inputtextarea.p-focus {
+    background: transparent !important;
+    border: 1px solid #9E9E9E !important;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Filled state (has value but not focused) - Keep gray background, no border */
+ .p-inputtext.p-filled:not(:focus):not(.p-focus):not(.p-invalid),
+ .p-inputtextarea.p-filled:not(:focus):not(.p-focus):not(.p-invalid) {
+    background: #FAFAFA !important;
+    border: none !important;
+}
+
+/* Filled + Focus state - No background, gray border */
+ .p-inputtext.p-filled:focus:not(.p-invalid),
+ .p-inputtextarea.p-filled:focus:not(.p-invalid),
+ .p-inputtext.p-filled.p-focus:not(.p-invalid),
+ .p-inputtextarea.p-filled.p-focus:not(.p-invalid) {
+    background: transparent !important;
+    border: 1px solid #9E9E9E !important;
+}
+
+/* Invalid/Error state - Red border when focused */
+ .p-inputtext.ng-invalid.ng-touched:focus,
+ .p-inputtextarea.ng-invalid.ng-touched:focus,
+ .p-inputtext.p-invalid.p-focus,
+ .p-inputtextarea.p-invalid.p-focus {
+    background: transparent !important;
+    border: 1px solid #F44336 !important;
+    box-shadow: none;
+}
+
+/* Invalid but not focused - Gray background, no border */
+ .p-inputtext.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+ .p-inputtextarea.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+ .p-inputtext.p-invalid:not(.p-focus) {
+    background: #FAFAFA !important;
+    border: none !important;
+}
+
+/* Phone input (tel) - White background with gray border always */
+ input[type="tel"].p-inputtext,
+ #phone.p-inputtext {
+    background: #FFFFFF !important;
+    border: 1px solid #F5F5F5 !important;
+    border-bottom-left-radius: 10px !important;
+    border-top-left-radius: 10px !important;
+    border-bottom-right-radius: 0px !important;
+    border-top-right-radius: 0px !important;
+}
+
+/* Phone input focus state - Keep white background, gray border */
+ input[type="tel"].p-inputtext:focus,
+ #phone.p-inputtext:focus,
+ input[type="tel"].p-inputtext.p-focus,
+ #phone.p-inputtext.p-focus {
+    background: #FFFFFF !important;
+    border: 1px solid #9E9E9E !important;
+}
+
+/* Phone input filled state - Keep white background, gray border */
+ input[type="tel"].p-inputtext.p-filled,
+ #phone.p-inputtext.p-filled {
+    background: #FFFFFF !important;
+    border: 1px solid #9E9E9E !important;
+}
+
+/* Phone input invalid state - White background, red border */
+ input[type="tel"].p-inputtext.p-invalid,
+ #phone.p-inputtext.p-invalid,
+ input[type="tel"].p-inputtext.ng-invalid.ng-touched,
+ #phone.p-inputtext.ng-invalid.ng-touched {
+    background: #FFFFFF !important;
+    border: 1px solid #F44336 !important;
+}
+
+/* Disabled state */
+ .p-inputtext:disabled,
+ .p-inputtextarea:disabled {
+    background-color: #FAFAFA !important;
+    border: none !important;
+    color: #9E9E9E !important ;
+    cursor: not-allowed;
+}
+
+
+
+ .p-inputtext:enabled:focus {
+    border: #9E9E9E solid 1px !important;
+}
+
+
+/* Textarea default state (not active) - Gray background, no border */
+ .p-textarea,
+ .p-inputtextarea {
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-size: 1rem;
+    color: var(--p-textarea-color);
+    background: #FAFAFA !important;
+    padding: 15px !important;
+    border: none !important;
+    transition: all 0.3s ease;
+    appearance: none;
+    border-radius: var(--p-textarea-border-radius);
+    outline-color: transparent;
+    box-shadow: none;
+    resize: none;
+}
+
+/* Textarea active state (focus) - No background, gray border */
+ .p-textarea:focus,
+ .p-inputtextarea:focus,
+ .p-textarea.p-focus,
+ .p-inputtextarea.p-focus {
+    background: transparent;
+    border: 1px solid #9E9E9E;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Textarea filled state (has value but not focused) - Keep gray background, no border */
+ .p-textarea.p-filled:not(:focus):not(.p-focus):not(.p-invalid),
+ .p-inputtextarea.p-filled:not(:focus):not(.p-focus):not(.p-invalid) {
+    background: #FAFAFA;
+    border: none;
+}
+
+/* Textarea filled + focus state - No background, gray border */
+ .p-textarea.p-filled:focus:not(.p-invalid),
+ .p-inputtextarea.p-filled:focus:not(.p-invalid),
+ .p-textarea.p-filled.p-focus:not(.p-invalid),
+ .p-inputtextarea.p-filled.p-focus:not(.p-invalid) {
+    background: transparent;
+    border: 1px solid #9E9E9E;
+}
+
+/* Textarea invalid state - Red border when focused */
+ .p-textarea.ng-invalid.ng-touched:focus,
+ .p-inputtextarea.ng-invalid.ng-touched:focus,
+ .p-textarea.p-invalid.p-focus,
+ .p-inputtextarea.p-invalid.p-focus {
+    background: transparent;
+    border: 1px solid #F44336;
+    box-shadow: none;
+}
+
+/* Textarea invalid but not focused - Gray background, no border */
+ .p-textarea.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+ .p-inputtextarea.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+ .p-textarea.p-invalid:not(.p-focus) {
+    background: #FAFAFA;
+    border: none;
+}
+
+ .p-inputgroupaddon:first-child,
+ .p-inputgroupaddon+.p-inputgroupaddon {
+    border: 1px solid #F5F5F5 !important;
+    border-bottom-right-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+ .p-select {
+    box-shadow: none !important;
+}
+
+/* Position select dropdown below the input */
+ .country-select {
+    position: relative !important;
+}
+
+ .country-select .p-select-overlay,
+ .p-select-overlay {
+    position: absolute !important;
+    top: 100% !important;
+    /* left: 0 !important; */
+    right: 0!important;
+    margin-top: 4px !important;
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: calc(100vw - 40px) !important;
+    transform: none !important;
+}
+
+ .p-textarea:enabled:focus {
+    border: 1px solid #9E9E9E !important;
+}

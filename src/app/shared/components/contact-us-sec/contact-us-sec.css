@@ -1,0 +1,211 @@
+/* Default state (not active) - Gray background, no border */
+:host ::ng-deep .p-inputtext,
+:host ::ng-deep .p-inputtextarea {
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-size: 1rem;
+    color: var(--p-inputtext-color);
+    background: #F5F5F5;
+    padding: 15px !important;
+    border: none;
+    transition: all 0.3s ease;
+    appearance: none;
+    border-radius: var(--p-inputtext-border-radius);
+    outline-color: transparent;
+    box-shadow: none;
+}
+
+/* Active state (focus) - No background, gray border */
+:host ::ng-deep .p-inputtext:focus,
+:host ::ng-deep .p-inputtextarea:focus,
+:host ::ng-deep .p-inputtext.p-focus,
+:host ::ng-deep .p-inputtextarea.p-focus {
+    background: transparent;
+    border: 1px solid #9E9E9E;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Filled state (has value but not focused) - Keep gray background, no border */
+:host ::ng-deep .p-inputtext.p-filled:not(:focus):not(.p-focus):not(.p-invalid),
+:host ::ng-deep .p-inputtextarea.p-filled:not(:focus):not(.p-focus):not(.p-invalid) {
+    background: #F5F5F5;
+    border: none;
+}
+
+/* Filled + Focus state - No background, gray border */
+:host ::ng-deep .p-inputtext.p-filled:focus:not(.p-invalid),
+:host ::ng-deep .p-inputtextarea.p-filled:focus:not(.p-invalid),
+:host ::ng-deep .p-inputtext.p-filled.p-focus:not(.p-invalid),
+:host ::ng-deep .p-inputtextarea.p-filled.p-focus:not(.p-invalid) {
+    background: transparent;
+    border: 1px solid #9E9E9E;
+}
+
+/* Invalid/Error state - Red border when focused */
+:host ::ng-deep .p-inputtext.ng-invalid.ng-touched:focus,
+:host ::ng-deep .p-inputtextarea.ng-invalid.ng-touched:focus,
+:host ::ng-deep .p-inputtext.p-invalid.p-focus,
+:host ::ng-deep .p-inputtextarea.p-invalid.p-focus {
+    background: transparent;
+    border: 1px solid #F44336;
+    box-shadow: none;
+}
+
+/* Invalid but not focused - Gray background, no border */
+:host ::ng-deep .p-inputtext.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+:host ::ng-deep .p-inputtextarea.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+:host ::ng-deep .p-inputtext.p-invalid:not(.p-focus) {
+    background: #F5F5F5;
+    border: none;
+}
+
+/* Phone input (tel) - White background with gray border always */
+:host ::ng-deep input[type="tel"].p-inputtext,
+:host ::ng-deep #phone.p-inputtext {
+    background: #FFFFFF !important;
+    border: 1px solid #F5F5F5 !important;
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+/* Phone input focus state - Keep white background, gray border */
+:host ::ng-deep input[type="tel"].p-inputtext:focus,
+:host ::ng-deep #phone.p-inputtext:focus,
+:host ::ng-deep input[type="tel"].p-inputtext.p-focus,
+:host ::ng-deep #phone.p-inputtext.p-focus {
+    background: #FFFFFF !important;
+    border: 1px solid #9E9E9E !important;
+}
+
+/* Phone input filled state - Keep white background, gray border */
+:host ::ng-deep input[type="tel"].p-inputtext.p-filled,
+:host ::ng-deep #phone.p-inputtext.p-filled {
+    background: #FFFFFF !important;
+    border: 1px solid #9E9E9E !important;
+}
+
+/* Phone input invalid state - White background, red border */
+:host ::ng-deep input[type="tel"].p-inputtext.p-invalid,
+:host ::ng-deep #phone.p-inputtext.p-invalid,
+:host ::ng-deep input[type="tel"].p-inputtext.ng-invalid.ng-touched,
+:host ::ng-deep #phone.p-inputtext.ng-invalid.ng-touched {
+    background: #FFFFFF !important;
+    border: 1px solid #F44336 !important;
+}
+
+/* Disabled state */
+:host ::ng-deep .p-inputtext:disabled,
+:host ::ng-deep .p-inputtextarea:disabled {
+    background-color: #F5F5F5;
+    border: none;
+    color: #9E9E9E;
+    cursor: not-allowed;
+}
+
+
+
+:host ::ng-deep .p-inputtext:enabled:focus {
+    border: #9E9E9E solid 1px !important;
+}
+
+
+/* Textarea default state (not active) - Gray background, no border */
+:host ::ng-deep .p-textarea,
+:host ::ng-deep .p-inputtextarea {
+    font-family: inherit;
+    font-feature-settings: inherit;
+    font-size: 1rem;
+    color: var(--p-textarea-color);
+    background: #F5F5F5;
+    padding: 15px !important;
+    border: none;
+    transition: all 0.3s ease;
+    appearance: none;
+    border-radius: var(--p-textarea-border-radius);
+    outline-color: transparent;
+    box-shadow: none;
+    resize: none;
+}
+
+/* Textarea active state (focus) - No background, gray border */
+:host ::ng-deep .p-textarea:focus,
+:host ::ng-deep .p-inputtextarea:focus,
+:host ::ng-deep .p-textarea.p-focus,
+:host ::ng-deep .p-inputtextarea.p-focus {
+    background: transparent;
+    border: 1px solid #9E9E9E;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Textarea filled state (has value but not focused) - Keep gray background, no border */
+:host ::ng-deep .p-textarea.p-filled:not(:focus):not(.p-focus):not(.p-invalid),
+:host ::ng-deep .p-inputtextarea.p-filled:not(:focus):not(.p-focus):not(.p-invalid) {
+    background: #F5F5F5;
+    border: none;
+}
+
+/* Textarea filled + focus state - No background, gray border */
+:host ::ng-deep .p-textarea.p-filled:focus:not(.p-invalid),
+:host ::ng-deep .p-inputtextarea.p-filled:focus:not(.p-invalid),
+:host ::ng-deep .p-textarea.p-filled.p-focus:not(.p-invalid),
+:host ::ng-deep .p-inputtextarea.p-filled.p-focus:not(.p-invalid) {
+    background: transparent;
+    border: 1px solid #9E9E9E;
+}
+
+/* Textarea invalid state - Red border when focused */
+:host ::ng-deep .p-textarea.ng-invalid.ng-touched:focus,
+:host ::ng-deep .p-inputtextarea.ng-invalid.ng-touched:focus,
+:host ::ng-deep .p-textarea.p-invalid.p-focus,
+:host ::ng-deep .p-inputtextarea.p-invalid.p-focus {
+    background: transparent;
+    border: 1px solid #F44336;
+    box-shadow: none;
+}
+
+/* Textarea invalid but not focused - Gray background, no border */
+:host ::ng-deep .p-textarea.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+:host ::ng-deep .p-inputtextarea.ng-invalid.ng-touched:not(:focus):not(.p-focus),
+:host ::ng-deep .p-textarea.p-invalid:not(.p-focus) {
+    background: #F5F5F5;
+    border: none;
+}
+
+:host ::ng-deep .p-inputgroupaddon:first-child,
+:host ::ng-deep .p-inputgroupaddon+.p-inputgroupaddon {
+    border: 1px solid #F5F5F5;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+:host ::ng-deep .p-select {
+    box-shadow: none;
+}
+
+/* Position select dropdown below the input */
+:host ::ng-deep .country-select {
+    position: relative;
+}
+
+:host ::ng-deep .country-select .p-select-overlay,
+:host ::ng-deep .p-select-overlay {
+    position: absolute !important;
+    top: 100% !important;
+    /* left: 0 !important; */
+    right: 0 !important;
+    margin-top: 4px !important;
+    width: 200px !important;
+    min-width: 200px !important;
+    max-width: calc(100vw - 40px) !important;
+    transform: none !important;
+}
+
+:host ::ng-deep .p-textarea:enabled:focus {
+    border: 1px solid #9E9E9E !important;
+}
+
+

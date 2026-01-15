@@ -1,0 +1,117 @@
+.typing-indicator {
+  display: inline-block;
+  animation: blink 1s infinite;
+  margin-right: 2px;
+  font-weight: 600;
+}
+
+@keyframes blink {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+.subtitle-container {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.subtitle-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.subtitle-animated {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Job Info Cards */
+.job-info-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.job-info-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.job-info-card:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.job-info-text {
+  font-family: "Cairo", sans-serif;
+}
+
+.job-info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.job-info-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+}
+
+/* Hero Background Image for LCP Optimization */
+.hero-background-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.hero-background-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 1;
+}
+
+/* Ensure content is above background image */
+.hero-background-container .container {
+  position: relative;
+  z-index: 10;
+}
+
+/* Hero Image Responsive Styles */
+
+/* Responsive */
+@media (max-width: 768px) {
+  .job-info-cards {
+    gap: 0.5rem;
+  }
+  
+  .job-info-card {
+    padding: 0.625rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+

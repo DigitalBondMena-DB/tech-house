@@ -1,0 +1,325 @@
+<!-- Loading State -->
+@if (isLoading()) {
+<section class="container mx-auto px-5 lg:px-20 py-20">
+    <div class="flex flex-col items-center justify-center min-h-[60vh]">
+        <div class="loading-spinner mb-6"></div>
+        <p class="text-xl text-[#440000]">جاري تحميل بيانات الوظيفة...</p>
+    </div>
+</section>
+}
+
+<!-- Error State -->
+@else if (hasError() && !hasJob()) {
+<section class="container mx-auto px-5 lg:px-20 py-20">
+    <div class="flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <div class="mb-6">
+            <svg class="w-24 h-24 text-[#ED2924] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
+                </path>
+            </svg>
+        </div>
+        <h2 class="text-2xl md:text-3xl font-bold text-[#440000] mb-4">الوظيفة غير موجودة</h2>
+        <p class="text-lg text-[#666] mb-8 max-w-md">{{ errorMessage() || 'الوظيفة المطلوبة غير موجودة أو تم حذفها.' }}
+        </p>
+        <button (click)="navigateToJobs()"
+            class="bg-[#B91C17] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#c41e1a] transition-colors">
+            العودة إلى الوظائف
+        </button>
+    </div>
+</section>
+}
+
+<!-- Job Content -->
+@else if (hasJob()) {
+<!-- Hero Section with Job Title -->
+<section class="bg-linear section-pattern">
+    <div class="job-hero-section bg-hero overflow-hidden relative">
+        <!-- Background Image for LCP Optimization -->
+        <img src="/images/hero/hero.webp" alt="Job Hero Background" 
+            class="hero-background-image" width="1920" height="1080" fetchpriority="high" loading="eager" />
+        <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+            
+            <div class="job-hero-content pb-20!">
+                <!-- Job Title -->
+                <h1 class="job-hero-title">
+                    {{ heroTitle() }}
+                </h1>
+
+                <!-- Job Info Cards -->
+                @if (heroJobInfo().length > 0) {
+                <div class="job-info-cards flex gap-3 mt-4 mb-6">
+                    @for (info of heroJobInfo(); track $index) {
+                    <div class="job-info-card">
+                        <span class="job-info-text">{{ info.label }}</span>
+                        <span class="job-info-icon" [innerHTML]="sanitizeIcon(info.icon)"></span>
+                    </div>
+                    }
+                </div>
+                }
+
+                <!-- Job Description -->
+                <p class="job-hero-description">{{ heroParagraph() }}</p>
+
+                <!-- Apply Now Button -->
+                @if (heroBtn()) {
+                <div class="job-hero-actions mt-6">
+                    <button class="job-apply-btn" (click)="scrollToApply()">
+                        {{ heroBtnText() }}
+                        <img src="/images/icons/arrow-left.webp" alt="" width="22" height="22" class="apply-arrow w-[14px] h-[14px] md:w-[18px] md:h-[18px]">
+                    </button>
+                </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+}
+
+<!-- Main Content Sections -->
+@if (hasJob()) {
+<section class="job-content-section container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-left">
+    @if (jobSections().length > 0) {
+    @for (section of jobSections(); track section.id || $index) {
+    <div class="job-section">
+        <div class="job-section-header">
+            <img src="/images/title/title.webp" alt="title-icon" class="section-icon">
+            <h2 class="job-section-title">{{ getDataOrPlaceholder(section.title) }}</h2>
+        </div>
+        @if (section.text && section.text.trim()) {
+        <div class="job-section-content" [innerHTML]="sanitizeHtml(section.text)">
+        </div>
+        } @else {
+        <div class="job-section-content text-center py-8">
+            <p class="text-gray-400">لا يوجد بيانات</p>
+        </div>
+        }
+    </div>
+    }
+    } @else {
+    <div class="job-section">
+        <div class="job-section-header">
+            <img src="/images/title/title.webp" alt="title-icon" class="section-icon">
+            <h2 class="job-section-title">تفاصيل الوظيفة</h2>
+        </div>
+        <div class="job-section-content text-center py-8">
+            <p class="text-gray-400">لا يوجد بيانات</p>
+        </div>
+    </div>
+    }
+</section>
+}
+
+<!-- Job Application Form -->
+@if (hasJob()) {
+<section id="apply-form" class="container mx-auto px-5 lg:px-20 py-20">
+    <div class="flex flex-col gap-8">
+        <!-- Form Header -->
+        <div class="flex items-center gap-3 mb-4">
+            <img src="/images/title/title.webp" alt="title-icon" class="w-8 h-8">
+            <h2 class="text-2xl md:text-3xl font-bold text-[#ED2924] font-['Changa']">قدم الآن</h2>
+        </div>
+
+        <form [formGroup]="jobApplicationForm" (ngSubmit)="onSubmitApplication()" class="flex flex-col gap-6"
+            novalidate>
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Right Column -->
+                <!-- Full Name -->
+                <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <input pInputText id="jobFullName" formControlName="fullName"
+                            (keypress)="onNameKeyPress($event)"
+                            [invalid]="fullNameControl?.invalid && fullNameControl?.touched" class="w-full" />
+                        <label for="jobFullName">الاسم بالكامل</label>
+                    </p-floatlabel>
+                    @if (getFullNameError()) {
+                    <span class="text-red-500 text-sm mt-1">{{ getFullNameError() }}</span>
+                    }
+                </div>
+                   <!-- Years of Experience -->
+                   <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <input pInputText id="experience" type="number" formControlName="experience"
+                            [invalid]="experienceControl?.invalid && experienceControl?.touched" class="w-full" />
+                        <label for="experience">سنين الخبرة</label>
+                    </p-floatlabel>
+                    @if (getExperienceError()) {
+                    <span class="text-red-500 text-sm mt-1">{{ getExperienceError() }}</span>
+                    }
+                </div>
+
+              
+                <!-- Phone Number -->
+                <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <p-inputGroup>
+                            <p-inputGroupAddon class="p-1 cursor-pointer">
+                                <p-select [options]="countries" [(ngModel)]="selectedCountryModel"
+                                    [ngModelOptions]="{standalone: true}" (onChange)="onCountryChange($event.value)"
+                                    optionLabel="name" [dataKey]="'code'" [style]="{'width': '140px', 'border': 'none'}"
+                                    [panelStyle]="{'max-height': '300px'}" [showClear]="false" [appendTo]="'self'"
+                                    class="country-select">
+                                    <ng-template let-country pTemplate="selectedItem">
+                                        <div class="flex items-center gap-2" *ngIf="country">
+                                            <span class="fi fi-{{country.code}}"></span>
+                                            <span>{{country.dialCode}}</span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template let-country pTemplate="item">
+                                        <div class="flex items-center gap-2 py-2">
+                                            <span class="fi fi-{{country.code}}"></span>
+                                            <span>{{country.name}}</span>
+                                            <span class="text-gray-500 mr-auto">{{country.dialCode}}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-select>
+                            </p-inputGroupAddon>
+                            <input id="jobPhone" type="tel" pInputText formControlName="phone"
+                                [placeholder]="phonePlaceholder()" (keypress)="onPhoneKeyPress($event)"
+                                [invalid]="phoneControl?.invalid && phoneControl?.touched" class="w-full" />
+                        </p-inputGroup>
+                        <label for="jobPhone">رقم الهاتف</label>
+                    </p-floatlabel>
+                    @if (getPhoneError()) {
+                    <span class="text-red-500 text-sm mt-1">{{ getPhoneError() }}</span>
+                    }
+                </div>
+                 <!-- Email -->
+                 <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <input pInputText id="jobEmail" type="email" formControlName="email"
+                            [invalid]="emailControl?.invalid && emailControl?.touched" class="w-full" />
+                        <label for="jobEmail">البريد الالكتروني</label>
+                    </p-floatlabel>
+                    @if (getEmailError()) {
+                    <span class="text-red-500 text-sm mt-1">{{ getEmailError() }}</span>
+                    }
+                </div>
+
+                <!-- Expected Salary -->
+                <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <input pInputText id="expectedSalary" type="number" formControlName="expectedSalary"
+                            [invalid]="expectedSalaryControl?.invalid && expectedSalaryControl?.touched"
+                            class="w-full" />
+                        <label for="expectedSalary">الراتب المتوقع</label>
+                    </p-floatlabel>
+                    <span class="text-sm text-[#636363] mt-1">(ع) بالريال السعودي</span>
+                    @if (getExpectedSalaryError()) {
+                    <span class="text-red-500 text-sm mt-1">{{ getExpectedSalaryError() }}</span>
+                    }
+                </div>
+
+                <!-- Left Column -->
+             
+               
+                <!-- Current Salary -->
+                <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <input pInputText id="currentSalary" type="number" formControlName="currentSalary"
+                            [invalid]="currentSalaryControl?.invalid && currentSalaryControl?.touched" class="w-full" />
+                        <label for="currentSalary">الراتب الحالي</label>
+                    </p-floatlabel>
+                    <span class="text-sm text-[#636363] mt-1">(ع) بالريال السعودي</span>
+                    @if (getCurrentSalaryError()) {
+                    <span class="text-red-500 text-sm mt-1">{{ getCurrentSalaryError() }}</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Cover Letter (Textarea) -->
+            <div class="flex flex-col gap-1">
+                <p-floatlabel variant="on" class="flex flex-col">
+                    <textarea id="jobMessage" rows="5" pInputTextarea formControlName="message"
+                        [invalid]="messageControl?.invalid && messageControl?.touched" class="w-full"></textarea>
+                    <label for="jobMessage">رسالة تعريفية...</label>
+                </p-floatlabel>
+                @if (getMessageError()) {
+                <span class="text-red-500 text-sm mt-1">{{ getMessageError() }}</span>
+                }
+            </div>
+
+            <!-- File Uploads -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Portfolio Upload -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-semibold text-[#440000]">محفظة الأعمال</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#ED2924] transition-colors"
+                        (click)="portfolioInput.click()">
+                        <input type="file" #portfolioInput class="hidden" accept=".pdf,.doc,.docx,.zip,.rar"
+                            (change)="onPortfolioChange($event)">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                        <p class="text-sm text-gray-500">اضغط لرفع الملف</p>
+                        @if (jobApplicationForm.get('portfolio')?.value) {
+                        <p class="text-sm text-[#ED2924] mt-2">{{ jobApplicationForm.get('portfolio')?.value?.name }}
+                        </p>
+                        }
+                    </div>
+                </div>
+
+                <!-- CV Upload -->
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm font-semibold text-[#440000]">السيرة الذاتية</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-[#ED2924] transition-colors"
+                        (click)="cvInput.click()">
+                        <input type="file" #cvInput class="hidden" accept=".pdf,.doc,.docx"
+                            (change)="onCvChange($event)">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                            </path>
+                        </svg>
+                        <p class="text-sm text-gray-500">اضغط لرفع الملف</p>
+                        @if (jobApplicationForm.get('cv')?.value) {
+                        <p class="text-sm text-[#ED2924] mt-2">{{ jobApplicationForm.get('cv')?.value?.name }}</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            @if (submitSuccess()) {
+            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg">
+                <p class="font-semibold">تم إرسال الطلب بنجاح!</p>
+                <p class="text-sm">شكراً لتقديمك على الوظيفة، سنرد عليك في أقرب وقت ممكن.</p>
+            </div>
+            }
+
+            <!-- Error Message -->
+            @if (submitError()) {
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                <p class="font-semibold">حدث خطأ</p>
+                <p class="text-sm">{{ submitError() }}</p>
+            </div>
+            }
+
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mt-4">
+                <a (click)="navigateToJobs()" class="text-[#ED2924] hover:underline cursor-pointer text-sm">
+                    العودة إلى المهنة
+                </a>
+                <app-app-button [btnText]="isSubmitting() ? 'جاري الإرسال...' : 'إرسال'"
+                    [disabled]="jobApplicationForm.invalid || isSubmitting()" (buttonClick)="onSubmitApplication()"
+                    customClass="ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-lg flex items-center justify-center transition duration-300 hover:bg-[#c41e1a]">
+                </app-app-button>
+            </div>
+        </form>
+    </div>
+</section>
+}
+
+<!-- Success Popup -->
+<app-success-popup 
+    [isVisible]="showSuccessPopup()"
+    title="شكرًا لاهتمامك بالعمل معنا!"
+    message="لقد استلمنا طلبك، وسيتواصل معك فريق الموارد البشرية في حال كانت خبراتك مناسبة لمتطلبات الوظيفة."
+    buttonText="العودة إلى الصفحة الرئيسية"
+    (close)="onClosePopup()">
+</app-success-popup>

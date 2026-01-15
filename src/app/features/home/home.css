@@ -1,0 +1,103 @@
+.bg-card {
+  background: linear-gradient(to bottom, #ED2924, #440000);
+}
+
+/* LCP Hero Image - Optimized for Largest Contentful Paint */
+.hero-lcp-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  aspect-ratio: 1920 / 1080;
+}
+
+/* Hero GIF Video - Background layer */
+.hero-gif-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hero-gif-video[style*="opacity: 1"] {
+  opacity: 1 !important;
+}
+
+/* Mobile optimizations for video */
+@media (max-width: 768px) {
+  .hero-lcp-container {
+    contain: layout style paint;
+  }
+}
+
+.hero-lcp-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 2;
+  content-visibility: auto;
+  display: block;
+  transition: opacity 0.5s ease-in-out;
+  opacity: 1;
+}
+
+.hero-lcp-image.hidden {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .hero-lcp-image {
+    object-position: center top;
+  }
+  
+  .hero-lcp-container {
+    contain: layout style paint;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero-lcp-image {
+    object-position: center;
+  }
+}
+
+/* Ensure content is above LCP background image */
+.hero-lcp-container .container {
+  position: relative;
+  z-index: 10;
+}
+
+/* Ensure banner appears above hero section */
+app-home-banner {
+  position: relative;
+  z-index: 20;
+}
+
+/* Hero Skeleton Custom Colors - Transparent */
+:host ::ng-deep .hero-skeleton .p-skeleton {
+  background: transparent !important;
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .hero-skeleton .p-skeleton::after {
+  background: transparent !important;
+}
+
+:host ::ng-deep .hero-banner-skeleton .p-skeleton {
+  background: transparent !important;
+  border-radius: 0.5rem;
+}
+
+:host ::ng-deep .hero-banner-skeleton .p-skeleton::after {
+  background: transparent !important;
+}

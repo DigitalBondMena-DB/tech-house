@@ -1,0 +1,103 @@
+@if (hasBlog()) {
+    <section
+      class="blog-hero-section"
+      [style.background-image]="'url(' + heroImage() + ')'"
+    >
+      <div class="blog-hero-overlay"></div>
+      <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+        <div
+          class="blog-hero-content h-full flex items-center justify-center text-center"
+          dir="rtl"
+        ></div>
+      </div>
+    </section>
+    }
+    
+    @if (hasBlog()) {
+    <section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
+      <!-- العنوان الأساسي للمقالة -->
+      <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[#940000] mb-8 md:mb-12 " dir="rtl">
+        {{ blog()?.title }}
+      </h1>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12" dir="rtl">
+    
+        <!-- TOC - Table of Contents -->
+        <div class="lg:col-span-1">
+          <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
+            <div class="toc-container">
+                <div class="flex items-center gap-2 mb-4 md:mb-6">
+                    <img src="images/title/title.webp" alt="title-icon">
+                    <h2 class="toc-title">محتويات المقالة</h2>
+                </div>
+              <ul class="toc-list">
+                @for (section of sections(); track section.id; let i = $index) {
+                <li 
+                  class="toc-item"
+                  [class.toc-item-active]="isSectionActive(i)"
+                  (click)="navigateToSection(i)">
+                  <span class="toc-number">{{ i + 1 }}.</span>
+                  <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
+                  @if (isSectionActive(i)) {
+            
+                  <span class="toc-active-bar"></span>
+                  }
+                </li>
+                }
+                @if (sections().length === 0) {
+                <li class="toc-item">
+                  <span class="toc-text">لا توجد عناوين متاحة</span>
+                </li>
+                }
+              </ul>
+            </div>
+          </div>
+    
+          <!-- Related Blogs -->
+          <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
+            <div class="flex items-center gap-2 mb-4 md:mb-6">
+              <img src="images/title/title.webp" alt="title-icon">
+              <h2 class="text-xl md:text-2xl font-bold text-[#440000]">المشاركات الأخيرة</h2>
+            </div>
+    
+            <div class="space-y-6">
+              @for (related of relatedBlogs(); track related.slug) {
+              <div
+                class=" rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                (click)="navigateToRelatedBlog(related)"
+              >
+                @if (related.image) {
+                <div class="w-full h-48 overflow-hidden">
+                  <img
+                    [src]="getResponsiveImageFromObject(related.image)"
+                    [alt]="related.title"
+                    class="w-full h-full object-cover rounded-2xl"
+                  />
+                </div>
+                }
+                <div class="p-4">
+                  <p class="text-sm text-gray-500 mb-2">{{ related.publish_at_ar }}</p>
+                  <h3 class="text-base md:text-lg font-semibold text-[#440000] line-clamp-2">
+                    {{ related.title }}
+                  </h3>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+    
+        <!-- Article Content -->
+        <div class="lg:col-span-2">
+          <div
+            class="blog-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed text-justify!"
+            [innerHTML]="fullContent()"
+          ></div>
+        </div>
+    
+      </div>
+    </section>
+    }
+    
+    <app-contact-us-sec />
+    

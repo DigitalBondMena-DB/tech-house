@@ -1,0 +1,139 @@
+/* You can add global styles to this file, and also import other style files */
+/* @import "flag-icons/css/flag-icons.min.css"; */
+
+@import "tailwindcss";
+@import "../public/fonts/fonts.css";
+
+
+/*! colors */
+
+@theme {
+    --main-color: #ED2924;
+    --primary-font-color: #440000;
+}
+
+
+
+body {
+    font-family: "Cairo", "Segoe UI", Tahoma, sans-serif !important;
+    font-size-adjust: 0.5;
+}
+
+.cairo-font{
+    font-family: "Cairo", sans-serif !important;
+}
+
+h1,
+h2 {
+    font-family: "Changa", "Cairo", "Segoe UI", Tahoma, sans-serif;
+    font-size-adjust: 0.5;
+}
+
+
+
+/* ! reusable hero background */
+.bg-hero {
+    /* background-image: url('/images/hero/hero.webp'); */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100%;
+
+}
+
+.bg-linear {
+    background: linear-gradient(to left, #440000, #ED2924);
+}
+
+/* Pattern background for sections */
+.section-pattern {
+    position: relative;
+}
+
+.section-pattern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/hero/pattern.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 1;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.section-pattern > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ! scrollbar styling */
+::-webkit-scrollbar {
+    width: 5px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #440000, #ED2924);
+    border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #940000;
+}
+
+/* Global Skeleton Transparent Styles */
+::ng-deep .p-skeleton {
+    background: transparent !important;
+}
+
+::ng-deep .p-skeleton::after {
+    background: transparent !important;
+}
+
+/* View Transitions */
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in-out;
+}
+
+::view-transition-old(root) {
+    animation-name: fade-out;
+}
+
+::view-transition-new(root) {
+    animation-name: fade-in;
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

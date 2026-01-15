@@ -1,0 +1,66 @@
+/* Card base styles */
+.project-card {
+  /* width: 90%; */
+  left: 5%;
+  right: 5%;
+  will-change: transform, opacity;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Active card (center) */
+.active-card {
+  transform: translateY(0) rotate(0);
+  z-index:20;
+  opacity: 1;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background-color: white !important;
+}
+
+/* Back card (top) */
+.back-card {
+  transform: translateY(-20px) rotate(-2deg) ;
+  z-index: 10;
+  opacity: 0.9;
+  background-color: #f3f4f6 !important;
+}
+
+/* Front card (bottom) */
+.front-card {
+  transform: translateY(20px) rotate(2deg) ;
+  z-index: 5;
+  opacity: 0.9;
+  background-color: #f3f4f6 !important;
+}
+
+/* Hover effects */
+.project-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* Ensure the card content is properly displayed */
+.project-card > div {
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile card styles */
+.project-card-mobile {
+  width: 100%;
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.project-card-mobile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.project-card-mobile img {
+  object-fit: cover;
+  border-radius: 0.5rem;
+}

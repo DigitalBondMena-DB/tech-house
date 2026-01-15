@@ -1,0 +1,46 @@
+<div class="overflow-hidden">
+  <div class="sidebar">
+    <div class="orbit">
+      <div class="orbit-circle"></div>
+    </div>
+    <div class="flex flex-col items-center justify-center">
+      @if (contactUsData()?.social?.facebook_url) {
+        <a [href]="contactUsData()?.social?.facebook_url" target="_blank" rel="noopener noreferrer" class="icon mb-4 cursor-pointer translate-x-24 -translate-y-5">
+          <img src="/images/social-icons/facebook.webp" alt="Facebook" class="w-5.5 h-5.5" />
+        </a>
+      }
+      @if (contactUsData()?.social?.instagram_url) {
+        <a [href]="contactUsData()?.social?.instagram_url" target="_blank" rel="noopener noreferrer" class="icon mb-4 cursor-pointer translate-x-[131px] -translate-y-4">
+          <img src="/images/social-icons/instagram.webp" alt="Instagram" class="w-8 h-8" />
+        </a>
+      }
+      @if (contactUsData()?.whatsapp_number) {
+        <a [href]="getWhatsAppUrl(contactUsData()?.whatsapp_number)" target="_blank" rel="noopener noreferrer" class="icon mb-4 cursor-pointer translate-x-[148px]">
+          <img src="/images/social-icons/whatsapp.webp" alt="WhatsApp" class="w-6 h-6" />
+        </a>
+      }
+      @if (contactUsData()?.social?.linkedin_url) {
+        <a [href]="contactUsData()?.social?.linkedin_url" target="_blank" rel="noopener noreferrer" class="icon mb-4 cursor-pointer translate-x-[136px] translate-y-6">
+          <img src="/images/social-icons/linked-in.webp" alt="LinkedIn" class="w-5 h-5" />
+        </a>
+      }
+      @if (contactUsData()?.social?.tiktok_url) {
+        <a [href]="contactUsData()?.social?.tiktok_url" target="_blank" rel="noopener noreferrer" class="icon mb-4 cursor-pointer translate-x-24 translate-y-8">
+          <img src="/images/social-icons/tiktok.webp" alt="TikTok" class="w-6 h-6" />
+        </a>
+      }
+      <!-- @if (contactUsData()?.social?.snapchat_url) {
+        <a [href]="contactUsData()?.social?.snapchat_url" target="_blank" rel="noopener noreferrer" class="icon mb-4 cursor-pointer translate-x-[120px] translate-y-10">
+          <img src="/images/social-icons/snapchat.webp" alt="Snapchat" class="w-6 h-6" />
+        </a>
+      }
+      @if (contactUsData()?.social?.map_url) {
+        <a [href]="contactUsData()?.social?.map_url" target="_blank" rel="noopener noreferrer" class="icon mb-4 cursor-pointer translate-x-[110px] -translate-y-6">
+          <img src="/images/social-icons/map.webp" alt="Map" class="w-6 h-6" />
+        </a>
+      } -->
+    </div>
+  </div>
+</div>
+
+

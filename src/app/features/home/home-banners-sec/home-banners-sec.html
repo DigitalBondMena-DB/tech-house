@@ -1,0 +1,35 @@
+<section class="min-h-[400px] section-pattern section-pattern-right">
+    <!-- parteners -->
+    <div class="mb-20 w-full min-h-[200px]">
+        <div class="container mx-auto px-5 lg:px-20 min-h-[60px]">
+            <app-section-title [title]="partenersTitle" class="pb-5 min-h-[60px]">
+            </app-section-title>
+        </div>
+        <div class="w-full min-h-[120px]">
+            @defer (on viewport; when partners().length > 0) {
+                <app-banner #partnersBanner [items]="partners()" direction="right" [useCssAnimation]="true" customClass="-rotate-2 relative -right-1 rounded-l-full w-[95%] mt-10" class="min-h-[120px]"></app-banner>
+            } @placeholder {
+                <div class="min-h-[120px] flex items-center justify-center">
+                    <p-skeleton width="100%" height="64px" styleClass="rounded-lg"></p-skeleton>
+                </div>
+            }
+        </div>
+
+    </div>
+    <!-- clients -->
+    <div class="mb-20 pb-20 w-full min-h-[200px]">
+        <div class="container mx-auto px-5 lg:px-20 min-h-[60px]">
+            <app-section-title [title]="clientsTitle" class="min-h-[60px]">
+            </app-section-title>
+        </div>
+        <div class="w-full overflow-hidden pb-10 min-h-[120px]">
+            @defer (on viewport; when clients().length > 0) {
+                <app-banner-reverse #clientsBanner [items]="clients()" [useCssAnimation]="true" customClass="-rotate-2 relative -left-10 md:-left-50 rounded-r-full w-[95%] mt-10" class="min-h-[120px]"></app-banner-reverse>
+            } @placeholder {
+                <div class="min-h-[120px] flex items-center justify-center">
+                    <p-skeleton width="100%" height="64px" styleClass="rounded-lg"></p-skeleton>
+                </div>
+            }
+        </div>
+    </div>
+</section>

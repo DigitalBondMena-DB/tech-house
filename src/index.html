@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="ابتكارات تسويقية رقمية تصنع الفرق لشركتك - TechHouse">
+  <meta name="keywords" content="تسويق رقمي, حلول تسويقية, TechHouse">
+  <meta name="robots" content="index, follow">
+  <title>TechHouse - ابتكارات تسويقية رقمية تصنع الفرق لشركتك</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="canonical" href="https://www.techhouseksa.com/">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <!-- Critical LCP image preload - ONLY the actual LCP element -->
+  <link rel="preload" as="image" href="/images/hero/hero.webp" fetchpriority="high">
+  <!-- NOTE: gif.mp4 is NOT preloaded - it's 4.5MB and blocks LCP, loaded lazily after LCP -->
+  
+  <!-- Non-critical image preloads - deferred -->
+  <!-- <link rel="preload" as="image" href="/images/logo/logo.webp" fetchpriority="low"> -->
+  
+  <!-- External resources - DNS prefetch and preconnect for API (critical for LCP) -->
+  <link rel="dns-prefetch" href="https://dashboard.techhouseksa.com" />
+  <link rel="preconnect" href="https://dashboard.techhouseksa.com" crossorigin />
+  
+  <!-- Non-critical CSS - loaded asynchronously -->
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css" as="style"
+    onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
+  </noscript>
+  
+  <!-- Critical fonts - ONLY the most critical one, others loaded on-demand -->
+  <link rel="preload" href="/fonts/cairo/Cairo-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- Changa font preload for h1/h2 elements (used in LCP) -->
+  <!-- <link rel="preload" href="/fonts/changa/Changa-Regular.woff2" as="font" type="font/woff2" crossorigin> -->
+
+  <!-- Inline critical CSS for LCP -->
+  <style>
+    /* Critical font-face for LCP - Cairo Regular */
+    @font-face {
+      font-family: 'Cairo';
+      src: url('/fonts/cairo/Cairo-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+      size-adjust: 100%;
+      ascent-override: 90%;
+      descent-override: 20%;
+      line-gap-override: 0%;
+    }
+    
+    /* Changa font for h1/h2 - used in LCP */
+    @font-face {
+      font-family: 'Changa';
+      src: url('/fonts/changa/Changa-Regular.woff2') format('woff2');
+      font-weight: 400;
+      font-display: swap;
+      size-adjust: 100%;
+      ascent-override: 90%;
+      descent-override: 20%;
+      line-gap-override: 0%;
+    }
+    
+    /* Base font family for immediate rendering */
+    body {
+      font-family: "Cairo", "Segoe UI", Tahoma, sans-serif;
+      font-size-adjust: 0.5;
+    }
+    
+    /* Headings use Changa font with fallback to prevent layout shift */
+    h1, h2 {
+      font-family: "Changa", "Cairo", "Segoe UI", Tahoma, sans-serif;
+      font-size-adjust: 0.5;
+    }
+
+    .hero-lcp-container {
+      position: relative;
+      width: 100%;
+      overflow: hidden
+    }
+
+    .hero-lcp-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      z-index: 1;
+      display: block;
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden
+    }
+
+    .bg-linear {
+      background: linear-gradient(to left, #440000, #ED2924)
+    }
+  </style>
+
+</head>
+
+<body>
+  <app-root></app-root>
+</body>
+
+</html>

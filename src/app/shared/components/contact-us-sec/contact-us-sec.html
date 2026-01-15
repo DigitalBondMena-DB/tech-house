@@ -1,0 +1,136 @@
+<section class="container mx-auto px-5 lg:px-20 py-20 min-h-[600px] section-pattern section-pattern-left">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch min-h-[600px]">
+        <!-- Right Side - Contact Form -->
+        <div class="flex flex-col h-full min-h-[600px]">
+            <app-section-title [title]="contactTitle" customClass="flex justify-start mb-4">
+            </app-section-title>
+            <p class="text-[#636363] text-xl font-semibold mb-8">{{ contactSubtitle }}</p>
+            <form [formGroup]="contactForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6 flex-1" novalidate>
+                <!-- Full Name -->
+                <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <input pInputText id="fullName" 
+                            formControlName="fullName"
+                            (keypress)="onNameKeyPress($event)"
+                            [invalid]="fullNameControl.invalid && fullNameControl.touched" 
+                            class="w-full" />
+                        <label for="fullName">الاسم الكامل</label>
+                    </p-floatlabel>
+                    @if (getFullNameError()) {
+                        <span class="text-red-500 text-sm mt-1">{{ getFullNameError() }}</span>
+                    }
+                </div>
+
+                <!-- Email -->
+                <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <input pInputText id="email" type="email" 
+                            formControlName="email"
+                            [invalid]="emailControl.invalid && emailControl.touched" 
+                            class="w-full" />
+                        <label for="email">البريد الإلكتروني</label>
+                    </p-floatlabel>
+                    @if (getEmailError()) {
+                        <span class="text-red-500 text-sm mt-1">{{ getEmailError() }}</span>
+                    }
+                </div>
+
+                <!-- Phone Number -->
+                <div class="flex flex-col gap-1">
+                    <p-floatlabel variant="on">
+                        <p-inputGroup>
+                            <p-inputGroupAddon class="p-1 cursor-pointer">
+                                <p-select [options]="countries" [(ngModel)]="selectedCountryModel"
+                                    [ngModelOptions]="{standalone: true}" (onChange)="onCountryChange($event.value)"
+                                    optionLabel="name" [dataKey]="'code'" [style]="{'width': '140px', 'border': 'none'}"
+                                    [panelStyle]="{'max-height': '300px'}" [showClear]="false" [appendTo]="'self'"
+                                    class="country-select">
+                                    <ng-template let-country pTemplate="selectedItem">
+                                        <div class="flex items-center gap-2" *ngIf="country">
+                                            <span class="fi fi-{{country.code}}"></span>
+                                            <span>{{country.dialCode}}</span>
+                                        </div>
+                                    </ng-template>
+                                    <ng-template let-country pTemplate="item">
+                                        <div class="flex items-center gap-2 py-2">
+                                            <span class="fi fi-{{country.code}}"></span>
+                                            <span>{{country.name}}</span>
+                                            <span class="text-gray-500 mr-auto">{{country.dialCode}}</span>
+                                        </div>
+                                    </ng-template>
+                                </p-select>
+                            </p-inputGroupAddon>
+                            <input id="phone" type="tel" pInputText 
+                                formControlName="phone"
+                                [placeholder]="phonePlaceholder()"
+                                (keypress)="onPhoneKeyPress($event)"
+                                [invalid]="phoneControl.invalid && phoneControl.touched" 
+                                class="w-full" />
+                        </p-inputGroup>
+                        <label for="phone">رقم الجوال</label>
+                    </p-floatlabel>
+                    @if (getPhoneError()) {
+                        <span class="text-red-500 text-sm mt-1">{{ getPhoneError() }}</span>
+                    }
+                </div>
+
+                <!-- Message -->
+                <div class="flex flex-col gap-1 flex-1">
+                    <p-floatlabel variant="on" class="flex-1 flex flex-col">
+                        <textarea id="message" rows="5" pInputTextarea 
+                            formControlName="message"
+                            [invalid]="messageControl.invalid && messageControl.touched" 
+                            class="w-full flex-1"></textarea>
+                        <label for="message">اكتب رسالتك</label>
+                    </p-floatlabel>
+                    @if (getMessageError()) {
+                        <span class="text-red-500 text-sm mt-1">{{ getMessageError() }}</span>
+                    }
+                </div>
+
+
+                <!-- Error Message -->
+                @if (submitError()) {
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg">
+                        <p class="font-semibold">حدث خطأ</p>
+                        <p class="text-sm">{{ submitError() }}</p>
+                    </div>
+                }
+
+                <!-- Submit Button -->
+                <app-app-button 
+                    [btnText]="isSubmitting() ? 'جاري الإرسال...' : BtnText" 
+                    [disabled]="contactForm.invalid  || isSubmitting()" 
+                    (buttonClick)="onSubmit()"
+                    customClass="mt-0! ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 cursor-pointer ">
+                </app-app-button>
+
+                <!-- <div class="flex justify-start mt-2">
+                    <button type="submit" 
+                        class="ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 hover:bg-[#d1201b] disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span class="mr-2">←</span>
+                        <span>{{ sendBtnText }}</span>
+                    </button>
+                </div> -->
+            </form>
+        </div>
+        <!-- Left Side - Map -->
+        <div class="h-full rounded-2xl overflow-hidden min-h-[600px]"> 
+            <iframe class="w-full h-full min-h-[600px]"
+                title="موقعنا على خرائط جوجل - عبدالله الإحسائي، النسيم الغربي، الرياض"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3623.51106927429!2d46.81072890000001!3d24.743660499999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2f009227301b49%3A0x929a26476d34696f!2sAbdullah%20Al%20Ihsai%2C%20An%20Nasim%20Al%20Gharbi%2C%20Riyadh%2014231%2C%20Saudi%20Arabia!5e0!3m2!1sen!2seg!4v1765791765738!5m2!1sen!2seg"
+                width="600" height="600" style="border:0; border-radius: 16px;" allowfullscreen="" loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+        </div>
+    </div>
+</section>
+
+<!-- Success Popup -->
+<app-success-popup 
+    [isVisible]="showSuccessPopup()"
+    title="شكرا لتواصلك معنا!"
+    message="نشكركم على تواصلكم مع بيت التكنولوجيا، سيراجع فريقنا رسالتكم ويتواصل معكم في أقرب وقت ممكن."
+    buttonText="العودة إلى الصفحة الرئيسية"
+    (close)="onClosePopup()">
+</app-success-popup>

@@ -1,0 +1,75 @@
+.banner-wrapper {
+  position: relative;
+  overflow: hidden;
+  contain: layout paint style;
+  transform: translateZ(0); /* Force hardware acceleration */
+  will-change: contents; /* Optimize for content changes */
+}
+
+.banner-container {
+  position: relative;
+  overflow: hidden;
+  contain: layout paint;
+  transform: translateZ(0); /* Force hardware acceleration */
+}
+
+.banner-track {
+  display: flex;
+  white-space: nowrap;
+  will-change: transform;
+  animation: slide 60s linear infinite;
+}
+
+@keyframes slide {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    transform: translateX(500%);
+  }
+}
+
+
+
+.banner-track.reverse {
+  animation-name: slide-reverse;
+}
+
+.banner-item {
+  flex-shrink: 0;
+  transform: translate3d(0, 0, 0); /* Force hardware acceleration */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  /* Prevent layout shifts */
+  contain: layout style paint;
+  will-change: transform;
+}
+
+/* Pause animation on hover */
+
+/* Pause animation during scroll for better performance */
+body.is-scrolling .banner-track {
+  animation-play-state: paused !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .banner-track {
+    animation-duration: 20s;
+  }
+  .banner-wrapper {
+    contain: layout paint;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-track {
+    animation-duration: 15s;
+  }
+  .banner-wrapper {
+    contain: layout paint;
+  }
+}
+
+

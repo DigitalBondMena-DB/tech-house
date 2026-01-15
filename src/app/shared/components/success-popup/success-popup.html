@@ -1,0 +1,33 @@
+@if (isVisible) {
+<div class="popup-overlay" (click)="onClose()">
+  <div class="popup-container" (click)="$event.stopPropagation()">
+    <!-- Close Button -->
+    <button class="close-button" (click)="onClose()" aria-label="إغلاق">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
+
+    <!-- Logo -->
+    <div class="popup-logo">
+      <div class="">
+      <img src="/images/logo/logo.webp" alt="بيت التكنولوجيا" width="84" height="54" class="w-[56px] h-[36px] md:w-[84px] md:h-[54px] object-cover">
+      </div>
+     
+    </div>
+
+    <!-- Content -->
+    <div class="popup-content">
+      <h2 class="popup-title">{{ title }}</h2>
+      <p class="popup-message">{{ message }}</p>
+    </div>
+
+    <!-- Action Button -->
+    <button class="ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 hover:bg-[#c41e1a] cursor-pointer" (click)="onGoToHome()">
+      <span>{{ buttonText }}</span>
+      <img src="/images/icons/arrow-left.webp" alt="" width="22" height="22" class="h-[16px] w-[16px] md:h-[20px] md:w-[20px] p-0.5 ms-5 bg-white rounded-full">
+    </button>
+  </div>
+</div>
+}
+

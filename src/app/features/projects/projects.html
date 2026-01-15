@@ -1,0 +1,133 @@
+<!-- Main content wrapper with min-height to prevent footer from appearing at top -->
+<div class="min-h-screen">
+@if (bannerSection()) {
+<app-hero-section [title]="bannerSection()?.title || ''" [paragraph]="bannerSection()?.text || ''"
+    customClass=" h-[90vh] lg:h-[80vh]!" [image]="bannerSection()?.image ? getResponsiveImage(bannerSection()?.image) : undefined"
+    [imagePosition]="bannerSection()?.image ? 'left' : 'none'"
+    imageClass=" absolute -bottom-[0px]! -left-[0px]! lg:-left-[0px]!">
+</app-hero-section>
+} @else {
+<!-- Hero Section Skeleton -->
+<section class="bg-linear min-h-[90vh] lg:min-h-[80vh] relative flex items-center">
+  <div class="container mx-auto px-5 lg:px-20 hero-skeleton">
+    <p-skeleton width="60%" height="50px" styleClass="rounded-lg mb-4"></p-skeleton>
+    <p-skeleton width="80%" height="30px" styleClass="rounded-lg"></p-skeleton>
+  </div>
+</section>
+}
+
+<section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 relative">
+    <!-- <div class="grid grid-cols-1 lg:grid-cols-10 gap-8 lg:gap-12"> -->
+        <!-- Right Sidebar - Service Titles -->
+        <!-- <div class="lg:col-span-2 relative"> -->
+            <!-- <div #sidebarContainer class="sidebar-container">
+                <div class="sidebar hidden! md:flex!">
+                    <div class="orbit">
+                        <div class="orbit-triangle"></div>
+                    </div>
+                </div>
+                 -->
+                <!-- Arrow Indicator -->
+                <!-- <div #arrowElement class="arrow-indicator"
+                    [style.transform]="'translateY(' + (selectedIndex() !== null ? getArrowPosition() : 0) + 'px) rotate(' + arrowRotation() + 'deg)'">
+                    <svg class="w-8 h-8 text-[#ED2924]" fill="currentColor" viewBox="0 0 20 20"
+                        style="transform: rotate(-90deg);">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                </div> -->
+
+                <!-- Service Titles List -->
+                <!-- <div class="service-titles-list md:ms-20 lg:ms-0" dir="rtl">
+                    <!-- "الكل" (All) Option -->
+                    <!-- <div class="service-item cursor-pointer py-1 px-4  "
+                        [class.active]="selectedIndex() === 0" (click)="selectService(null, 0)">
+                        <h4 class="text-base font-semibold text-[#440000] border-b-2 border-transparent transition-all"
+                            [class.border-[#ED2924]]="selectedIndex() === 0"
+                            [class.text-[#440000]]="selectedIndex() === 0">
+                            الكل
+                        </h4>
+                    </div> -->
+
+                    <!-- Service Titles from API -->
+                    <!-- @if (serviceTitles().length > 0) {
+                    @for (service of serviceTitles(); track service.slug; let i = $index) {
+                    <div class="service-item cursor-pointer py-1 px-4  transition-colors"
+                        [class.active]="selectedIndex() === i + 1" (click)="selectService(service.slug, i + 1)">
+                        <h4 class="text-base  text-[#440000] font-semibold border-b-2 border-transparent transition-all"
+                            [class.border-[#ED2924]]="selectedIndex() === i + 1"
+                            [class.text-[#ED2924]]="selectedIndex() === i + 1">
+                            {{ service.title }}
+                        </h4>
+                    </div>
+                    }
+                    } -->
+                <!-- </div> --> 
+
+               
+            <!-- </div> -->
+        <!-- </div> -->
+        <!-- Main Content Area - Project Cards -->
+        <!-- <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12"> -->
+            @if (projectItems().length > 0) {
+            <div class="projects-grid grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                @for (project of projectItems(); track project.id) {
+                <div class="project-card cursor-pointer " 
+                     (click)="navigateToProjectDetails(project)">
+                    <!-- Project Image -->
+                    <div class="project-image mb-4">
+                        <img [src]="getProjectImage(project.image)" [alt]="project.title"
+                            class="w-full h-[300px] rounded-2xl object-cover"
+                            (error)="$event.target.src = '/images/project.webp'">
+                    </div>
+
+                    <!-- Project Tags -->
+                    @if (project.types && project.types.length > 0) {
+                    <div class="project-tags flex flex-wrap gap-2 mb-3">
+                        @for (type of project.types; track type) {
+                        <span class="project-tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
+                            {{ type }}
+                        </span>
+                        }
+                    </div>
+                    }
+
+                    <!-- Project Title -->
+                    <h3 class="text-xl md:text-2xl font-bold text-[#440000] mb-2">
+                        {{ project.title }}
+                    </h3>
+
+                    <!-- Project Brief -->
+                    @if (project.brief) {
+                    <p class="project-brief text-base text-[#440000] leading-relaxed">
+                        {{ project.brief }}
+                    </p>
+                    }
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="text-center py-12">
+                <p class="text-xl text-gray-500">لا توجد مشاريع متاحة</p>
+            </div>
+            }
+
+            <!-- Pagination -->
+            @if (projects() && totalRecords() > 0) {
+            <div class="flex justify-center mt-12 md:mt-16" dir="ltr">
+                <p-paginator [first]="first()" [rows]="rows()" [totalRecords]="totalRecords()"
+                     (onPageChange)="onPageChange($event)" styleClass="custom-paginator">
+                </p-paginator>
+            </div>
+            }
+        <!-- </div> -->
+
+
+    <!-- </div> -->
+</section>
+
+@if (isAllDataLoaded()) {
+  <app-contact-us-sec></app-contact-us-sec>
+}
+</div>

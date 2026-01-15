@@ -1,0 +1,72 @@
+<section class="bg-linear">
+    <div class="hero-background-container overflow-hidden relative" [ngClass]="customClass">
+        <!-- Background Image for LCP Optimization -->
+        <img src="/images/hero/hero.webp" [alt]="title || 'ابتكارات تسويقية رقمية تصنع الفرق لشركتك'"
+            class="hero-background-image" width="1920" height="1080" fetchpriority="high" loading="eager" />
+        <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+            <div class="hero-content relative h-full w-full flex  items-center justify-between " dir="rtl"
+                [class.image-left]="imagePosition==='left'" [class.image-center]="imagePosition==='center'"
+                [class.no-image]="imagePosition==='none'">
+
+                <div>
+                    <!-- Subtitle >> above >> main title -->
+                    @if (subtitle && subtitleAboveTitle) {
+                    <div class="subtitle-container text-2xl text-center text-white bg-white/20 px-8 py-6 rounded-xl mb-10  font-bold"
+                        #subtitleContainer>
+                        <span class="subtitle-wrapper border-l-2 border-white my-1 p-1">
+                            <span class="subtitle-animated " #subtitleElement></span>
+                            <!-- <span class="typing-indicator border-l-2 border-white"> </span> -->
+                        </span>
+                    </div>
+                    }
+                    <!-- Title -->
+                    @if (title) {
+                    <h1 class="   text-3xl md:text-5xl font-semibold text-white">{{ title }}</h1>
+                    }
+
+                    <!-- Job Info Cards -->
+                    @if (jobInfo && jobInfo.length > 0) {
+                    <div class="job-info-cards flex gap-3 mt-4 mb-6">
+                        @for (info of jobInfo; track $index) {
+                        <div class="job-info-card">
+                            <span class="job-info-text">{{ info.label }}</span>
+                            <span class="job-info-icon" [innerHTML]="sanitizeIcon(info.icon)"></span>
+                        </div>
+                        }
+                    </div>
+                    }
+
+                    @if (btn) {
+                    <app-app-button [btnText]="btnText"
+                        [customClass]="btnClass || 'px-7 py-4 bg-black/60 text-white rounded-full flex items-center justify-center transition duration-300'">
+                    </app-app-button>
+
+
+
+                    }
+                    <!-- Subtitle >> under >> main title -->
+                    @if (subtitle && !subtitleAboveTitle && !jobInfo) {
+                    <p class="text-lg  text-white">{{ subtitle }}</p>
+                    }
+
+                    <!-- Paragraph -->
+                    @if (paragraph) {
+                    <p class="text-lg lg:text-2xl font-medium  text-white mt-3 lg:mt-10 max-w-xl ">{{ paragraph }}</p>
+                    }
+                </div>
+
+                <div class="flex justify-center items-center">
+                    <!-- Image -->
+                    @if (image && imagePosition !== 'none') {
+                    @if (image.startsWith('http://') || image.startsWith('https://')) {
+                    <img [src]="image" alt="Hero Image" class="hero-image w-[250px] md:w-[300px] lg:w-[430px] h-auto object-contain" [ngClass]="imageClass || ' w-full h-auto'" />
+                    } @else {
+                    <img [ngSrc]="image" alt="Hero Image" width="1000" height="1000" priority class="hero-image w-[250px] md:w-[300px] lg:w-[430px]  h-auto object-contain"
+                        [ngClass]="imageClass || ' w-full h-auto'" />
+                    }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

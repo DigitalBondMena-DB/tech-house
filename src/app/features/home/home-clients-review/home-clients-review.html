@@ -1,0 +1,50 @@
+<section class="my-20 bg-client-linear min-h-[400px] section-pattern section-pattern-right">
+    <div class="bg-clients flex items-center justify-center flex-col text-center min-h-[400px]">
+        <div class="container mx-auto px-5 lg:px-20 min-h-[400px]">
+          <!-- Skeleton Loader -->
+          @if (isLoading()) {
+            <p-skeleton width="200px" height="40px" styleClass="rounded-lg mx-auto mb-10"></p-skeleton>
+            <div class="w-full flex items-center justify-center gap-2 my-10 min-h-[120px]">
+              @for (i of [1,2,3]; track i) {
+                <p-skeleton [shape]="'circle'" width="128px" height="128px" styleClass=""></p-skeleton>
+              }
+            </div>
+            <p-skeleton width="80%" height="80px" styleClass="rounded-lg mx-auto mb-5"></p-skeleton>
+            <div class="flex items-center justify-center my-5 gap-1 min-h-[40px]">
+              @for (i of [1,2,3,4,5]; track i) {
+                <p-skeleton width="20px" height="20px" styleClass="rounded"></p-skeleton>
+              }
+            </div>
+            <p-skeleton width="300px" height="50px" styleClass="rounded-lg mx-auto mt-10"></p-skeleton>
+            <p-skeleton width="200px" height="30px" styleClass="rounded-lg mx-auto mt-2"></p-skeleton>
+          } @else {
+            <h3 class="text-2xl font-bold text-white min-h-[40px]">اراء العملاء
+            </h3>
+                <div class="testimonials-container w-full flex items-center justify-center gap-2 my-10 min-h-[120px] relative">
+                    @for (testimonial of visibleTestimonials(); track testimonial.name + testimonial.text; let i = $index) {
+                        @let isCenter = isCenterImage(i, visibleTestimonials().length);
+                        <div 
+                            (click)="onImageClick(i)"
+                            class="testimonial-image rounded-full overflow-hidden shadow-lg cursor-pointer transition-all duration-[1200ms] ease-in-out
+                            {{ isCenter ? 'w-20 h-20 md:w-28 md:h-28 lg:w-32 lg:h-32 z-10 scale-100' : 'w-14 h-14 md:w-18 md:h-18 lg:w-20 lg:h-20 z-0 scale-90' }}
+                            {{ i === 0 && !isCenter ? '-mr-4 md:-mr-6 lg:-mr-8' : '' }}
+                            {{ i === 2 && !isCenter ? '-ml-4 md:-ml-6 lg:-ml-8' : '' }}
+                            hover:scale-110">
+                            <img [ngSrc]="getResponsiveImage(testimonial.image) || '/images/placeholder.webp'" [alt]="testimonial.name || ''" width="128" height="128" class="w-full h-full object-cover object-center transition-transform duration-[1200ms]">
+                        </div>
+                    }
+                </div>
+                <p class="text-white text-lg md:text-xl lg:text-2xl font-semibold mx-auto max-w-3xl px-4 min-h-[80px]">{{ centerTestimonial()?.text || '' }}</p>
+                <div class="flex items-center justify-center my-5 gap-1 min-h-[40px]">
+                    <img ngSrc="/images/icons/star.webp" alt="star" width="20" height="20" class="w-4 h-4 md:w-5 md:h-5">
+                    <img ngSrc="/images/icons/star.webp" alt="star" width="20" height="20" class="w-4 h-4 md:w-5 md:h-5">
+                    <img ngSrc="/images/icons/star.webp" alt="star" width="20" height="20" class="w-4 h-4 md:w-5 md:h-5">
+                    <img ngSrc="/images/icons/star.webp" alt="star" width="20" height="20" class="w-4 h-4 md:w-5 md:h-5">
+                    <img ngSrc="/images/icons/star.webp" alt="star" width="20" height="20" class="w-4 h-4 md:w-5 md:h-5">
+                </div>
+                <span class="block text-2xl md:text-3xl lg:text-4xl mt-10 text-white font-semibold min-h-[50px]">{{ centerTestimonial()?.name || '' }}</span>
+                <span class="block text-base md:text-lg lg:text-xl mt-2 text-white font-semibold min-h-[30px]">{{ centerTestimonial()?.title || '' }}</span>
+          }
+        </div>
+    </div>
+</section>
