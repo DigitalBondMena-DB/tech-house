@@ -47,13 +47,13 @@
         <!-- Client Box -->
         <div class="project-info-box backdrop-blur-2xl">
           <div class="info-label">عميل</div>
-          <div class="info-value">
+          <h1 class="info-value">
             @if (project()?.client_name) {
             {{ project()?.client_name }}
             } @else {
             <span class="text-gray-400">المحتوى غير موجود</span>
             }
-          </div>
+          </h1>
         </div>
 
         <!-- Year Box -->
@@ -90,6 +90,30 @@
 
 @if (hasProject()) {
 <section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-left">
+  @if(projectTechnologies().length > 0) {
+  <div class="project-pillars-box mb-8 md:mb-12 p-6 md:p-8 flex items-center gap-2 overflow-hidden">
+    <div class="flex items-center gap-2">
+      <img src="images/title/title.webp" alt="title-icon">
+      <h2 class="box-title">ركائز المشروع</h2>
+    </div>
+
+    <!-- OWL CAROUSEL MODE -->
+    <div class="w-full">
+      <owl-carousel-o [options]="techOptions">
+        @for (tech of projectTechnologies(); track tech.id || $index) {
+        <ng-template carouselSlide>
+          <div class="technology-item flex flex-col items-center gap-2">
+            <img [src]="getTechnologyLogo(tech)" class="tech-logo">
+            <span class="tech-name">{{ getTechnologyName(tech) }}</span>
+          </div>
+        </ng-template>
+        }
+      </owl-carousel-o>
+    </div>
+
+  </div>
+  }
+
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
     <!-- Main Content Area -->
     <div class="lg:col-span-2">
@@ -109,7 +133,7 @@
       </div>
 
       <!-- Project Content -->
-      <div class="project-main-content">
+      <div class="project-main-content h-[200px] overflow-y-auto">
         <!-- Active Section Content -->
         @if (activeSection()) {
         <div class="project-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed"
@@ -128,35 +152,54 @@
         </div>
         }
       </div>
+      @if (hasProject() && projectImages().length > 0) {
+      @defer {
+      <section class="container mx-auto px-5 py-20 md:py-26">
+        <owl-carousel-o #owlCarousel [options]="customOptions" (translated)="onCarouselTranslated($event)">
+
+          @for (slide of projectImages(); track slide.id) {
+          <ng-template carouselSlide [id]="slide.id.toString()">
+            <img (click)="openImagePopup(slide)" class="carousel-project-image w-full! mx-auto!"
+              [src]="slide.main_image" [alt]="slide.main_image" [title]="slide.main_image" loading="lazy" decoding="async">
+          </ng-template>
+          }
+
+        </owl-carousel-o>
+
+        <!-- Custom Navigation: Left Arrow + Dots + Right Arrow -->
+        <div class="carousel-nav-container">
+          <button class="carousel-arrow" (click)="carouselNext()" aria-label="التالي">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+            </svg>
+          </button>
+
+          <!-- Custom Dots -->
+          <div class="carousel-dots-container">
+            @for (slide of projectImages(); track slide.id; let i = $index) {
+            <button class="carousel-dot" [class.active]="activeSlideIndex() === i" (click)="goToSlide(i)"
+              [attr.aria-label]="'الانتقال للصورة ' + (i + 1)">
+            </button>
+            }
+          </div>
+
+          <button class="carousel-arrow" (click)="carouselPrev()" aria-label="السابق">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+          </button>
+        </div>
+
+      </section>
+      }
+      }
     </div>
     <!-- Left Sidebar -->
     <div class="lg:col-span-1">
-      <!-- Project Pillars -->
-      <div class="project-pillars-box mb-8 md:mb-12 border border-[#ED2924] rounded-2xl p-6 md:p-8">
-        <div class="flex items-center gap-2 mb-4 md:mb-6">
-          <img src="images/title/title.webp" alt="title-icon">
-          <h2 class="box-title">ركائز المشروع</h2>
-        </div>
-        @if (projectTechnologies().length > 0) {
-        <div class="technologies-grid grid grid-cols-2 gap-4">
-          @for (tech of projectTechnologies(); track tech.id || $index) {
-          <div class="technology-item flex flex-col items-center gap-2">
-            @if (getTechnologyLogo(tech)) {
-            <img [src]="getTechnologyLogo(tech)" [alt]="getTechnologyName(tech)" class="tech-logo">
-            }
-            <span class="tech-name">{{ getTechnologyName(tech) }}</span>
-          </div>
-          }
-        </div>
-        } @else {
-        <div class="text-center py-8">
-          <p class="text-gray-400">لا يوجد بيانات </p>
-        </div>
-        }
-      </div>
-
       <!-- Project Information -->
-      <div class="project-info-box-detail border border-[#ED2924] rounded-2xl p-6 md:p-8">
+      <div class="project-info-box-detail mb-8 border border-[#ED2924] rounded-2xl p-6 md:p-8">
         <div class="flex items-center gap-2 mb-4 md:mb-6">
           <img src="images/title/title.webp" alt="title-icon">
           <h2 class="box-title">معلومات عن المشروع</h2>
@@ -193,6 +236,15 @@
         </div>
         }
       </div>
+      <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
+        <div class="flex items-center gap-2 mb-4 md:mb-6">
+          <img src="images/title/title.webp" alt="title-icon">
+          <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
+        </div>
+        <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true" [slug]="project()?.slug"
+          [type]="'المشاريع'" />
+
+      </div>
     </div>
 
 
@@ -201,52 +253,7 @@
 }
 
 <!-- Project Images Carousel -->
-@if (hasProject() && projectImages().length > 0) {
-@defer {
-<section class="container mx-auto px-5 py-20 md:py-26">
-  <owl-carousel-o #owlCarousel [options]="customOptions" (translated)="onCarouselTranslated($event)">
 
-    @for (slide of projectImages(); track slide.id) {
-    <ng-template carouselSlide [id]="slide.id.toString()">
-      <img (click)="openImagePopup(slide)" class="carousel-project-image w-full! mx-auto!" [src]="slide.main_image"
-        [alt]="slide.main_image" [title]="slide.main_image">
-    </ng-template>
-    }
-
-  </owl-carousel-o>
-
-  <!-- Custom Navigation: Left Arrow + Dots + Right Arrow -->
-  <div class="carousel-nav-container">
-    <button class="carousel-arrow" (click)="carouselNext()" aria-label="التالي">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-      </svg>
-    </button>
-
-    <!-- Custom Dots -->
-    <div class="carousel-dots-container">
-      @for (slide of projectImages(); track slide.id; let i = $index) {
-      <button class="carousel-dot" [class.active]="activeSlideIndex() === i" (click)="goToSlide(i)"
-        [attr.aria-label]="'الانتقال للصورة ' + (i + 1)">
-      </button>
-      }
-    </div>
-
-    <button class="carousel-arrow" (click)="carouselPrev()" aria-label="السابق">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-      </svg>
-    </button>
-  </div>
-
-</section>
-}
-}
-
-@if (hasProject() || hasError()) {
-<!-- Contact Us Section -->
-<app-contact-us-sec />
-}
 
 <!-- Image Popup Modal -->
 @if (popupImage()) {

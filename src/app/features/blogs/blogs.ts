@@ -33,7 +33,7 @@ export class Blogs implements OnInit, AfterViewInit {
   blogs = computed(() => this.blogsData()?.blogs ?? null);
   blogItems = computed(() => this.blogs()?.data ?? []);
   articlesTitle = 'المقالات';
-  
+
   // Pagination state
   rows = signal(9);
   totalRecords = computed(() => this.blogs()?.total ?? 0);
@@ -86,7 +86,7 @@ export class Blogs implements OnInit, AfterViewInit {
   }
 
   navigateToBlogDetail(blog: any): void {
-    this.router.navigate(['/blog-det', blog.slug]);
+    this.router.navigate(['/المقالات', blog.slug]);
   }
 
   getResponsiveImage(image: { desktop: string; tablet: string; mobile: string } | null | undefined): string {

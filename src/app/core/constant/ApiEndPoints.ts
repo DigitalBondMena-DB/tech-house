@@ -3,6 +3,7 @@ export const API_END_POINTS = {
     HOME: '/home',
     ABOUT: '/aboutus',
     SERVICES: '/services',
+    SERVICE_DETAILS: '/service/{slug}',
     PROJECTS: '/projects/all',
     PROJECT_DETAILS: '/project/{slug}',
     BLOGS: '/blogs',
@@ -22,14 +23,14 @@ export const API_END_POINTS = {
     SERVICESEC: '/titles',
     //! Service sec
 
- 
+
 
 
 
     //! Submit Form
     SUBMIT_CONTACT_FORM: '/submit-form',
-    
+
     SUBMIT_JOB_FORM: '/submit-job',
-    
+
 
 };

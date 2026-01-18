@@ -38,13 +38,13 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
   bannerSection = computed(() => this.projectsData()?.bannerSection ?? null);
   projects = computed(() => this.projectsData()?.projects ?? null);
   projectItems = computed(() => this.projects()?.data ?? []);
-  
+
   // Service titles from /titles API
   serviceTitles = computed(() => this.sharedFeatureService.servicesSection() ?? []);
-  
+
   // Selected service slug for filtering
   selectedSlug = signal<string | null>(null);
-  
+
   // Pagination state
   rows = signal(9);
   totalRecords = computed(() => this.projects()?.total ?? 0);
@@ -151,7 +151,7 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
     this.selectedSlug.set(slug);
     this.selectedIndex.set(index);
     this.loadProjects(1, slug);
-    
+
     // Rotate arrow to point to selected service
     if (this.isBrowser && this.arrowElement && this.sidebarContainer) {
       this.rotateArrowToService(index);
@@ -172,15 +172,15 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
       requestAnimationFrame(() => {
         const sidebarRect = this.sidebarContainer!.nativeElement.getBoundingClientRect();
         const itemRect = selectedItem.getBoundingClientRect();
-        
+
         // Calculate the center position of the selected item relative to sidebar top
         const itemCenterY = itemRect.top - sidebarRect.top + itemRect.height / 2;
-        
+
         // Run state updates back inside Angular zone
         this.ngZone.run(() => {
           // Set arrow vertical position to align with item center
           this.arrowPosition.set(itemCenterY - 16); // 16 is half of arrow height (32px / 2)
-          
+
           // For now, keep arrow pointing straight left (0 rotation)
           // You can add slight rotation based on item position if needed
           this.arrowRotation.set(0);
@@ -206,13 +206,13 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
 
   private getWindowWidth(): number {
     if (!this.isBrowser) return 1024; // Default desktop width for SSR
-    
+
     // Cache width to avoid repeated getBoundingClientRect/offsetWidth calls
     const cached = this.cachedWindowWidth();
     if (cached !== null) {
       return cached;
     }
-    
+
     // Read once and cache - Run outside Angular zone to reduce reflow
     this.ngZone.runOutsideAngular(() => {
       requestAnimationFrame(() => {
@@ -222,7 +222,7 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
         });
       });
     });
-    
+
     // Setup resize listener with debounce (only once)
     if (typeof window !== 'undefined' && !this.resizeHandler) {
       // Create debounced resize handler
@@ -236,11 +236,11 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
           });
         });
       }, 200);
-      
+
       // Add passive resize listener
       window.addEventListener('resize', this.resizeHandler, { passive: true });
     }
-    
+
     // Return cached or current width
     return this.cachedWindowWidth() ?? window.innerWidth;
   }
@@ -293,7 +293,7 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
       event.stopPropagation();
     }
     if (project?.slug) {
-      this.router.navigate(['/project-det', project.slug]);
+      this.router.navigate(['/المشاريع', project.slug]);
     }
   }
 }

@@ -1,7 +1,8 @@
 <footer class="flex w-full flex-col justify-center md:justify-end h-auto ">
     <div class="bg-linear ">
         <div
-            class="container mx-auto px-5 lg:px-20 bg-hero-footer flex flex-col items-start justify-center space-y-12  pb-8 pt-12 md:flex-row md:space-y-0 md:space-x-12 ">
+            class="container relative mx-auto px-5 lg:px-20 flex flex-col items-start justify-center space-y-12  pb-8 pt-12 md:flex-row md:space-y-0 md:space-x-12 ">
+            <img src="/images/pattern.webp" role="presentation" alt="" class="object-cover absolute inset-0 h-full w-full" loading="lazy" decoding="async">
             <div class="flex w-full flex-col space-y-4 md:w-1/2 lg:w-2/5">
                 <div class="w-full text-lg font-extrabold md:w-fit">
                     <img [src]="getResponsiveImage(contactUsData()?.logo)" alt="logo">
@@ -82,16 +83,16 @@
                 <div class="text-sm font-semibold text-white">روابط سريعة</div>
                 <ul class="text-sm text-white space-y-2">
                     <li>
-                        <a routerLink="/about-us" class="hover:underline">من نحن</a>
+                        <a routerLink="/من-نحن" class="hover:underline">من نحن</a>
                     </li>
                     <li>
-                        <a routerLink="/projects" class="hover:underline">المشاريع</a>
+                        <a routerLink="/المشاريع" class="hover:underline">المشاريع</a>
                     </li>
                     <li>
-                        <a routerLink="/jobs" class="hover:underline">الوظائف</a>
+                        <a routerLink="/الوظائف" class="hover:underline">الوظائف</a>
                     </li>
                     <li>
-                        <a routerLink="/blogs" class="hover:underline">المقالات</a>
+                        <a routerLink="/المقالات" class="hover:underline">المقالات</a>
                     </li>
                 </ul>
             </div>
@@ -102,14 +103,13 @@
             <div class="flex items-end">
 
                 <!-- {{ contactUsData()?.copyright || 'جميع الحقوق محفوظة © 2025' }} -->
-                <span class="text-xs flex items-end justify-center ">جميع الحقوق محفوظة <img src="/images/logo/logo-light2.webp"
-                        alt="logo" class="mx-5  w-16">
+                <span class="text-xs flex items-end justify-center ">جميع الحقوق محفوظة <img
+                        src="/images/logo/logo-light2.webp" alt="logo" class="mx-5  w-16">
                     © 2025</span>
 
             </div>
             <div class="mx-3">
-                <a routerLink="/privacy-policy"
-                    class="text-xs md:text-base underline text-white ">سياسة الخصوصية</a>
+                <a routerLink="/سياسة-الخصوصية" class="text-xs md:text-base underline text-white ">سياسة الخصوصية</a>
             </div>
         </div>
     </div>

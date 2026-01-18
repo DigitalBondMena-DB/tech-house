@@ -36,13 +36,13 @@ export class BlogDet {
   heroImage = computed(() => {
     const blog = this.blog();
     // Use banner_image if available, otherwise fallback to image
-    const imageSource = blog?.banner_image ;
-    
+    const imageSource = blog?.banner_image;
+
     // If banner_image is a string (single URL), return it directly
     if (typeof imageSource === 'string') {
       return imageSource;
     }
-    
+
     // If it's an array, use getResponsiveImage
     return this.getResponsiveImage(imageSource);
   });
@@ -60,72 +60,66 @@ export class BlogDet {
     return null;
   });
 
+
   fullContent = computed(() => {
     const activeIndex = this.activeSectionIndex();
     let html = this.blog()?.text ?? '';
-    
+
     if (html) {
       const sections = this.sections();
+      let h2Count = 0; // عداد للعناوين
+
+      // معالجة الـ H2 وحقن الـ CTA
       html = html.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (match, attributes, content) => {
+        h2Count++;
         const cleanContent = content.replace(/<[^>]*>/g, '').trim();
-        
-        const sectionIndex = sections.findIndex(s => {
-          const cleanTitle = s.title.trim();
-          return cleanContent === cleanTitle || cleanContent.includes(cleanTitle) || cleanTitle.includes(cleanContent);
-        });
-        
+
+        // ... كود الـ ID والـ Classes الأصلي الخاص بك ...
+        const sectionIndex = sections.findIndex(s => s.title.trim() === cleanContent || cleanContent.includes(s.title.trim()));
         const finalIndex = sectionIndex >= 0 ? sectionIndex : -1;
-        
-        let classAttr = '';
-        if (finalIndex === activeIndex && finalIndex >= 0) {
-          classAttr = ' class="section-heading-active"';
-        } else {
-          classAttr = ' class="section-heading"';
+        let newAttributes = attributes.includes('id=')
+          ? attributes.replace(/id="[^"]*"/, `id="section-${finalIndex}"`)
+          : `${attributes} id="section-${finalIndex}"`;
+
+        const currentH2 = `<h2${newAttributes} class="${finalIndex === activeIndex ? 'section-heading-active' : 'section-heading'}">${content}</h2>`;
+
+        // --- الجزء الجديد: حقن الـ CTA بعد كل 3 أو 5 عناوين ---
+        if (h2Count === 2 || h2Count % 4 === 0) { // هنا سيضعها بعد العنوان الرابع والثامن وهكذا
+          const ctaHtml = `<div class="contact-box flex flex-col lg:flex-row text-center justify-between items-center mt-6 px-10 p-6 border border-[#B91C17] rounded-2xl">
+      <div>
+        <h5 class="text-[#B91C17]!">تبي زيادة أرباح مشروعك؟</h5>
+        <p class="text-lg text-[#B91C17]! font-medium">احصل على استشارتك المجانية الآن مع خبير من بيت التكنولوجيا</p>
+      </div>
+      <div class="mt-3 gap-2 flex items-center justify-center">
+        <a href="https://wa.me/201022810069" target="_blank" class="px-6 py-2 bg-green-500 hover:bg-green-400 transition-colors duration-150 rounded-full text-white">واتس اب</a>
+        <a href="tel:+201022810069" class="px-6 py-2 bg-[#B91C17] hover:bg-[#ED2924] transition-colors duration-150 rounded-full text-white">اتصل بنا</a>
+      </div>
+    </div>`;
+          return ctaHtml + currentH2; // سيتم وضع الـ CTA "قبل" العنوان الذي وصل للرقم المحدد
         }
-        
-        let newAttributes = attributes;
-        if (finalIndex >= 0) {
-          if (newAttributes.includes('id=')) {
-            newAttributes = newAttributes.replace(/id="[^"]*"/, `id="section-${finalIndex}"`);
-          } else {
-            newAttributes = `${newAttributes} id="section-${finalIndex}"`;
-          }
-        }
-        
-        if (!newAttributes.includes('class=')) {
-          newAttributes = `${newAttributes}${classAttr}`;
-        } else {
-          newAttributes = newAttributes.replace(/class="([^"]*)"/, (m: string, classes: string) => {
-            return `class="${classes} ${finalIndex === activeIndex && finalIndex >= 0 ? 'section-heading-active' : 'section-heading'}"`;
-          });
-        }
-        
-        return `<h2${newAttributes}>${content}</h2>`;
+
+        return currentH2;
       });
-      
       html = html.replace(/style\s*=\s*"([^"]*)"/gi, (match, styles) => {
         let cleanedStyles = styles.replace(/font-family\s*:\s*[^;]+;?\s*/gi, '');
         cleanedStyles = cleanedStyles.replace(/;\s*;/g, ';').replace(/^\s*;\s*|\s*;\s*$/g, '');
         return `style="${cleanedStyles}"`;
       });
-      
       html = html.replace(/style\s*=\s*"([^"]*)text-align\s*:\s*(left|right|center)([^"]*)"/gi, 
         (match, before, align, after) => {
           const cleanedBefore = before.replace(/text-align\s*:\s*(left|right|center)\s*;?\s*/gi, '');
           const cleanedAfter = after.replace(/text-align\s*:\s*(left|right|center)\s*;?\s*/gi, '');
           return `style="${cleanedBefore}text-align: justify;${cleanedAfter}"`;
         });
-      
-      html = html.replace(/text-align\s*:\s*(left|right|center)\s*;?/gi, 'text-align: justify;');
-      
-      html = html.replace(/style\s*=\s*"([^"]*)"/gi, (match, styles) => {
+        html = html.replace(/text-align\s*:\s*(left|right|center)\s*;?/gi, 'text-align: justify;');
+        html = html.replace(/style\s*=\s*"([^"]*)"/gi, (match, styles) => {
         if (!styles.includes('text-align')) {
           return `style="${styles}; text-align: justify;"`;
         }
         return match;
       });
     }
-    
+
     return this.sanitizer.bypassSecurityTrustHtml(html);
   });
 
@@ -133,7 +127,7 @@ export class BlogDet {
     this.route.params.subscribe(params => {
       const slug = params['slug'];
       if (!slug) {
-        this.router.navigate(['/blogs']);
+        this.router.navigate(['/المقالات']);
         return;
       }
       this.featureService.loadBlogDetails(slug);
@@ -221,7 +215,7 @@ export class BlogDet {
                     const elementPosition = targetElement.getBoundingClientRect().top;
                     const scrollY = window.pageYOffset;
                     const offsetPosition = elementPosition + scrollY - 120;
-                    
+
                     window.scrollTo({
                       top: offsetPosition,
                       behavior: 'smooth'
@@ -246,7 +240,7 @@ export class BlogDet {
   }
 
   navigateToRelatedBlog(blog: any) {
-    this.router.navigate(['/blog-det', blog.slug]);
+    this.router.navigate(['/المقالات', blog.slug]);
   }
 
   getResponsiveImage(images?: string[] | null): string {

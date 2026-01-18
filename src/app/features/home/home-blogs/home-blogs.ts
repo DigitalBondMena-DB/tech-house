@@ -33,7 +33,7 @@ export class HomeBlogs implements OnChanges {
 
   activeCard: number = 2; // Default to middle card (index 1)
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   //! method to set active card
   setActive(cardNumber: number, blog?: Blog, event?: Event) {
@@ -46,13 +46,13 @@ export class HomeBlogs implements OnChanges {
   //! method to navigate to blog details
   navigateToBlogDetails(blog: Blog, event: Event) {
     event.stopPropagation();
-    this.router.navigate(['/blog-det', blog.slug]);
+    this.router.navigate(['/المقالات', blog.slug]);
   }
 
   //! method to navigate to project details
   navigateToProjectDetails(blog: Blog, event: Event) {
     event.stopPropagation();
-    this.router.navigate(['/project-det', blog.slug]);
+    this.router.navigate(['/المقالات', blog.slug]);
   }
 
   // Helper method to get responsive image

@@ -3,6 +3,7 @@ import { Component, computed, effect, inject, PLATFORM_ID, signal, ViewChild, Vi
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CarouselComponent, CarouselModule, OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
+
 import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
 
@@ -15,6 +16,7 @@ import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-
   encapsulation: ViewEncapsulation.None
 })
 export class ProjectDet {
+
 
   private featureService = inject(FeatureService);
   private route = inject(ActivatedRoute);
@@ -97,6 +99,38 @@ export class ProjectDet {
     nav: false,
   }
 
+  techOptions: OwlOptions = {
+    loop: true,
+    mouseDrag: true,
+    touchDrag: true,
+    pullDrag: true,
+    dots: false,
+    navSpeed: 2000,
+    rtl: true,
+    autoplay: true,
+    autoplayTimeout: 3000,
+    autoplayHoverPause: true,
+    margin: 20,
+    responsive: {
+      0: {
+        items: 1
+      },
+      576: {
+        items: 2
+      },
+      768: {
+        items: 3
+      },
+      992: {
+        items: 4
+      },
+      1200: {
+        items: 6
+      }
+    },
+    nav: false
+  }
+
   // ===== CAROUSEL NAVIGATION =====
   @ViewChild('owlCarousel') owlCarousel!: CarouselComponent;
   activeSlideIndex = signal<number>(0);
@@ -104,7 +138,12 @@ export class ProjectDet {
   // Handle carousel slide change
   onCarouselTranslated(data: SlidesOutputData): void {
     if (data.startPosition !== undefined) {
-      this.activeSlideIndex.set(data.startPosition);
+      const slidesCount = this.projectImages().length;
+      // Adjust index for RTL
+      const index = this.customOptions.rtl ? slidesCount - data.startPosition - 1 : data.startPosition;
+      console.log(index);
+
+      this.activeSlideIndex.set(index);
     }
   }
 
@@ -184,7 +223,7 @@ export class ProjectDet {
     this.route.params.subscribe(params => {
       const slug = params['slug'];
       if (!slug) {
-        this.router.navigate(['/projects']);
+        this.router.navigate(['/المشاريع']);
         return;
       }
       // Reset state when slug changes

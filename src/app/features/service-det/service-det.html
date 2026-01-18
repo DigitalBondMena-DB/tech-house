@@ -1,0 +1,96 @@
+@if (hasService()) {
+<section class="service-hero-section" [style.background-image]="'url(' + heroImage() + ')'">
+    <div class="service-hero-overlay"></div>
+    <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+        <div class="service-hero-content h-full flex items-center justify-center text-center" dir="rtl"></div>
+    </div>
+</section>
+}
+
+@if (hasService()) {
+<section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
+    <!-- العنوان الأساسي للخدمة -->
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[#940000] mb-8 md:mb-12 " dir="rtl">
+        {{ service()?.title }}
+    </h1>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12" dir="rtl">
+
+        <!-- TOC - Table of Contents -->
+        <div class="lg:col-span-1">
+            <div class="sticky top-0">
+                <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
+                    <div class="toc-container">
+                        <div class="flex items-center gap-2 mb-4 md:mb-6">
+                            <img src="images/title/title.webp" alt="title-icon">
+                            <h2 class="toc-title">محتويات الخدمة</h2>
+                        </div>
+                        <ul class="toc-list">
+                            @for (section of sections(); track section.id; let i = $index) {
+                            <li class="toc-item" [class.toc-item-active]="isSectionActive(i)"
+                                (click)="navigateToSection(i)">
+                                <span class="toc-number">{{ i + 1 }}.</span>
+                                <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
+                                @if (isSectionActive(i)) {
+
+                                <span class="toc-active-bar"></span>
+                                }
+                            </li>
+                            }
+                            @if (sections().length === 0) {
+                            <li class="toc-item">
+                                <span class="toc-text">لا توجد عناوين متاحة</span>
+                            </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
+                    <div class="flex items-center gap-2 mb-4 md:mb-6">
+                        <img src="images/title/title.webp" alt="title-icon">
+                        <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
+                    </div>
+                    <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true"
+                        [slug]="service()?.slug" [type]="'الخدمات'" />
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Service Content -->
+        <div class="lg:col-span-2">
+            <div class="service-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed text-justify!"
+                [innerHTML]="fullContent()"></div>
+        </div>
+
+    </div>
+
+    @if (relatedServices().length > 0) {
+    <app-section-title [title]="'الخدمات ذات الصلة'" [customClass]="'my-10'"></app-section-title>
+    <div class="services-related-grid grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        @for (relatedService of relatedServices(); track relatedService.slug) {
+        <div class="service-related-card cursor-pointer " (click)="navigateToRelatedService(relatedService)">
+            <div class="service-related-image mb-4">
+                <img [src]="relatedService.image_desktop" [alt]="relatedService.title"
+                    class="w-full h-[300px] rounded-2xl object-cover"
+                    (error)="$event.target.src = '/images/project.webp'">
+            </div>
+
+            <h3 class="text-xl md:text-2xl font-bold text-[#440000] mb-2">
+                {{ relatedService.title }}
+            </h3>
+
+            @if (relatedService.text) {
+            <div class="project-brief text-base text-[#440000] leading-relaxed"
+                [innerHTML]="relatedService.text | safeHtml">
+            </div>
+            }
+        </div>
+        }
+    </div>
+    } @else {
+    <div class="text-center py-12">
+        <p class="text-xl text-gray-500">لا توجد خدمات متاحة</p>
+    </div>
+    }
+</section>
+}

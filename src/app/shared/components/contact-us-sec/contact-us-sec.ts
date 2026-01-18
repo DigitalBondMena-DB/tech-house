@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -24,7 +24,7 @@ import { Country } from './models/country.model';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SectionTitle, 
+    SectionTitle,
     InputTextModule,
     TextareaModule,
     InputGroupModule,
@@ -39,23 +39,29 @@ import { Country } from './models/country.model';
 })
 export class ContactUsSec implements OnInit {
   // Contact Us Section Data
+  withoutMap = input<boolean>(false);
+  withoutTitle = input<boolean>(false);
+  removeYPadding = input<boolean>(false);
+  type = input<string>('');
+  slug = input<any>('');
   contactTitle = "تواصل معنا";
   contactSubtitle = "نجاحك الرقمي يبدأ بخطوة معنا، بداية تصنع الفرق.";
   BtnText = "إرسال";
+
 
   // Countries List
   countries = COUNTRIES;
 
   // Selected Country - Initialize with Saudi Arabia as default (use exact reference from array)
   selectedCountryModel: Country = COUNTRIES[0];
-  
+
   // Selected Country Signal (syncs with model) - Initialize with Saudi Arabia
   selectedCountry = signal<Country>(COUNTRIES[0]);
 
   // Computed values
   selectedDialCode = computed(() => this.selectedCountry()?.dialCode || '+966');
   selectedCountryCode = computed(() => this.selectedCountry()?.code || 'sa');
-  
+
   // Phone patterns for each country (regex patterns)
   private phonePatterns: { [key: string]: { pattern: RegExp; minLength: number; maxLength: number; placeholder: string } } = {
     'sa': { pattern: /^5[0-9]{8}$/, minLength: 9, maxLength: 9, placeholder: '5XX XXX XXXX' },
@@ -137,17 +143,17 @@ export class ContactUsSec implements OnInit {
   private route = inject(ActivatedRoute);
   private location = inject(Location);
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
     // Ensure default value is properly set (Saudi Arabia is first in COUNTRIES array)
     this.selectedCountryModel = COUNTRIES[0];
     this.selectedCountry.set(COUNTRIES[0]);
     this.initializeForm();
-    
+
     // Check if URL contains "/done" and show popup if it does
     this.checkUrlForDone();
-    
+
     // Listen to route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
@@ -155,14 +161,14 @@ export class ContactUsSec implements OnInit {
       this.checkUrlForDone();
     });
   }
-  
+
   private checkUrlForDone(): void {
     const currentUrl = this.router.url.split('?')[0];
-    if (currentUrl.endsWith('/done')) {
+    if (currentUrl.endsWith('/تم')) {
       this.showSuccessPopup.set(true);
     }
   }
-  
+
   private initializeForm() {
     // Custom validator for name (only letters, no numbers or symbols)
     const nameValidator = (control: AbstractControl): { [key: string]: any } | null => {
@@ -175,61 +181,61 @@ export class ContactUsSec implements OnInit {
       }
       return null;
     };
-    
+
     // Custom validator for phone based on selected country
     const phoneValidator = (control: AbstractControl): { [key: string]: any } | null => {
       if (!control.value) {
         return null; // Let required validator handle empty values
       }
-      
+
       // First check if it's only numbers
       const phonePattern = /^[0-9]+$/;
       if (!phonePattern.test(control.value)) {
         return { invalidPhone: true };
       }
-      
+
       // Get current country pattern
       const countryCode = this.selectedCountryCode();
       const phoneInfo = this.phonePatterns[countryCode];
-      
+
       if (!phoneInfo) {
         return { invalidCountry: true };
       }
-      
+
       // Check length first - this is the most important validation
       const phoneLength = control.value.length;
       if (phoneLength < phoneInfo.minLength) {
-        return { 
-          invalidLength: { 
-            requiredLength: phoneInfo.minLength, 
+        return {
+          invalidLength: {
+            requiredLength: phoneInfo.minLength,
             maxLength: phoneInfo.maxLength,
             actualLength: phoneLength,
             type: 'min'
-          } 
+          }
         };
       }
-      
+
       if (phoneLength > phoneInfo.maxLength) {
-        return { 
-          invalidLength: { 
-            requiredLength: phoneInfo.minLength, 
+        return {
+          invalidLength: {
+            requiredLength: phoneInfo.minLength,
             maxLength: phoneInfo.maxLength,
             actualLength: phoneLength,
             type: 'max'
-          } 
+          }
         };
       }
-      
+
       // Check pattern match (format validation)
       if (!phoneInfo.pattern.test(control.value)) {
-        return { 
-          invalidFormat: { 
+        return {
+          invalidFormat: {
             country: this.selectedCountry()?.name || 'المختارة',
             requiredLength: phoneInfo.minLength
-          } 
+          }
         };
       }
-      
+
       return null;
     };
 
@@ -251,7 +257,7 @@ export class ContactUsSec implements OnInit {
     if (country) {
       this.selectedCountry.set(country);
       this.selectedCountryModel = country;
-      
+
       // Re-validate phone number when country changes
       if (this.phoneControl) {
         this.phoneControl.updateValueAndValidity();
@@ -260,7 +266,7 @@ export class ContactUsSec implements OnInit {
       }
     }
   }
-  
+
   // Prevent numbers and symbols in name field
   onNameKeyPress(event: KeyboardEvent): boolean {
     const char = String.fromCharCode(event.which || event.keyCode);
@@ -268,20 +274,20 @@ export class ContactUsSec implements OnInit {
     const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     const englishPattern = /[a-zA-Z\s]/;
     const isAllowed = arabicPattern.test(char) || englishPattern.test(char);
-    
+
     if (!isAllowed) {
       event.preventDefault();
       return false;
     }
     return true;
   }
-  
+
   // Prevent letters in phone field
   onPhoneKeyPress(event: KeyboardEvent): boolean {
     const char = String.fromCharCode(event.which || event.keyCode);
     // Only allow numbers
     const numberPattern = /[0-9]/;
-    
+
     if (!numberPattern.test(char)) {
       event.preventDefault();
       return false;
@@ -298,12 +304,16 @@ export class ContactUsSec implements OnInit {
       formData.append('email', this.contactForm.value.email);
       formData.append('phone', this.contactForm.value.phone); // Phone without dial code
       formData.append('message', this.contactForm.value.message);
-      
+      if (this.type() && typeof this.slug() === 'string') {
+        formData.append('type', this.type());
+        formData.append('slug', this.slug());
+      }
+
       // Reset previous states
       this.isSubmitting.set(true);
       this.submitSuccess.set(false);
       this.submitError.set(null);
-      
+
       // Submit to API (using different domain for contact form)
       this.http.post(`${this.contactApiUrl}${API_END_POINTS.SUBMIT_CONTACT_FORM}`, formData).subscribe({
         next: (response) => {
@@ -314,19 +324,20 @@ export class ContactUsSec implements OnInit {
           // Show success popup
           this.showSuccessPopup.set(true);
           // Add "done" to the route path using Location API
-          const currentUrl = this.location.path().split('?')[0];
-          if (!currentUrl.endsWith('/done')) {
+          const currentUrl = decodeURIComponent(this.location.path().split('?')[0]);
+          console.log(currentUrl);
+          if (!currentUrl.endsWith('/تم')) {
             const queryParams = this.router.parseUrl(this.router.url).queryParams;
-            const queryString = Object.keys(queryParams).length > 0 
-              ? '?' + new URLSearchParams(queryParams as any).toString() 
+            const queryString = Object.keys(queryParams).length > 0
+              ? '?' + new URLSearchParams(queryParams as any).toString()
               : '';
-            this.location.replaceState(currentUrl + '/done' + queryString);
+            this.location.replaceState(currentUrl + '/تم' + queryString);
           }
         },
         error: (error) => {
           this.isSubmitting.set(false);
           let errorMessage = 'حدث خطأ أثناء إرسال النموذج. يرجى المحاولة مرة أخرى.';
-          
+
           // Handle different error types
           if (error.status === 0) {
             // Network error or CORS issue
@@ -346,7 +357,7 @@ export class ContactUsSec implements OnInit {
           } else if (error?.message) {
             errorMessage = error.message;
           }
-          
+
           this.submitError.set(errorMessage);
           console.error('Contact form submission error:', {
             status: error.status,
@@ -368,7 +379,7 @@ export class ContactUsSec implements OnInit {
       });
     }
   }
-  
+
   // Helper methods to get error messages
   getFullNameError(): string | null {
     const control = this.fullNameControl;
@@ -378,7 +389,7 @@ export class ContactUsSec implements OnInit {
     }
     return null;
   }
-  
+
   getEmailError(): string | null {
     const control = this.emailControl;
     if (control && control.errors && control.touched) {
@@ -388,7 +399,7 @@ export class ContactUsSec implements OnInit {
     }
     return null;
   }
-  
+
   getPhoneError(): string | null {
     const control = this.phoneControl;
     if (control && control.errors && control.touched) {
@@ -406,7 +417,7 @@ export class ContactUsSec implements OnInit {
     }
     return null;
   }
-  
+
   getMessageError(): string | null {
     const control = this.messageControl;
     if (control && control.errors && control.touched) {
@@ -419,11 +430,11 @@ export class ContactUsSec implements OnInit {
     this.showSuccessPopup.set(false);
     // Remove "done" from the route path using Location API
     const currentUrl = this.location.path().split('?')[0];
-    if (currentUrl.endsWith('/done')) {
-      const baseUrl = currentUrl.replace('/done', '');
+    if (currentUrl.endsWith('/تم')) {
+      const baseUrl = currentUrl.replace('/تم', '');
       const queryParams = this.router.parseUrl(this.router.url).queryParams;
-      const queryString = Object.keys(queryParams).length > 0 
-        ? '?' + new URLSearchParams(queryParams as any).toString() 
+      const queryString = Object.keys(queryParams).length > 0
+        ? '?' + new URLSearchParams(queryParams as any).toString()
         : '';
       this.location.replaceState(baseUrl + queryString);
     }

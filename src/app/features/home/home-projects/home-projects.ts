@@ -28,7 +28,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
   }
 
   //! section title data
-  projectsTitle = "مشاريعنا";
+  projectsTitle = "المشاريع";
 
   //! button data
   btnText = "مشاريع اكثر";
@@ -36,7 +36,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
   private router = inject(Router);
-  
+
   // Cache window width to avoid repeated reads
   private cachedWindowWidth = signal<number | null>(null);
 
@@ -50,7 +50,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
 
   // Track the active card index
   private activeCardIndex = 1; // Start with the middle card active
-  
+
   // Reference to the cards container
   @ViewChildren('projectCard') projectCards!: QueryList<ElementRef>;
 
@@ -63,13 +63,13 @@ export class HomeProjects implements AfterViewInit, OnChanges {
 
   private getWindowWidth(): number {
     if (!this.isBrowser) return 1024; // Default desktop width for SSR
-    
+
     // Cache width to avoid repeated reads
     const cached = this.cachedWindowWidth();
     if (cached !== null) {
       return cached;
     }
-    
+
     // Read once and cache
     const width = window.innerWidth;
     this.cachedWindowWidth.set(width);
@@ -102,12 +102,12 @@ export class HomeProjects implements AfterViewInit, OnChanges {
       return;
     }
 
-  
+
 
     // On mobile, navigate directly to project details
     if (this.getWindowWidth() < 1024) {
       if (clickedProject.slug) {
-        this.router.navigate(['/project-det', clickedProject.slug]);
+        this.router.navigate(['/المشاريع', clickedProject.slug]);
       }
       return;
     }
@@ -116,7 +116,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
     if (clickedIndex === this.activeCardIndex) {
       // If clicking the active card, navigate to project details
       if (clickedProject.slug) {
-        this.router.navigate(['/project-det', clickedProject.slug]);
+        this.router.navigate(['/المشاريع', clickedProject.slug]);
       }
       return;
     }
@@ -132,11 +132,11 @@ export class HomeProjects implements AfterViewInit, OnChanges {
 
     // Get the current state
     const state = Flip.getState(".project-card");
-    
+
     // Update the active index
     this.activeCardIndex = clickedIndex;
     this.updateCardStates();
-    
+
     // Apply the new state with animation
     Flip.from(state, {
       duration: 0.8,
@@ -153,10 +153,10 @@ export class HomeProjects implements AfterViewInit, OnChanges {
     this.projectCards.forEach((card, index) => {
       const element = card.nativeElement;
       const diff = Math.abs(index - this.activeCardIndex);
-      
+
       // Set z-index based on distance from active card
       gsap.set(element, { zIndex: 100 - diff * 10 });
-      
+
       // Add/remove active class
       if (index === this.activeCardIndex) {
         element.classList.add('active-card');

@@ -89,7 +89,7 @@ export class AboutUs implements OnInit, AfterViewInit {
     // Load data when view initializes
     this.featureService.loadAboutData();
     // Subscribe to ensure data is loaded
-    this.sharedFeatureService.loadPartnersClients().subscribe();
+    this.sharedFeatureService.loadPartnersClients().subscribe(()=>{});
 
     if (this.isBrowser) {
       // Wait for cards to be rendered

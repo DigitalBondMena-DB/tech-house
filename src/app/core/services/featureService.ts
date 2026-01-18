@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { API_END_POINTS } from '../constant/ApiEndPoints';
 
-import { AboutResponse, BlogDetailsResponse, BlogsResponse, HomeResponse, JobDetailsResponse, JobsResponse, ProjectDetailsResponse, ProjectsResponse, ServicesResponse } from '../models/home.model';
+import { AboutResponse, BlogDetailsResponse, BlogsResponse, HomeResponse, JobDetailsResponse, JobsResponse, ProjectDetailsResponse, ProjectsResponse, ServiceDetailsResponse, ServicesResponse } from '../models/home.model';
 import { ApiService } from './apiservice';
+import { SeparatedSeoTags } from './separated-seo-tags';
 
 
 @Injectable({
@@ -20,6 +21,7 @@ export class FeatureService {
   private aboutResponseSignal = signal<AboutResponse | null>(null);
   private servicesResponseSignal = signal<ServicesResponse | null>(null);
   private blogsResponseSignal = signal<BlogsResponse | null>(null);
+  private separatedSeoTags = inject(SeparatedSeoTags)
 
   // 🔹 Home Data Signal (computed from API response)
   homeData = computed(() => this.apiResponseSignal());
@@ -32,6 +34,10 @@ export class FeatureService {
 
   // 🔹 Blogs Data Signal (computed from API response)
   blogsData = computed(() => this.blogsResponseSignal());
+
+  // 🔹 Service Details Signal
+  private serviceDetailsResponseSignal = signal<ServiceDetailsResponse | null>(null);
+  serviceDetailsData = computed(() => this.serviceDetailsResponseSignal());
 
   // 🔹 Blog Details Signal
   private blogDetailsResponseSignal = signal<BlogDetailsResponse | null>(null);
@@ -95,6 +101,7 @@ export class FeatureService {
       tap((data) => {
         if (data) {
           this.aboutResponseSignal.set(data);
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'about')
         }
       }),
       catchError((err) => {
@@ -117,6 +124,7 @@ export class FeatureService {
       tap((data) => {
         if (data) {
           this.servicesResponseSignal.set(data);
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'services')
         }
       }),
       catchError((err) => {
@@ -127,15 +135,38 @@ export class FeatureService {
   }
 
   // =====================
+  // SERVICE DETAILS API
+  // =====================
+  loadServiceDetails(slug: string): void {
+    const endpoint = API_END_POINTS.SERVICE_DETAILS.replace('{slug}', slug);
+
+    this.apiService.get<ServiceDetailsResponse>(endpoint).pipe(
+      tap((data) => {
+        if (data) {
+          this.serviceDetailsResponseSignal.set(data);
+          const serviceDetailsData = data.service
+          this.separatedSeoTags.getSeoTagsDirect({ image_url: serviceDetailsData.banner_image ?? '',...serviceDetailsData }, 'about')
+        }
+      }),
+      catchError((err) => {
+        console.error('Error loading service details:', err);
+        return of(null);
+      })
+    ).subscribe();
+  }
+
+
+  // =====================
   // BLOGS API
   // =====================
   loadBlogsData(page: number = 1): void {
     const endpoint = `${API_END_POINTS.BLOGS}?page=${page}`;
-    
+
     this.apiService.get<BlogsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.blogsResponseSignal.set(data);
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'about')
         }
       }),
       catchError((err) => {
@@ -150,11 +181,12 @@ export class FeatureService {
   // =====================
   loadBlogDetails(slug: string): void {
     const endpoint = API_END_POINTS.BLOG_DETAILS.replace('{slug}', slug);
-    
+
     this.apiService.get<BlogDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.blogDetailsResponseSignal.set(data);
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'blogDetails')
         }
       }),
       catchError((err) => {
@@ -172,11 +204,12 @@ export class FeatureService {
     if (slug) {
       endpoint = `/projects/${slug}?page=${page}`;
     }
-    
+
     this.apiService.get<ProjectsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.projectsResponseSignal.set(data);
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'projects')
         }
       }),
       catchError((err) => {
@@ -192,7 +225,7 @@ export class FeatureService {
   loadProjectDetails(slug: string): void {
     // Reset previous data
     this.projectDetailsResponseSignal.set(null);
-    
+
     // Decode the slug first in case it was double-encoded, then encode properly
     // Handle both encoded and unencoded slugs
     let cleanSlug = slug;
@@ -205,16 +238,16 @@ export class FeatureService {
       // If decoding fails, use the original slug
       cleanSlug = slug;
     }
-    
+
     // Remove spaces from the slug
     cleanSlug = cleanSlug.replace(/\s+/g, '');
-    
-    
+
+
     // Encode the slug to handle Arabic characters
     // Use encodeURIComponent which properly handles special characters
     const encodedSlug = encodeURIComponent(cleanSlug);
     const endpoint = API_END_POINTS.PROJECT_DETAILS.replace('{slug}', encodedSlug);
-    
+
     // Try both response types - sometimes API might return different structure
     this.apiService.get<any>(endpoint).pipe(
       tap((data) => {
@@ -222,6 +255,7 @@ export class FeatureService {
           // Check if it's ProjectDetailsResponse (has project property)
           if (data.project) {
             this.projectDetailsResponseSignal.set(data as ProjectDetailsResponse);
+            this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'projectDetails')
           }
           // Check if it's ProjectsResponse (has projects array) - extract the matching project
           else if (data.projects && Array.isArray(data.projects.data)) {
@@ -261,11 +295,12 @@ export class FeatureService {
     if (categoryId) {
       endpoint = API_END_POINTS.JOB_BY_CATEGORY.replace('{category_id}', categoryId.toString());
     }
-    
+
     this.apiService.get<JobsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.jobsResponseSignal.set(data);
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'projects')
         }
       }),
       catchError((err) => {
@@ -281,15 +316,16 @@ export class FeatureService {
   loadJobDetails(slug: string): void {
     // Reset previous data
     this.jobDetailsResponseSignal.set(null);
-    
+
     // Encode the slug to handle Arabic characters
     const encodedSlug = encodeURIComponent(slug);
     const endpoint = API_END_POINTS.JOB_DETAILS.replace('{slug}', encodedSlug);
-    
+
     this.apiService.get<JobDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.jobDetailsResponseSignal.set(data);
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'projects')
         }
       }),
       catchError((err) => {

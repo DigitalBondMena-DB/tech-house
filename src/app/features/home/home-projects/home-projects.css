@@ -10,7 +10,13 @@
   backface-visibility: hidden;
   transform-style: preserve-3d;
 }
-
+.project-card:last-child {
+    margin-bottom: 5rem; /* إزاحة إضافية وهمية */
+}
+app-app-button {
+    position: relative;
+    z-index: 50;
+}
 /* Active card (center) */
 .active-card {
   transform: translateY(0) rotate(0);

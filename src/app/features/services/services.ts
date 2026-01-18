@@ -63,8 +63,21 @@ export class Services implements OnInit, AfterViewInit {
     this.sharedFeatureService.loadServicesSection();
   }
 
-  getResponsiveImage(image: { desktop: string; tablet: string; mobile: string } | null | undefined): string {
+  getResponsiveImage(image: any): string {
     if (!image) return '/images/placeholder.webp';
+
+    // 1. If image is a string (direct URL), use it
+    if (typeof image === 'string') return this.addBaseUrlIfNeeded(image);
+
+    // 2. Check for flat structure (image_desktop, etc.)
+    if (this.isBrowser) {
+      const width = window.innerWidth;
+      if (width >= 1024 && image.image_desktop) return this.addBaseUrlIfNeeded(image.image_desktop);
+      if (width >= 768 && image.image_tablet) return this.addBaseUrlIfNeeded(image.image_tablet);
+      if (image.image_mobile) return this.addBaseUrlIfNeeded(image.image_mobile);
+    }
+
+    // 3. Fallback to nested structure
     let imageUrl = '';
     if (this.isBrowser) {
       const width = window.innerWidth;
@@ -72,7 +85,8 @@ export class Services implements OnInit, AfterViewInit {
       else if (width < 1024) imageUrl = image.tablet || image.desktop || '';
       else imageUrl = image.desktop || '';
     } else imageUrl = image.desktop || '';
-    return this.addBaseUrlIfNeeded(imageUrl);
+
+    return this.addBaseUrlIfNeeded(imageUrl) || '/images/placeholder.webp';
   }
 
   private addBaseUrlIfNeeded(url: string): string {
@@ -84,7 +98,8 @@ export class Services implements OnInit, AfterViewInit {
   }
 
   getProjectsUrl(service: any): string {
-    return '/projects';
+
+    return '/الخدمات/' + service.slug;
   }
 
   getServiceQueryParams(service: any): { service?: string } {

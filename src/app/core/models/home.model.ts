@@ -3,6 +3,8 @@
  * Following Angular best practices with proper TypeScript interfaces
  */
 
+import { SeoITags } from "./common";
+
 /**
  * Image object with responsive variants
  */
@@ -110,6 +112,7 @@ export interface HomeResponse {
   testimonials: Testimonial[];
   blogs: Blog[];
   ctasection?: CTASection;
+  seotag:SeoITags
 }
 
 /**
@@ -287,6 +290,7 @@ export interface AboutResponse {
   bannerSection: BannerSection;
   aboutInformation: AboutInformation;
   aboutSection: AboutSection[];
+  seotag: SeoITags
 }
 
 /**
@@ -317,19 +321,34 @@ export interface ContactHeroResponse {
  * Service Detail Item
  */
 export interface ServiceDetail {
+  id: number
   title: string;
+  slug: string;
   text: string;
   is_active: boolean;
-  image: ResponsiveImage;
-  keywords: string[];
+  image?: ResponsiveImage;
+  image_mobile?: string;
+  image_tablet?: string;
+  image_desktop?: string;
+  large_text: string;
+  banner_image?: string ;
+  keywords?: string[];
+  meta_title?: string;
+  meta_description?: string;
 }
 
-/**
- * Services API Response
- */
 export interface ServicesResponse {
   bannerSection: BannerSection;
   services: ServiceDetail[];
+  seotag:SeoITags
+}
+
+/**
+ * Service Details API Response
+ */
+export interface ServiceDetailsResponse {
+  service: ServiceDetail;
+  otherService: ServiceDetail[];
 }
 
 /**
@@ -378,6 +397,7 @@ export interface BlogsPaginationData {
 export interface BlogsResponse {
   bannerSection: BannerSection;
   blogs: BlogsPaginationData;
+  seotag:SeoITags;
 }
 
 /**
@@ -413,6 +433,7 @@ export interface RelatedBlog {
 export interface BlogDetailsResponse {
   blog: BlogDetail;
   related_blogs: RelatedBlog[];
+  seotag:SeoITags
 }
 
 /**
@@ -453,6 +474,7 @@ export interface ProjectsPaginationData {
 export interface ProjectsResponse {
   bannerSection: BannerSection;
   projects: ProjectsPaginationData;
+  seotag:SeoITags
 }
 
 /**
@@ -526,6 +548,7 @@ export interface JobCategory {
 export interface JobsResponse {
   bannerSection: BannerSection;
   jobCategories: JobCategory[];
+  seotag:SeoITags
 }
 
 /**
@@ -575,5 +598,6 @@ export interface JobDetail {
  */
 export interface JobDetailsResponse {
   job: JobDetail;
+  seotag:SeoITags;
 }
 

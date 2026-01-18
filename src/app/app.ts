@@ -3,6 +3,7 @@ import { AfterViewInit, Component, DOCUMENT, inject, PLATFORM_ID, Renderer2, sig
 import { RouterOutlet } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { debounceTime, fromEvent, tap } from 'rxjs';
+import { SEOService } from './core/services/seo';
 
 
 @Component({
@@ -17,7 +18,10 @@ export class App implements AfterViewInit {
   private renderer = inject(Renderer2);
   private document = inject(DOCUMENT);
   private isBrowser = isPlatformBrowser(this.platformId);
-  
+  private seoService = inject(SEOService);
+  constructor(){
+    this.seoService.initSEOListeners()
+  }
   ngAfterViewInit(): void {
     // Only run in browser (not SSR)
     if (!this.isBrowser) return;

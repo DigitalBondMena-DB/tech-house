@@ -139,9 +139,6 @@
   padding-bottom: 1rem;
 }
 
-.project-main-content {
-  min-height: 300px;
-}
 
 .nav-tab {
   padding: 0.75rem 1.5rem;
@@ -201,14 +198,11 @@
   transition: all 0.3s ease;
 }
 
-.technology-item:hover {
-  background: #f0f0f0;
-  transform: translateY(-2px);
-}
+
 
 .tech-logo {
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
 }
 

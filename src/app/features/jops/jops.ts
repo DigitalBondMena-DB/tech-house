@@ -21,7 +21,7 @@ export class Jops implements OnInit, AfterViewInit {
   jobsData = computed(() => this.featureService.jobsData());
   bannerSection = computed(() => this.jobsData()?.bannerSection ?? null);
   jobCategories = computed(() => this.jobsData()?.jobCategories ?? []);
-  
+
   // All jobs from all categories (for "الكل" view)
   allJobs = computed(() => {
     const categories = this.jobCategories();
@@ -33,11 +33,11 @@ export class Jops implements OnInit, AfterViewInit {
     });
     return allJobsList;
   });
-  
+
   // Selected category for filtering
   selectedCategoryId = signal<number | null>(null);
   selectedCategoryIndex = signal<number>(0);
-  
+
   // Jobs to display based on selected category
   displayedJobs = computed(() => {
     const categoryId = this.selectedCategoryId();
@@ -47,7 +47,7 @@ export class Jops implements OnInit, AfterViewInit {
     const category = this.jobCategories().find(cat => cat.id === categoryId);
     return category?.jobs ?? [];
   });
-  
+
   // Total jobs count for "الكل"
   totalJobsCount = computed(() => {
     return this.jobCategories().reduce((total, category) => total + category.jobs_count, 0);
@@ -118,7 +118,7 @@ export class Jops implements OnInit, AfterViewInit {
       event.stopPropagation();
     }
     if (job?.slug) {
-      this.router.navigate(['/job-det', job.slug]);
+      this.router.navigate(['/الوظائف', job.slug]);
     }
   }
 }

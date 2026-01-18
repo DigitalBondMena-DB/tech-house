@@ -23,9 +23,9 @@ import { SuccessPopup } from "../../shared/components/success-popup/success-popu
   selector: 'app-jop-det',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     AppButton,
-    FormsModule, 
+    FormsModule,
     ReactiveFormsModule,
     InputTextModule,
     TextareaModule,
@@ -80,7 +80,7 @@ export class JopDet {
   heroSubtitle = computed(() => {
     const job = this.job();
     const parts: string[] = [];
-    
+
     if (job?.working_hours) {
       parts.push(`⏰ ${job.working_hours}`);
     }
@@ -90,14 +90,14 @@ export class JopDet {
     if (job?.working_experience) {
       parts.push(`💼 ${job.working_experience}`);
     }
-    
+
     return parts.length > 0 ? parts.join(' • ') : 'لا يوجد بيانات';
   });
 
   heroJobInfo = computed(() => {
     const job = this.job();
     const info: Array<{ label: string; icon: string }> = [];
-    
+
     if (job?.working_hours) {
       info.push({
         label: job.working_hours,
@@ -116,7 +116,7 @@ export class JopDet {
         icon: `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`
       });
     }
-    
+
     return info;
   });
 
@@ -151,10 +151,10 @@ export class JopDet {
   // ===== CONTENT =====
   sanitizeHtml(html: string) {
     if (!html) return this.sanitizer.bypassSecurityTrustHtml('');
-    
+
     // Check if content already contains HTML tags (ul, li, p, div, etc.)
     const hasHtmlTags = /<(ul|li|p|div|h[1-6]|br|strong|b|em|i|a|span)[\s>]/.test(html);
-    
+
     if (!hasHtmlTags) {
       // Convert plain text to bullet list
       // Split by newlines or common separators
@@ -162,13 +162,13 @@ export class JopDet {
         .split(/\n+|•|·|▪|▫|-/)
         .map(line => line.trim())
         .filter(line => line.length > 0);
-      
+
       if (lines.length > 0) {
         const listItems = lines.map(line => `<li>${line}</li>`).join('');
         html = `<ul>${listItems}</ul>`;
       }
     }
-    
+
     return this.sanitizer.bypassSecurityTrustHtml(html);
   }
 
@@ -180,21 +180,21 @@ export class JopDet {
     // Initialize forms
     this.initializeForm();
     this.initializeContactForm();
-    
+
     // Check if URL contains "/done" and show popup if it does
     this.checkUrlForDone();
-    
+
     // Listen to route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.checkUrlForDone();
     });
-    
+
     this.route.params.subscribe(params => {
       const slug = params['slug'];
       if (!slug) {
-        this.router.navigate(['/jobs']);
+        this.router.navigate(['/الوظائف']);
         return;
       }
       // Reset state when slug changes
@@ -209,11 +209,11 @@ export class JopDet {
     effect(() => {
       const data = this.jobDetailsData();
       const job = this.job();
-      
+
       if (data !== null) {
         // Data has been loaded (even if null)
         this.isLoading.set(false);
-        
+
         if (data && job) {
           // Data exists and job exists
           this.hasError.set(false);
@@ -240,7 +240,7 @@ export class JopDet {
 
   // ===== NAVIGATION =====
   navigateToJobs(): void {
-    this.router.navigate(['/jobs']);
+    this.router.navigate(['/الوظائف']);
   }
 
   scrollToApply(): void {
@@ -363,14 +363,14 @@ export class JopDet {
 
   // Selected Country - Initialize with Saudi Arabia as default
   selectedCountryModel: Country = COUNTRIES[0];
-  
+
   // Selected Country Signal (syncs with model) - Initialize with Saudi Arabia
   selectedCountry = signal<Country>(COUNTRIES[0]);
 
   // Computed values
   selectedDialCode = computed(() => this.selectedCountry()?.dialCode || '+966');
   selectedCountryCode = computed(() => this.selectedCountry()?.code || 'sa');
-  
+
   // Phone patterns for each country (regex patterns) - Same as contact-us
   private phonePatterns: { [key: string]: { pattern: RegExp; minLength: number; maxLength: number; placeholder: string } } = {
     'sa': { pattern: /^5[0-9]{8}$/, minLength: 9, maxLength: 9, placeholder: '5XX XXX XXXX' },
@@ -454,55 +454,55 @@ export class JopDet {
       if (!control.value) {
         return null; // Let required validator handle empty values
       }
-      
+
       // First check if it's only numbers
       const phonePattern = /^[0-9]+$/;
       if (!phonePattern.test(control.value)) {
         return { invalidPhone: true };
       }
-      
+
       // Get current country pattern
       const countryCode = this.selectedCountryCode();
       const phoneInfo = this.phonePatterns[countryCode];
-      
+
       if (!phoneInfo) {
         return { invalidCountry: true };
       }
-      
+
       // Check length first
       const phoneLength = control.value.length;
       if (phoneLength < phoneInfo.minLength) {
-        return { 
-          invalidLength: { 
-            requiredLength: phoneInfo.minLength, 
+        return {
+          invalidLength: {
+            requiredLength: phoneInfo.minLength,
             maxLength: phoneInfo.maxLength,
             actualLength: phoneLength,
             type: 'min'
-          } 
+          }
         };
       }
-      
+
       if (phoneLength > phoneInfo.maxLength) {
-        return { 
-          invalidLength: { 
-            requiredLength: phoneInfo.minLength, 
+        return {
+          invalidLength: {
+            requiredLength: phoneInfo.minLength,
             maxLength: phoneInfo.maxLength,
             actualLength: phoneLength,
             type: 'max'
-          } 
+          }
         };
       }
-      
+
       // Check pattern match (format validation)
       if (!phoneInfo.pattern.test(control.value)) {
-        return { 
-          invalidFormat: { 
+        return {
+          invalidFormat: {
             country: this.selectedCountry()?.name || 'المختارة',
             requiredLength: phoneInfo.minLength
-          } 
+          }
         };
       }
-      
+
       return null;
     };
 
@@ -524,7 +524,7 @@ export class JopDet {
     if (country) {
       this.selectedCountry.set(country);
       this.selectedCountryModel = country;
-      
+
       // Re-validate phone number when country changes (for both forms)
       const jobPhoneControl = this.jobApplicationForm.get('phone');
       if (jobPhoneControl) {
@@ -532,7 +532,7 @@ export class JopDet {
         // Clear phone field when country changes to prevent invalid formats
         jobPhoneControl.setValue('');
       }
-      
+
       const contactPhoneControl = this.contactForm?.get('phone');
       if (contactPhoneControl) {
         contactPhoneControl.updateValueAndValidity();
@@ -547,7 +547,7 @@ export class JopDet {
     const char = String.fromCharCode(event.which || event.keyCode);
     // Only allow numbers
     const numberPattern = /[0-9]/;
-    
+
     if (!numberPattern.test(char)) {
       event.preventDefault();
       return false;
@@ -562,7 +562,7 @@ export class JopDet {
     const arabicPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
     const englishPattern = /[a-zA-Z\s]/;
     const isAllowed = arabicPattern.test(char) || englishPattern.test(char);
-    
+
     if (!isAllowed) {
       event.preventDefault();
       return false;
@@ -595,7 +595,7 @@ export class JopDet {
       formData.append('experience', this.jobApplicationForm.value.experience);
       formData.append('expected_salary', this.jobApplicationForm.value.expectedSalary);
       formData.append('current_salary', this.jobApplicationForm.value.currentSalary);
-      
+
       if (this.jobApplicationForm.value.portfolio) {
         formData.append('portfolio', this.jobApplicationForm.value.portfolio);
       }
@@ -618,8 +618,8 @@ export class JopDet {
           this.showSuccessPopup.set(true);
           // Add "Done" to the route path
           const currentUrl = this.router.url.split('?')[0];
-          if (!currentUrl.endsWith('/done')) {
-            this.router.navigateByUrl(currentUrl + '/done', { replaceUrl: false });
+          if (!currentUrl.endsWith('/تم')) {
+            this.router.navigateByUrl(currentUrl + '/تم', { replaceUrl: false });
           }
         },
         error: (error) => {
@@ -651,61 +651,61 @@ export class JopDet {
       }
       return null;
     };
-    
+
     // Custom validator for phone based on selected country
     const phoneValidator = (control: AbstractControl): { [key: string]: any } | null => {
       if (!control.value) {
         return null; // Let required validator handle empty values
       }
-      
+
       // First check if it's only numbers
       const phonePattern = /^[0-9]+$/;
       if (!phonePattern.test(control.value)) {
         return { invalidPhone: true };
       }
-      
+
       // Get current country pattern
       const countryCode = this.selectedCountryCode();
       const phoneInfo = this.phonePatterns[countryCode];
-      
+
       if (!phoneInfo) {
         return { invalidCountry: true };
       }
-      
+
       // Check length first
       const phoneLength = control.value.length;
       if (phoneLength < phoneInfo.minLength) {
-        return { 
-          invalidLength: { 
-            requiredLength: phoneInfo.minLength, 
+        return {
+          invalidLength: {
+            requiredLength: phoneInfo.minLength,
             maxLength: phoneInfo.maxLength,
             actualLength: phoneLength,
             type: 'min'
-          } 
+          }
         };
       }
-      
+
       if (phoneLength > phoneInfo.maxLength) {
-        return { 
-          invalidLength: { 
-            requiredLength: phoneInfo.minLength, 
+        return {
+          invalidLength: {
+            requiredLength: phoneInfo.minLength,
             maxLength: phoneInfo.maxLength,
             actualLength: phoneLength,
             type: 'max'
-          } 
+          }
         };
       }
-      
+
       // Check pattern match (format validation)
       if (!phoneInfo.pattern.test(control.value)) {
-        return { 
-          invalidFormat: { 
+        return {
+          invalidFormat: {
             country: this.selectedCountry()?.name || 'المختارة',
             requiredLength: phoneInfo.minLength
-          } 
+          }
         };
       }
-      
+
       return null;
     };
 
@@ -726,15 +726,15 @@ export class JopDet {
       formData.append('email', this.contactForm.value.email);
       formData.append('phone', this.contactForm.value.phone); // Phone without dial code
       formData.append('message', this.contactForm.value.message);
-      
+
       // Reset previous states
       this.isSubmitting.set(true);
       this.submitSuccess.set(false);
       this.submitError.set(null);
-      
+
       // Contact form uses different API domain
       const contactApiUrl = 'https://api.techhouseksa.com/api';
-      
+
       // Submit to API
       this.http.post(`${contactApiUrl}${API_END_POINTS.SUBMIT_CONTACT_FORM}`, formData).subscribe({
         next: (response) => {
@@ -750,7 +750,7 @@ export class JopDet {
         error: (error) => {
           this.isSubmitting.set(false);
           let errorMessage = 'حدث خطأ أثناء إرسال النموذج. يرجى المحاولة مرة أخرى.';
-          
+
           // Handle different error types
           if (error.status === 0) {
             // Network error or CORS issue
@@ -770,7 +770,7 @@ export class JopDet {
           } else if (error?.message) {
             errorMessage = error.message;
           }
-          
+
           this.submitError.set(errorMessage);
           // Clear error message after 8 seconds for network errors
           setTimeout(() => {
@@ -853,15 +853,15 @@ export class JopDet {
     this.showSuccessPopup.set(false);
     // Remove "Done" from the route path using Location API
     const currentUrl = this.location.path().split('?')[0];
-    if (currentUrl.endsWith('/done')) {
-      const baseUrl = currentUrl.replace('/done', '');
+    if (currentUrl.endsWith('/تم')) {
+      const baseUrl = currentUrl.replace('/تم', '');
       this.location.replaceState(baseUrl);
     }
   }
-  
+
   private checkUrlForDone(): void {
     const currentUrl = this.router.url.split('?')[0];
-    if (currentUrl.endsWith('/done')) {
+    if (currentUrl.endsWith('/تم')) {
       this.showSuccessPopup.set(true);
     }
   }
