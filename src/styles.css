@@ -2,7 +2,6 @@
 /* @import "flag-icons/css/flag-icons.min.css"; */
 
 @import "tailwindcss";
-@import "../public/fonts/fonts.css";
 
 
 /*! colors */
@@ -12,14 +11,18 @@
     --primary-font-color: #440000;
 }
 
-
+.icon-container {
+    content-visibility: auto;
+    contain-intrinsic-size: 24px 24px;
+    /* حجم الأيقونة المتوقع */
+}
 
 body {
     font-family: "Cairo", "Segoe UI", Tahoma, sans-serif !important;
     font-size-adjust: 0.5;
 }
 
-.cairo-font{
+.cairo-font {
     font-family: "Cairo", sans-serif !important;
 }
 
@@ -68,7 +71,7 @@ h2 {
     pointer-events: none;
 }
 
-.section-pattern > * {
+.section-pattern>* {
     position: relative;
     z-index: 1;
 }
@@ -124,6 +127,7 @@ h2 {
     from {
         opacity: 1;
     }
+
     to {
         opacity: 0;
     }
@@ -133,6 +137,7 @@ h2 {
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }

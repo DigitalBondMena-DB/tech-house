@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import {  Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ResponsiveImage } from '../../../core/models/home.model';
@@ -24,25 +24,7 @@ export class Footer implements OnInit {
   servicesSection = this.sharedFeatureService.servicesSection;
 
   ngOnInit(): void {
-    // Defer non-critical footer data loading to improve LCP
-    // Footer is below the fold, so we can delay loading its data
     this.loadFooterData()
-    // if (this.isBrowser) {
-      // Use requestIdleCallback if available, otherwise setTimeout
-      // if ('requestIdleCallback' in window) {
-      //   (window as any).requestIdleCallback(() => {
-      //     this.loadFooterData();
-      //   }, { timeout: 2000 });
-      // } else {
-        // Fallback: delay by 1 second to let critical content load first
-        // setTimeout(() => {
-        //   this.loadFooterData();
-        // }, 1000);
-      // }
-    // } else {
-      // SSR: load immediately
-      // this.loadFooterData();
-    // }
   }
 
   private loadFooterData(): void {

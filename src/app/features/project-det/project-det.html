@@ -13,7 +13,8 @@
 <section class="container mx-auto px-5 lg:px-20 py-20">
   <div class="flex flex-col items-center justify-center min-h-[60vh] text-center" dir="rtl">
     <div class="mb-6">
-      <svg class="w-24 h-24 text-[#ED2924] mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg class="w-24 h-24 text-[#ED2924] mx-auto icon-container" fill="none" stroke="currentColor"
+        viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z">
         </path>
@@ -160,7 +161,8 @@
           @for (slide of projectImages(); track slide.id) {
           <ng-template carouselSlide [id]="slide.id.toString()">
             <img (click)="openImagePopup(slide)" class="carousel-project-image w-full! mx-auto!"
-              [src]="slide.main_image" [alt]="slide.main_image" [title]="slide.main_image" loading="lazy" decoding="async">
+              [src]="slide.main_image" [alt]="slide.main_image" [title]="slide.main_image" loading="lazy"
+              decoding="async">
           </ng-template>
           }
 
@@ -169,8 +171,8 @@
         <!-- Custom Navigation: Left Arrow + Dots + Right Arrow -->
         <div class="carousel-nav-container">
           <button class="carousel-arrow" (click)="carouselPrev()" aria-label="التالي">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-              stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon-container" fill="none" viewBox="0 0 24 24"
+              stroke-width="2" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
             </svg>
           </button>
@@ -186,7 +188,7 @@
 
           <button class="carousel-arrow" (click)="carouselNext()" aria-label="السابق">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
-              stroke="currentColor">
+              stroke="currentColor" class="icon-container">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
             </svg>
           </button>
@@ -211,7 +213,7 @@
             @if (info.icon) {
             <img [src]="getResponsiveImage(info.icon)" alt="info-icon" class="info-icon">
             } @else {
-            <svg class="info-icon" fill="currentColor" viewBox="0 0 20 20">
+            <svg class="info-icon icon-container" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                 clip-rule="evenodd"></path>
@@ -261,7 +263,8 @@
   <div class="image-popup-container h-[80vh]!" (click)="$event.stopPropagation()">
     <!-- Previous Button -->
     <button class="popup-nav-btn popup-nav-prev" (click)="prevPopupImage()" aria-label="السابق">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
+        class="icon-container">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
       </svg>
     </button>
@@ -272,14 +275,16 @@
 
     <!-- Next Button -->
     <button class="popup-nav-btn popup-nav-next" (click)="nextPopupImage()" aria-label="التالي">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon-container" fill="none" viewBox="0 0 24 24" stroke-width="2"
+        stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
       </svg>
     </button>
 
     <!-- Close Button -->
     <button class="popup-close-btn p-2" (click)="closeImagePopup()" aria-label="إغلاق">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon-container" fill="none" viewBox="0 0 24 24" stroke-width="2"
+        stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
       </svg>
     </button>
