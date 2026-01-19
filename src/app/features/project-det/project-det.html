@@ -135,7 +135,7 @@
         </div>
 
         <!-- Project Content -->
-        <div class="project-main-content h-[300px] lg:h-[600px] overflow-y-auto [direction:ltr]">
+        <div class="project-main-content h-[300px] max-h-[auto] lg:max-h-[600px] overflow-y-auto [direction:ltr]">
           <div dir="rtl" class="ps-3">
             <!-- Active Section Content -->
             @if (activeSection()) {
@@ -205,51 +205,53 @@
     <!-- Left Sidebar -->
     <div class="lg:col-span-1">
       <!-- Project Information -->
-      <div class="project-info-box-detail mb-8 border border-[#ED2924] rounded-2xl p-6 md:p-8">
-        <div class="flex items-center gap-2 mb-4 md:mb-6">
-          <img src="images/title/title.webp" alt="title-icon">
-          <h2 class="box-title">معلومات عن المشروع</h2>
-        </div>
-        @if (projectInformation().length > 0) {
-        <div class="project-info-list space-y-4">
-          @for (info of projectInformation(); track info.id || $index) {
-          <div class="info-item flex items-center gap-3">
-            @if (info.icon) {
-            <img [src]="getResponsiveImage(info.icon)" alt="info-icon" class="info-icon">
-            } @else {
-            <svg class="info-icon icon-container" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clip-rule="evenodd"></path>
-            </svg>
-            }
-            <div>
-              <div class="info-item-label">{{ info.label || info.title }}</div>
-              <div class="info-item-value">
-                @if (info.value || info.text) {
-                {{ info.value || info.text }}
-                } @else {
-                <span class="text-gray-400">لا يوجد بيانات </span>
-                }
+      <div class="sticky top-0">
+        <div class="project-info-box-detail mb-8 border border-[#ED2924] rounded-2xl p-6 md:p-8">
+          <div class="flex items-center gap-2 mb-4 md:mb-6">
+            <img src="images/title/title.webp" alt="title-icon">
+            <h2 class="box-title">معلومات عن المشروع</h2>
+          </div>
+          @if (projectInformation().length > 0) {
+          <div class="project-info-list space-y-4">
+            @for (info of projectInformation(); track info.id || $index) {
+            <div class="info-item flex items-center gap-3">
+              @if (info.icon) {
+              <img [src]="getResponsiveImage(info.icon)" alt="info-icon" class="info-icon">
+              } @else {
+              <svg class="info-icon icon-container" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                  clip-rule="evenodd"></path>
+              </svg>
+              }
+              <div>
+                <div class="info-item-label">{{ info.label || info.title }}</div>
+                <div class="info-item-value">
+                  @if (info.value || info.text) {
+                  {{ info.value || info.text }}
+                  } @else {
+                  <span class="text-gray-400">لا يوجد بيانات </span>
+                  }
+                </div>
               </div>
             </div>
+            }
+          </div>
+          } @else {
+          <div class="text-center py-8">
+            <p class="text-gray-400">لا يوجد بيانات </p>
           </div>
           }
         </div>
-        } @else {
-        <div class="text-center py-8">
-          <p class="text-gray-400">لا يوجد بيانات </p>
-        </div>
-        }
-      </div>
-      <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
-        <div class="flex items-center gap-2 mb-4 md:mb-6">
-          <img src="images/title/title.webp" alt="title-icon">
-          <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
-        </div>
-        <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true" [slug]="project()?.slug"
-          [type]="'المشاريع'" />
+        <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
+          <div class="flex items-center gap-2 mb-4 md:mb-6">
+            <img src="images/title/title.webp" alt="title-icon">
+            <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
+          </div>
+          <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true" [slug]="project()?.slug"
+            [type]="'المشاريع'" />
 
+        </div>
       </div>
     </div>
 
