@@ -19,18 +19,18 @@ export class App implements AfterViewInit {
   private document = inject(DOCUMENT);
   private isBrowser = isPlatformBrowser(this.platformId);
   private seoService = inject(SEOService);
-  constructor(){
+  constructor() {
     this.seoService.initSEOListeners()
   }
   ngAfterViewInit(): void {
     // Only run in browser (not SSR)
     if (!this.isBrowser) return;
     const scrollSource = fromEvent(window, 'scroll');
-    scrollSource.pipe(tap(()=>{
-      this.renderer.addClass(this.document.body,'is-scrolling');
+    scrollSource.pipe(tap(() => {
+      this.renderer.addClass(this.document.body, 'is-scrolling');
     }),
-  debounceTime(150)).subscribe(()=>{
-    this.renderer.removeClass(this.document.body,'is-scrolling')
-  })
+      debounceTime(150)).subscribe(() => {
+        this.renderer.removeClass(this.document.body, 'is-scrolling')
+      })
   }
 }

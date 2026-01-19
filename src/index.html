@@ -9,40 +9,43 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>TechHouse - ابتكارات تسويقية رقمية تصنع الفرق لشركتك</title>
   <!-- Meta -->
-   <meta name="title" content="">
-   <meta name="description" content="">
+  <meta name="title" content="">
+  <meta name="description" content="">
   <meta name="og:type" content="website">
   <meta name="og:site_name" content="Tech House">
   <meta name="og:image:width" content="100">
   <meta name="og:image:height" content="100">
   <meta name="og:locale" content="ar">
-  
+
   <!-- <meta name="keywords" content="تسويق رقمي, حلول تسويقية, TechHouse"> -->
   <meta name="robots" content="index, follow">
-  
+
   <base href="/">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <!-- Critical LCP image preload - ONLY the actual LCP element -->
   <link rel="preload" as="image" href="/images/hero/hero.webp" fetchpriority="high">
-  <!-- NOTE: gif.mp4 is NOT preloaded - it's 4.5MB and blocks LCP, loaded lazily after LCP -->
-  
+
+  <!-- Critical fonts - Preload fonts used in LCP -->
+  <link rel="preload" href="/fonts/cairo/Cairo-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/fonts/changa/Changa-Regular.woff2" as="font" type="font/woff2" crossorigin>
+
   <!-- Non-critical image preloads - deferred -->
   <!-- <link rel="preload" as="image" href="/images/logo/logo.webp" fetchpriority="low"> -->
-  
+
   <!-- External resources - DNS prefetch and preconnect for API (critical for LCP) -->
   <link rel="dns-prefetch" href="https://dashboard.techhouseksa.com" />
   <link rel="preconnect" href="https://dashboard.techhouseksa.com" crossorigin />
-  
+
   <!-- Non-critical CSS - loaded asynchronously -->
-  <link rel="preload" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css" as="style"
-    onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="stylesheet" media="print" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css"
+    onload="this.onload=null;this.media='all'">
   <noscript>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
   </noscript>
-  
+
   <!-- Critical fonts - ONLY the most critical one, others loaded on-demand -->
   <link rel="preload" href="/fonts/cairo/Cairo-Regular.woff2" as="font" type="font/woff2" crossorigin>
- 
+
   <style>
     /* Critical font-face for LCP - Cairo Regular */
     @font-face {
@@ -55,7 +58,7 @@
       descent-override: 20%;
       line-gap-override: 0%;
     }
-    
+
     /* Changa font for h1/h2 - used in LCP */
     @font-face {
       font-family: 'Changa';
@@ -67,15 +70,16 @@
       descent-override: 20%;
       line-gap-override: 0%;
     }
-    
+
     /* Base font family for immediate rendering */
     body {
       font-family: "Cairo", "Segoe UI", Tahoma, sans-serif;
       font-size-adjust: 0.5;
     }
-    
+
     /* Headings use Changa font with fallback to prevent layout shift */
-    h1, h2 {
+    h1,
+    h2 {
       font-family: "Changa", "Cairo", "Segoe UI", Tahoma, sans-serif;
       font-size-adjust: 0.5;
     }

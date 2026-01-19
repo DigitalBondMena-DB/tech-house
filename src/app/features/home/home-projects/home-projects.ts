@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, PLATFORM_ID, QueryList, SimpleChanges, ViewChildren, computed, inject, signal } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, input, PLATFORM_ID, signal, viewChildren, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/all';
@@ -14,18 +14,11 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
   templateUrl: './home-projects.html',
   styleUrl: './home-projects.css'
 })
-export class HomeProjects implements AfterViewInit, OnChanges {
-  @Input() projects: Project[] = [];
+export class HomeProjects implements AfterViewInit {
+  projects = input<Project[]>([]);
 
   // 🔹 Loading state as signal
-  private isLoadingSignal = signal(true);
-  isLoading = computed(() => this.isLoadingSignal());
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['projects']) {
-      this.isLoadingSignal.set(!this.projects || this.projects.length === 0);
-    }
-  }
+  isLoading = computed(() => !this.projects() || this.projects().length === 0);
 
   //! section title data
   projectsTitle = "المشاريع";
@@ -52,7 +45,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
   private activeCardIndex = 1; // Start with the middle card active
 
   // Reference to the cards container
-  @ViewChildren('projectCard') projectCards!: QueryList<ElementRef>;
+  projectCards = viewChildren<ElementRef>('projectCard');
 
   constructor() {
     // Register GSAP plugins only in browser
@@ -96,7 +89,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
     }
 
     // Get the clicked project from the sliced array (first 3 projects)
-    const displayedProjects = this.projects.slice(0, 3);
+    const displayedProjects = this.projects().slice(0, 3);
     const clickedProject = displayedProjects[clickedIndex];
     if (!clickedProject) {
       return;
@@ -122,7 +115,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
     }
 
     // Get all card elements
-    const cards = this.projectCards.toArray().map(card => card.nativeElement);
+    const cards = this.projectCards().map((card: ElementRef) => card.nativeElement);
     const activeCard = cards[this.activeCardIndex];
     const clickedCard = cards[clickedIndex];
 
@@ -150,7 +143,7 @@ export class HomeProjects implements AfterViewInit, OnChanges {
 
   // Update z-index and classes based on active card
   private updateCardStates() {
-    this.projectCards.forEach((card, index) => {
+    this.projectCards().forEach((card: ElementRef, index: number) => {
       const element = card.nativeElement;
       const diff = Math.abs(index - this.activeCardIndex);
 

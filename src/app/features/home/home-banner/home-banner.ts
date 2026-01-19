@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, input } from '@angular/core';
 
 @Component({
   selector: 'app-home-banner',
@@ -9,5 +9,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './home-banner.css'
 })
 export class HomeBanner {
-  @Input() scrollTitle?: string;
+  scrollTitle =  input<string>('');
 }

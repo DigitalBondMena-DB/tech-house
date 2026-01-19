@@ -30,14 +30,18 @@ export class Home implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
-  private scrollEnabled = false;
-  private cdr = inject(ChangeDetectorRef);
 
   // 🔹 Home Data from API
   homeData = computed(() => this.featureService.homeData());
 
   // 🔹 Counters from SharedFeatureService
   counters = computed(() => this.sharedFeatureService.counters());
+
+  videoReady = signal<boolean>(false);
+
+  onVideoReady() {
+    this.videoReady.set(true);
+  }
 
   constructor() {
     // Watch for data loading completion and enable scroll when ready
@@ -48,12 +52,9 @@ export class Home implements OnInit {
         }
       });
       effect(() => {
-        const allLoaded = this.isAllDataLoaded();
-        if (allLoaded && !this.scrollEnabled) {
-          // Wait a bit for DOM to settle
-          setTimeout(() => {
-            this.enableScroll();
-          }, 100);
+        const homeData = this.homeData();
+        if (homeData) {
+          this.separatedSeoTags.getSeoTagsDirect(homeData.seotag, 'home');
         }
       });
     }
@@ -65,11 +66,11 @@ export class Home implements OnInit {
     video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
-    setTimeout(()=>{
+    setTimeout(() => {
       video.play().catch(() => {
         console.warn('Autoplay blocked');
       });
-    },100)
+    }, 100)
   }
 
   // 🔹 Computed properties for sections
@@ -139,10 +140,7 @@ export class Home implements OnInit {
   }
 
   ngOnInit(): void {
-    // Scroll to top FIRST before loading data to prevent scroll jump
     if (this.isBrowser) {
-      // Force scroll to top immediately
-      window.scrollTo({ top: 0, behavior: 'instant' });
       this.screenWidth.set(window.innerWidth);
       console.log(this.screenWidth());
 
@@ -160,9 +158,8 @@ export class Home implements OnInit {
       counters: this.sharedFeatureService.loadCounters(),
       partners: this.sharedFeatureService.loadPartnersClients()
     }).subscribe({
-      next: ({home}) => {
-        this.separatedSeoTags.getSeoTagsDirect(home?.seotag,'home')
-        
+      next: () => {
+        // SEO logic moved to effect for better signal integration
       },
       error: (err: any) => {
         console.error('Error loading home page data:', err);
@@ -172,43 +169,4 @@ export class Home implements OnInit {
 
 
 
-  private disableScroll(): void {
-    if (!this.isBrowser) return;
-
-    // Save current scroll position
-    const scrollY = window.scrollY;
-
-    // Prevent scroll with multiple methods
-    document.documentElement.style.overflow = 'hidden';
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-
-    this.scrollEnabled = false;
-  }
-
-  private enableScroll(): void {
-    if (!this.isBrowser || this.scrollEnabled) return;
-
-    // Get the scroll position that was saved
-    const scrollY = document.body.style.top;
-
-    // Restore scroll
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-
-    // Force scroll to top
-    window.scrollTo({ top: 0, behavior: 'instant' });
-
-    // Double check after a small delay
-    setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }, 50);
-
-    this.scrollEnabled = true;
-  }
 }

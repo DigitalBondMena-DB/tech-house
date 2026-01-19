@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges, computed, signal } from '@angular/core';
+import { Component, computed, effect, input, signal } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Testimonial } from '../../../core/models/home.model';
 
@@ -9,12 +9,11 @@ import { Testimonial } from '../../../core/models/home.model';
   templateUrl: './home-clients-review.html',
   styleUrl: './home-clients-review.css'
 })
-export class HomeClientsReview implements OnChanges {
-  @Input() testimonials: Testimonial[] = [];
+export class HomeClientsReview {
+  testimonials = input<Testimonial[]>([]);
 
   // 🔹 Loading state as signal
-  private isLoadingSignal = signal(true);
-  isLoading = computed(() => this.isLoadingSignal());
+  isLoading = computed(() => !this.testimonials() || this.testimonials().length === 0);
 
   // 🔹 Current center index signal
   private currentCenterIndexSignal = signal(0);
@@ -23,7 +22,8 @@ export class HomeClientsReview implements OnChanges {
   // 🔹 Get visible testimonials as computed signal for reactivity
   // Always returns 3 testimonials (or fewer if total is less than 3)
   visibleTestimonials = computed(() => {
-    if (!this.testimonials || this.testimonials.length === 0) {
+    const testimonials = this.testimonials();
+    if (!testimonials || testimonials.length === 0) {
       return [];
     }
 
@@ -32,15 +32,15 @@ export class HomeClientsReview implements OnChanges {
 
     // If only 1 testimonial, show it in center with placeholders
     if (total === 1) {
-      return [this.testimonials[0]];
+      return [testimonials[0]];
     }
 
     // If 2 testimonials, show both with center being the selected one
     if (total === 2) {
       const otherIndex = centerIndex === 0 ? 1 : 0;
       return [
-        this.testimonials[otherIndex],
-        this.testimonials[centerIndex]
+        testimonials[otherIndex],
+        testimonials[centerIndex]
       ];
     }
 
@@ -63,20 +63,21 @@ export class HomeClientsReview implements OnChanges {
     }
 
     return [
-      this.testimonials[leftIndex],
-      this.testimonials[centerIndex],
-      this.testimonials[rightIndex]
+      testimonials[leftIndex],
+      testimonials[centerIndex],
+      testimonials[rightIndex]
     ];
   });
 
   // 🔹 Center testimonial as computed signal for reactivity
   centerTestimonial = computed(() => {
-    if (!this.testimonials || this.testimonials.length === 0) {
+    const testimonials = this.testimonials();
+    if (!testimonials || testimonials.length === 0) {
       return null;
     }
 
     const centerIndex = this.currentCenterIndex();
-    return this.testimonials[centerIndex] || null;
+    return testimonials[centerIndex] || null;
   });
 
   // 🔹 Check if image is center based on position
@@ -86,14 +87,14 @@ export class HomeClientsReview implements OnChanges {
     return position === 1; // For 3 or more, center is always index 1
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['testimonials']) {
-      this.isLoadingSignal.set(!this.testimonials || this.testimonials.length === 0);
-      // Reset center index when testimonials change
-      if (this.testimonials && this.testimonials.length > 0) {
-        this.currentCenterIndexSignal.set(Math.min(1, this.testimonials.length - 1));
+  constructor() {
+    // Reset center index when testimonials change
+    effect(() => {
+      const testimonials = this.testimonials();
+      if (testimonials && testimonials.length > 0) {
+        this.currentCenterIndexSignal.set(Math.min(1, testimonials.length - 1));
       }
-    }
+    });
   }
 
   // Get visible testimonials (kept for backward compatibility, but now uses computed)
@@ -103,7 +104,8 @@ export class HomeClientsReview implements OnChanges {
 
   // Handle image click
   onImageClick(clickedIndex: number): void {
-    if (!this.testimonials || this.testimonials.length === 0) {
+    const testimonials = this.testimonials();
+    if (!testimonials || testimonials.length === 0) {
       return;
     }
 
@@ -114,7 +116,7 @@ export class HomeClientsReview implements OnChanges {
       return;
     }
 
-    const total = this.testimonials.length;
+    const total = testimonials.length;
 
     // If only 1 testimonial, do nothing
     if (total === 1) {
@@ -122,7 +124,7 @@ export class HomeClientsReview implements OnChanges {
     }
 
     // Find the actual index of clicked testimonial in the full array
-    const actualIndex = this.testimonials.findIndex(
+    const actualIndex = testimonials.findIndex(
       t => t.name === clickedTestimonial.name && t.text === clickedTestimonial.text
     );
 
@@ -138,8 +140,6 @@ export class HomeClientsReview implements OnChanges {
 
     // If 3 testimonials, move clicked one to center (index 1)
     if (total === 3) {
-      // Map visible index to actual index
-      // visible[0] = testimonials[0], visible[1] = testimonials[1], visible[2] = testimonials[2]
       this.currentCenterIndexSignal.set(actualIndex);
       return;
     }
@@ -147,7 +147,7 @@ export class HomeClientsReview implements OnChanges {
     // If more than 3, handle rotation
     // If clicking on center (index 1), rotate to next
     if (clickedIndex === 1) {
-      const nextIndex = (actualIndex + 1) % this.testimonials.length;
+      const nextIndex = (actualIndex + 1) % testimonials.length;
       this.currentCenterIndexSignal.set(nextIndex);
     } else {
       // If clicking on left (index 0) or right (index 2), move to center
@@ -162,5 +162,4 @@ export class HomeClientsReview implements OnChanges {
     }
     return image.desktop;
   }
-
 }

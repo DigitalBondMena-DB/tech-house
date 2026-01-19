@@ -1,18 +1,19 @@
 <section class="overflow-hidden relative">
   <app-circle-sidebar class="hidden md:block"></app-circle-sidebar>
   <!-- Hero Section - Background image always visible for LCP optimization -->
-  <section class="bg-linear min-h-[90vh] lg:min-h-screen relative" style="contain: layout style paint;">
+  <section class="bg-linear min-h-[90vh] lg:min-h-screen relative">
     <!-- LCP Background Image - Always rendered for optimal performance -->
-    <div class="hero-lcp-container overflow-hidden h-[90vh] lg:h-screen w-full relative">
-      <!-- LCP Image - Shown first for optimal LCP performance -->
-      @if(isSmallScreen()) {
-      <img src="/images/hero/hero.webp" alt="ابتكارات تسويقية رقمية تصنع الفرق لشركتك" class="hero-lcp-image"
-        width="1920" height="1080" fetchpriority="high" loading="eager" decoding="sync" />
-      }
-      <!-- GIF Video - Background layer - Enhanced after First Paint -->
+    <div class="hero-lcp-container h-[90vh] lg:h-screen w-full relative bg-[#440000]">
+      <!-- LCP Image - Baseline for ALL devices to ensure consistent LCP score -->
+      <img src="/images/hero/hero.webp" alt="ابتكارات تسويقية رقمية تصنع الفرق لشركتك"
+        class="hero-lcp-image absolute inset-0 w-full h-full object-cover z-0" width="1920" height="1080"
+        fetchpriority="high" loading="eager" decoding="sync" />
+
+      <!-- Video Background - Loaded after First Paint on larger screens -->
       @if(!isSmallScreen()) {
-      <video #videoRef src="/images/hero/gif.mp4" autoplay loop muted playsinline preload="auto"
-        class="hero-gif-video md:block" width="1920" height="1080" aria-hidden="true">
+      <video #videoRef [src]="'/images/hero/gif.mp4'" autoplay loop muted playsinline preload="none"
+        class="hero-gif-video absolute inset-0 w-full h-full object-cover z-10 opacity-0 transition-opacity duration-1000"
+        [class.opacity-100]="videoReady()" width="1920" height="1080" aria-hidden="true" (canplay)="onVideoReady()">
       </video>
       }
       <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">

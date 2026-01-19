@@ -35,7 +35,7 @@
     </app-section-title>
     <!-- Desktop: Cards with interactive behavior -->
     <div class="hidden lg:flex flex-row justify-center mt-4 gap-6 items-start  h-[650px]">
-        @for (blog of getDisplayBlogs(); track blog.slug; let i = $index) {
+        @for (blog of displayBlogs(); track blog.slug; let i = $index) {
         <div class="cursor-pointer transition-all duration-800 blog-card min-h-[500px]"
             (click)="navigateToBlogDetails(blog, $event)" (mouseenter)="setActive(i + 1, blog, $event)"
             [class]="activeCard === (i + 1) ? (i === 0 ? 'w-full lg:w-1/2 pt-0' : i === 1 ? 'w-1/2' : 'w-1/2 pt-0') : 'w-full lg:w-1/4  pt-6'">
@@ -80,7 +80,7 @@
 
     <!-- Mobile: Cards stacked normally, full width -->
     <div class="flex lg:hidden flex-col gap-6 mt-4 min-h-[500px]">
-        @for (blog of getDisplayBlogs(); track blog.slug; let i = $index) {
+        @for (blog of displayBlogs(); track blog.slug; let i = $index) {
         <div class="cursor-pointer blog-card-mobile w-full min-h-[400px]" (click)="navigateToBlogDetails(blog, $event)">
             <div class="relative blog-image-container w-full min-h-[40vh] mb-4">
                 <img [ngSrc]="getResponsiveImage(blog.image) || '/images/placeholder.webp'" [alt]="blog.title || ''"

@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges, computed, signal } from '@angular/core';
+import { Component, inject, input, computed, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Blog } from '../../../core/models/home.model';
@@ -12,18 +12,11 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
   templateUrl: './home-blogs.html',
   styleUrl: './home-blogs.css'
 })
-export class HomeBlogs implements OnChanges {
-  @Input() blogs: Blog[] = [];
+export class HomeBlogs {
+  blogs = input<Blog[]>([]);
 
   // 🔹 Loading state as signal
-  private isLoadingSignal = signal(true);
-  isLoading = computed(() => this.isLoadingSignal());
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['blogs']) {
-      this.isLoadingSignal.set(!this.blogs || this.blogs.length === 0);
-    }
-  }
+  isLoading = computed(() => !this.blogs() || this.blogs().length === 0);
 
   //! section title data
   projectsTitle = " المقالات";
@@ -70,7 +63,5 @@ export class HomeBlogs implements OnChanges {
   }
 
   // Get blogs for display (first 3)
-  getDisplayBlogs(): Blog[] {
-    return this.blogs.slice(0, 3);
-  }
+  displayBlogs = computed(() => this.blogs().slice(0, 3));
 }

@@ -9,7 +9,7 @@ import { SharedFeatureService } from '../../../core/services/sharedFeatureServic
   styleUrl: './circle-sidebar.css',
   standalone: true
 })
-export class CircleSidebar implements OnInit, AfterViewInit {
+export class CircleSidebar implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);
 
   // Contact Us Data from API
@@ -20,10 +20,6 @@ export class CircleSidebar implements OnInit, AfterViewInit {
     // Note: This may be called from other components as well, but service has guard to prevent duplicate calls
     // Subscribe to Observable - data will be set in signal automatically
     this.sharedFeatureService.loadContactUsData().subscribe();
-  }
-
-  ngAfterViewInit(): void {
-    // View initialization logic (if needed)
   }
 
   // Helper method to format WhatsApp URL

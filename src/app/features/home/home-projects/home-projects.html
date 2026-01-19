@@ -23,8 +23,7 @@
   <!-- Mobile Skeleton -->
   <div class="flex lg:hidden flex-col gap-6 my-10 min-h-150">
     @for (i of [1,2,3]; track i) {
-    <div
-      class="flex flex-col md:flex-row justify-between items-center rounded-3xl p-6 bg-white shadow-lg min-h-50">
+    <div class="flex flex-col md:flex-row justify-between items-center rounded-3xl p-6 bg-white shadow-lg min-h-50">
       <p-skeleton width="200px" height="200px" styleClass="rounded-lg"></p-skeleton>
       <div class="w-full md:w-3/4 p-4 flex flex-col gap-4">
         <p-skeleton width="60%" height="24px" styleClass="rounded-lg"></p-skeleton>
@@ -44,7 +43,7 @@
   </app-section-title>
   <!-- Desktop: Cards with animations stacked -->
   <div class="hidden lg:flex flex-col gap-10 relative lg:h-162.5 pt-30 lg:mx-30 mt-10 ">
-    @for (project of projects.slice(0, 3); track project.slug; let i = $index) {
+    @for (project of projects().slice(0, 3); track project.slug; let i = $index) {
     <div #projectCard
       class="project-card absolute flex justify-between items-center rounded-3xl p-8 px-10 transition-all duration-300 cursor-pointer min-h-75"
       [class]="i === 0 ? '-rotate-4 -translate-y-20 bg-gray-200' : i === 1 ? 'active-card bg-white shadow-lg' : 'rotate-4 translate-y-20 bg-gray-100'"
@@ -59,8 +58,7 @@
         <p class="mb-12 text-xs xl:text-lg font-medium text-[#440000] line-clamp-3">{{ project.text }}</p>
         <span class="underline text-[#ED2924] font-semibold text-xl flex items-center justify-center">عرض تفاصيل
           المشروع
-          <img ngSrc="images/icons/arrow-left.webp" alt="" width="22" height="22"
-            class="mx-1 size-3.5 md:size-4.5">
+          <img ngSrc="images/icons/arrow-left.webp" alt="" width="22" height="22" class="mx-1 size-3.5 md:size-4.5">
         </span>
       </div>
     </div>
@@ -69,7 +67,7 @@
 
   <!-- Mobile: Cards stacked normally -->
   <div class="flex lg:hidden flex-col gap-6 my-10 mb-10 pb-10">
-    @for (project of projects.slice(0, 3); track project.slug; let i = $index) {
+    @for (project of projects().slice(0, 3); track project.slug; let i = $index) {
     <div
       class="project-card-mobile flex flex-col md:flex-row justify-between items-center rounded-3xl p-6 bg-white shadow-lg min-h-50"
       (click)="onCardClick(i)">
@@ -85,8 +83,7 @@
           class="underline text-[#ED2924] font-semibold text-lg flex items-center justify-center md:justify-start">عرض
           تفاصيل
           المشروع
-          <img ngSrc="images/icons/arrow-left.webp" alt="" width="22" height="22"
-            class="mx-1 size-3.5 md:size-4.5">
+          <img ngSrc="images/icons/arrow-left.webp" alt="" width="22" height="22" class="mx-1 size-3.5 md:size-4.5">
         </span>
       </div>
     </div>
@@ -95,11 +92,9 @@
   <!-- } -->
 
   <div class="w-full relative z-20 flex justify-center pt-10 xl:pt-20">
-  <app-app-button 
-    [btnText]="btnText" 
-    routerLink="/المشاريع"
-    customClass="ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 cursor-pointer shadow-lg hover:bg-[#940000]">
-  </app-app-button>
-</div>
+    <app-app-button [btnText]="btnText" routerLink="/المشاريع"
+      customClass="ps-7 pe-3 py-4 bg-[#B91C17] text-white rounded-full flex items-center justify-center transition duration-300 cursor-pointer shadow-lg hover:bg-[#940000]">
+    </app-app-button>
+  </div>
   }
 </section>

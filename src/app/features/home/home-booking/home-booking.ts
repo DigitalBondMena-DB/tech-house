@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, input, OnDestroy, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, ElementRef, inject, input, OnDestroy, PLATFORM_ID, viewChild } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CTASection } from '../../../core/models/home.model';
 import { AppButton } from '../../../shared/components/app-button/app-button';
@@ -27,7 +27,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
   private throttledScrollHandler?: () => void;
   private scrollHandlerTarget?: HTMLVideoElement;
 
-  @ViewChild('videoElement', { static: false }) videoElement?: ElementRef<HTMLVideoElement>;
+  videoElement = viewChild<ElementRef<HTMLVideoElement>>('videoElement');
 
   constructor() {
     // Watch for video URL changes (only in browser)
@@ -82,7 +82,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const video = this.videoElement?.nativeElement;
+    const video = this.videoElement()?.nativeElement;
     if (!video) {
       // Retry if video element is not ready yet
       if (this.ctasection()?.video) {
@@ -105,7 +105,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
     video.setAttribute('playsinline', '');
     video.setAttribute('webkit-playsinline', '');
     video.setAttribute('muted', '');
-    
+
     // Set source if not already set
     if (!video.src || video.src !== videoUrl) {
       video.src = videoUrl;
@@ -126,7 +126,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
 
     // Load the video
     video.load();
-    
+
     // Fallback: try to play after a delay
     setTimeout(() => {
       this.playVideo();
@@ -138,7 +138,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
       return;
     }
 
-    const video = this.videoElement?.nativeElement;
+    const video = this.videoElement()?.nativeElement;
     if (!video || typeof video.play !== 'function') {
       return;
     }
@@ -147,7 +147,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
     video.muted = true;
 
     const playPromise = video.play();
-    
+
     if (playPromise !== undefined) {
       playPromise
         .then(() => {
@@ -173,7 +173,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
           .then(() => {
             this.cleanupInteractionListeners();
           })
-          .catch(() => {});
+          .catch(() => { });
       }
     };
 
@@ -182,7 +182,7 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
 
     // Use throttled scroll handler for better performance
     this.throttledScrollHandler = rafThrottle(playOnInteraction);
-    
+
     document.addEventListener('click', playOnInteraction, { once: true });
     document.addEventListener('touchstart', playOnInteraction, { once: true });
     // Use throttled handler for scroll with passive listener

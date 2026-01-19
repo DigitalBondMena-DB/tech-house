@@ -1,19 +1,16 @@
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import {
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   computed,
   effect,
   ElementRef,
   inject,
-  Input,
-  OnChanges,
+  input,
   OnDestroy,
   PLATFORM_ID,
   signal,
-  SimpleChanges,
-  ViewChild
+  viewChild,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -28,38 +25,34 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
   templateUrl: './home-about.html',
   styleUrl: './home-about.css'
 })
-export class HomeAbout implements AfterViewInit, OnDestroy, OnChanges {
+export class HomeAbout implements AfterViewInit, OnDestroy {
 
-  @Input() aboutData: AboutHome | null = null;
+  aboutData = input<AboutHome | null>(null);
 
-  @ViewChild('aboutSection', { static: false }) aboutSection!: ElementRef<HTMLElement>;
+  aboutSection = viewChild<ElementRef<HTMLElement>>('aboutSection');
 
   private sharedFeatureService = inject(SharedFeatureService);
   private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
-  private cdr = inject(ChangeDetectorRef);
+  private isBrowser = signal<boolean>(isPlatformBrowser(this.platformId));
 
   // 🔹 counters from API (signal)
   counters = computed(() => this.sharedFeatureService.counters());
 
   // 🔹 Loading state as signal
   private isLoadingSignal = signal(true);
-  isLoading = computed(() => this.isLoadingSignal());
 
   // 🔹 animated values - initialize with default values
-  animatedCounters: number[] = [0, 0, 0];
+  animatedCounters = signal<number[]>([0, 0, 0]);
 
-  private animated = false;
-  private viewReady = false;
+  private animated = signal<boolean>(false);
+  private viewReady = signal<boolean>(false);
   private intersectionObserver?: IntersectionObserver;
 
   constructor() {
     // API call moved to ngAfterViewInit
 
-    // Track counters changes via effect
+    // Track inputs/counters changes via effect
     effect(() => {
-      const counters = this.counters();
-      // Update loading state when counters change
       this.updateLoadingState();
     });
 
@@ -69,41 +62,36 @@ export class HomeAbout implements AfterViewInit, OnDestroy, OnChanges {
       // Initialize animatedCounters with default values when counters data arrives
       if (counters?.length) {
         const maxCounters = Math.min(counters.length, 3);
-        if (this.animatedCounters.length !== maxCounters) {
-          this.animatedCounters = new Array(maxCounters).fill(0);
+        if (this.animatedCounters().length !== maxCounters) {
+          this.animatedCounters.set(new Array(maxCounters).fill(0));
         }
       }
 
       // Initialize counters when data arrives (but don't start animation yet)
       // Animation will start when section is visible
-      if (counters?.length && this.viewReady && this.isBrowser) {
+      if (counters?.length && this.viewReady() && this.isBrowser()) {
         this.setupIntersectionObserver();
       }
     });
   }
 
   private updateLoadingState(): void {
-    const hasAboutData = !!this.aboutData?.title;
+    const hasAboutData = !!this.aboutData()?.title;
     const hasCounters = this.counters() && this.counters()!.length > 0;
     this.isLoadingSignal.set(!hasAboutData || !hasCounters);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['aboutData']) {
-      this.updateLoadingState();
-    }
-  }
 
   ngAfterViewInit(): void {
     // ✅ تأكيد أن الـ DOM اترسم
-    this.viewReady = true;
-    
+    this.viewReady.set(true);
+
     // Update loading state after view init
     this.updateLoadingState();
-    
+
     // Setup Intersection Observer if counters are already loaded
     const counters = this.counters();
-    if (counters?.length && this.isBrowser) {
+    if (counters?.length && this.isBrowser()) {
       this.setupIntersectionObserver();
     }
   }
@@ -116,45 +104,49 @@ export class HomeAbout implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   private setupIntersectionObserver(): void {
-    if (!this.isBrowser || this.animated || !this.aboutSection?.nativeElement) {
+    if (!this.isBrowser() || this.animated() || !this.aboutSection()?.nativeElement) {
       return;
     }
 
     // Create Intersection Observer to trigger animation when section is visible
-    this.intersectionObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && !this.animated) {
-            const counters = this.counters();
-            if (counters?.length) {
-              queueMicrotask(() => {
-                this.startCounters();
-              });
-              // Disconnect observer after animation starts
-              this.intersectionObserver?.disconnect();
-            }
-          }
-        });
-      },
-      {
-        threshold: 0.3 // Start animation when 30% of section is visible
-      }
-    );
+    const aboutElement = this.aboutSection()?.nativeElement;
 
-    this.intersectionObserver.observe(this.aboutSection.nativeElement);
+    // تأكد أن العنصر موجود فعلاً قبل البدء
+    if (aboutElement) {
+      this.intersectionObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !this.animated()) {
+              const counters = this.counters();
+              if (counters?.length) {
+                // تنفيذ الـ animation
+                this.startCounters();
+                this.animated.set(true); // علامة لعدم التكرار
+
+                // وقف المراقبة تماماً لتوفير الأداء
+                this.intersectionObserver?.disconnect();
+              }
+            }
+          });
+        },
+        { threshold: 0.3 }
+      );
+
+      this.intersectionObserver.observe(aboutElement);
+    }
   }
 
   // =====================
   private startCounters(): void {
-    if (this.animated) return;
+    if (this.animated()) return;
 
     const counters = this.counters();
     if (!counters?.length) return;
 
-    this.animated = true;
+    this.animated.set(true);
     // Initialize with 0 values for the first 3 counters
     const maxCounters = Math.min(counters.length, 3);
-    this.animatedCounters = new Array(maxCounters).fill(0);
+    this.animatedCounters.set(new Array(maxCounters).fill(0));
 
     counters.slice(0, 3).forEach((counter, index) => {
       this.animateCounter(counter.count, index);
@@ -165,31 +157,28 @@ export class HomeAbout implements AfterViewInit, OnDestroy, OnChanges {
   private animateCounter(target: number, index: number): void {
     const duration = 2000;
     const start = performance.now();
-    // Safe requestAnimationFrame wrapper: use native RAF in browser
-    // or fallback to setTimeout during SSR/testing.
-    const raf = typeof requestAnimationFrame === 'function'
-      ? requestAnimationFrame.bind(globalThis)
-      : (cb: FrameRequestCallback) => setTimeout(() => cb((typeof performance !== 'undefined' && (performance as any).now) ? (performance as any).now() : Date.now()), 16);
 
     const animate = (time: number) => {
       const progress = Math.min((time - start) / duration, 1);
-      this.animatedCounters[index] = Math.floor(target * progress);
-      // ✅ Trigger change detection manually
-      this.cdr.detectChanges();
+      const newValue = Math.floor(target * progress);
+
+      if (this.animatedCounters()[index] !== newValue) {
+        this.animatedCounters.update((prev: number[]) => {
+          const updated = [...prev];
+          updated[index] = newValue;
+          return updated;
+        });
+      }
 
       if (progress < 1) {
-        raf(animate);
-      } else {
-        this.animatedCounters[index] = target;
-        // ✅ Trigger change detection for final value
-        this.cdr.detectChanges();
+        requestAnimationFrame(animate);
       }
     };
 
-    raf(animate);
+    requestAnimationFrame(animate);
   }
 
   getResponsiveImage(): string {
-    return this.aboutData?.image?.desktop || '/images/placeholder.webp';
+    return this.aboutData()?.image?.desktop || '/images/placeholder.webp';
   }
 }
