@@ -128,7 +128,7 @@ export class SEOService {
     const existingSchemas = this.document.body.querySelectorAll('.dynamic-schema');
     existingSchemas.forEach(el => this.renderer.removeChild(this.document.body, el));
 
-    if (!pageSchema || pageSchema.trim() === '') return;
+    if (!pageSchema || pageSchema.toLowerCase() === 'page schema' || pageSchema.trim() === '') return;
 
     try {
       const tempDiv = this.renderer.createElement('div');
