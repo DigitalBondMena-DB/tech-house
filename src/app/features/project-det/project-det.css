@@ -574,7 +574,15 @@
   align-items: center;
   gap: 10px;
 }
+::ng-deep owl-carousel-o {
+  direction: ltr !important; /* اجعل الكاروسيل نفسه LTR */
+}
 
+/* إذا أردت الصور تترتب من اليمين لليسار برغم ذلك */
+::ng-deep .owl-stage {
+  display: flex;
+  flex-direction: row-reverse; 
+}
 .carousel-dot {
   width: 12px;
   height: 12px;

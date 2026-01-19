@@ -137,15 +137,15 @@ export class ProjectDet {
 
   // Handle carousel slide change
   onCarouselTranslated(data: SlidesOutputData): void {
-    if (data.startPosition !== undefined) {
-      const slidesCount = this.projectImages().length;
-      // Adjust index for RTL
-      const index = this.customOptions.rtl ? slidesCount - data.startPosition - 1 : data.startPosition;
-      console.log(index);
-
-      this.activeSlideIndex.set(index);
-    }
+ 
+  if (data.startPosition !== undefined) {
+    const slidesCount = this.projectImages().length;
+    const realIndex = data.startPosition % slidesCount;
+    
+    this.activeSlideIndex.set(realIndex);
+    console.log('Active Index:', realIndex);
   }
+}
 
   // Navigate to previous slide
   carouselPrev(): void {
@@ -159,12 +159,14 @@ export class ProjectDet {
 
   // Go to specific slide
   goToSlide(index: number): void {
-    const images = this.projectImages();
-    if (index >= 0 && index < images.length) {
-      this.owlCarousel?.to(images[index].id.toString());
-      this.activeSlideIndex.set(index);
-    }
+  const images = this.projectImages();
+  if (index >= 0 && index < images.length) {
+    const slideId = images[index].id.toString();
+    this.owlCarousel.to(slideId);
+    
+    this.activeSlideIndex.set(index);
   }
+}
 
   // ===== IMAGE POPUP =====
   popupImage = signal<string | null>(null);
