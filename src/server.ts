@@ -89,7 +89,6 @@ const angularAppEngine = new AngularAppEngine()
 
 export async function netlifyAppEngineHandler(request: Request): Promise<Response> {
   const context = getContext()
-
   // Example API endpoints can be defined here.
   // Uncomment and define endpoints as necessary.
   // const pathname = new URL(request.url).pathname;

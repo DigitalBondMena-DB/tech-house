@@ -65,7 +65,7 @@ export class SharedFeatureService {
     }
 
     this.countersLoading = true;
-    
+
     return this.http.get<CountersResponse>(`${this.baseUrl}${API_END_POINTS.COUNTERS}`).pipe(
       map((data) => {
         if (data && data.counters) {
@@ -96,12 +96,12 @@ export class SharedFeatureService {
     }
 
     this.contactHeroLoading = true;
-    
+
     this.http.get<ContactHeroResponse | any>(`${this.baseUrl}${API_END_POINTS.CONTACT_HERO}`).subscribe({
       next: (data) => {
         let heroData: ContactHero | null = null;
-        
-      if (data.bannerSection) {
+
+        if (data.bannerSection) {
           heroData = {
             title: data.bannerSection.title || '',
             paragraph: data.bannerSection.text,
@@ -135,7 +135,7 @@ export class SharedFeatureService {
             };
           }
         }
-        
+
         if (heroData) {
           this.contactHeroResponseSignal.set(heroData);
         }
@@ -160,11 +160,11 @@ export class SharedFeatureService {
     }
 
     this.contactUsLoading = true;
-    
+
     return this.http.get<ContactUsResponse | any>(`${this.baseUrl}${API_END_POINTS.CONTACT_US}`).pipe(
       tap((data) => {
         const contactUs = data.contactUs || data;
-        
+
         if (contactUs) {
           const contactData: ContactUsData = {
             footer_text: contactUs.footer_text,
@@ -191,10 +191,12 @@ export class SharedFeatureService {
               snapchat_url: contactUs.social.snapchat_url
             } : undefined
           };
-          
+
           this.contactUsResponseSignal.set(contactData);
         }
         this.contactUsLoading = false;
+        console.log(contactUs);
+
       }),
       catchError((err) => {
         // Only log if it's not a network/CORS error (status 0)
@@ -216,11 +218,11 @@ export class SharedFeatureService {
     }
 
     this.servicesSectionLoading = true;
-    
+
     this.http.get<ServicesSectionResponse | any>(`${this.baseUrl}${API_END_POINTS.SERVICESEC}`).subscribe({
       next: (data) => {
         let services: ServiceTitle[] = [];
-        
+
         if (Array.isArray(data.serviceTitles)) {
           services = data.serviceTitles;
         }
@@ -245,7 +247,7 @@ export class SharedFeatureService {
         else if (Array.isArray(data.data?.titles)) {
           services = data.data.titles;
         }
-        
+
         if (services.length > 0) {
           this.servicesSectionSignal.set(services);
         }
@@ -270,7 +272,7 @@ export class SharedFeatureService {
     }
 
     this.partnersClientsLoading = true;
-    
+
     return this.http.get<PartnersClientsResponse>(`${this.baseUrl}${API_END_POINTS.BANNERS}`).pipe(
       tap((data) => {
         if (data && (data.clients || data.partners)) {
@@ -297,11 +299,11 @@ export class SharedFeatureService {
     }
 
     this.privacyPolicyLoading = true;
-    
+
     this.http.get<PrivacyPolicyResponse | any>(`${this.baseUrl}${API_END_POINTS.PRIVACYPOLICY}`).subscribe({
       next: (data) => {
         let privacyData: PrivacyPolicyData | null = null;
-        
+
         if (data.bannerSection) {
           privacyData = {
             title: data.bannerSection.title || '',
@@ -365,7 +367,7 @@ export class SharedFeatureService {
             privacyPolicy: data.privacyPolicy
           };
         }
-        
+
         if (privacyData) {
           this.privacyPolicyResponseSignal.set(privacyData);
         }

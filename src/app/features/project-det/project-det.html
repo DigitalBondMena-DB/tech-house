@@ -117,45 +117,49 @@
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12">
     <!-- Main Content Area -->
-    <div class="lg:col-span-2">
+    <div class="lg:col-span-2 flex flex-col justify-between">
       <!-- Navigation Tabs -->
-      <div class="project-nav-tabs flex flex-wrap gap-4 mb-8 md:mb-12">
-        @if (sections().length > 0) {
-        @for (section of sections(); track section.id || $index; let i = $index) {
-        <button class="nav-tab" [class.nav-tab-active]="isSectionActive(i)" (click)="navigateToSection(i)">
-          {{ section.title || section.name }}
-        </button>
-        }
-        } @else {
-        <div class="w-full text-center py-4">
-          <p class="text-gray-400">لا يوجد بيانات </p>
+      <div>
+        <div class="project-nav-tabs flex flex-wrap gap-4 mb-8 md:mb-12">
+          @if (sections().length > 0) {
+          @for (section of sections(); track section.id || $index; let i = $index) {
+          <button class="nav-tab" [class.nav-tab-active]="isSectionActive(i)" (click)="navigateToSection(i)">
+            {{ section.title || section.name }}
+          </button>
+          }
+          } @else {
+          <div class="w-full text-center py-4">
+            <p class="text-gray-400">لا يوجد بيانات </p>
+          </div>
+          }
         </div>
-        }
-      </div>
 
-      <!-- Project Content -->
-      <div class="project-main-content h-[200px] overflow-y-auto">
-        <!-- Active Section Content -->
-        @if (activeSection()) {
-        <div class="project-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed"
-          [innerHTML]="sanitizeHtml(activeSection()?.content || activeSection()?.text || '')">
+        <!-- Project Content -->
+        <div class="project-main-content h-[300px] lg:h-[600px] overflow-y-auto [direction:ltr]">
+          <div dir="rtl" class="ps-3">
+            <!-- Active Section Content -->
+            @if (activeSection()) {
+            <div class="project-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed"
+              [innerHTML]="sanitizeHtml(activeSection()?.content || activeSection()?.text || '')">
+            </div>
+            } @else if (project()?.text) {
+            <!-- Fallback to full text if no sections -->
+            <div class="project-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed"
+              [innerHTML]="fullContent()">
+            </div>
+            } @else {
+            <!-- No content available -->
+            <div
+              class="project-content prose prose-lg max-w-none text-base md:text-lg text-gray-400 leading-relaxed text-center py-8">
+              <p>لا يوجد بيانات </p>
+            </div>
+            }
+          </div>
         </div>
-        } @else if (project()?.text) {
-        <!-- Fallback to full text if no sections -->
-        <div class="project-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed"
-          [innerHTML]="fullContent()">
-        </div>
-        } @else {
-        <!-- No content available -->
-        <div
-          class="project-content prose prose-lg max-w-none text-base md:text-lg text-gray-400 leading-relaxed text-center py-8">
-          <p>لا يوجد بيانات </p>
-        </div>
-        }
       </div>
       @if (hasProject() && projectImages().length > 0) {
       @defer {
-      <section class="container mx-auto px-5 py-20 md:py-26">
+      <div class="container mx-auto px-5 pt-5 self-end">
         <owl-carousel-o #owlCarousel [options]="customOptions" (translated)="onCarouselTranslated($event)">
 
           @for (slide of projectImages(); track slide.id) {
@@ -194,7 +198,7 @@
           </button>
         </div>
 
-      </section>
+      </div>
       }
       }
     </div>
