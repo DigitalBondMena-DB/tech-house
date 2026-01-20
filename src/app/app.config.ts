@@ -17,7 +17,6 @@ export const appConfig: ApplicationConfig = {
       withInMemoryScrolling({
         scrollPositionRestoration: 'top'
       }),
-      withViewTransitions()
     ),
     provideClientHydration(
       withEventReplay(),
@@ -27,12 +26,8 @@ export const appConfig: ApplicationConfig = {
     ),
     provideAnimationsAsync(),
     providePrimeNG({
-      theme: {
-        preset: Aura,
-        options: {
-          darkModeSelector: false,
-        },
-      },
+      theme: "none",
+      unstyled: true,
     }),
     provideHttpClient(
       withFetch(),
