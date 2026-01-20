@@ -45,7 +45,7 @@
     </div>
   </section>
   <app-home-banner class="translate-y-60 md:translate-y-40 relative z-20"
-    [scrollTitle]="heroSection()!.scroll_title"></app-home-banner>
+    [scrollTitle]="heroSection()?.scroll_title || ''"></app-home-banner>
 
 
   <!-- About Section - Deferred for better LCP -->
