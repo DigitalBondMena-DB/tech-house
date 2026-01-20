@@ -1,3 +1,7 @@
+.bg-card {
+  background: linear-gradient(to bottom, #ED2924, #440000);
+}
+
 /* LCP Hero Image - Optimized for Largest Contentful Paint */
 .hero-lcp-container {
   position: relative;
