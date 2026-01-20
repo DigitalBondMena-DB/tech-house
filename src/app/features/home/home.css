@@ -1,7 +1,3 @@
-.bg-card {
-  background: linear-gradient(to bottom, #ED2924, #440000);
-}
-
 /* LCP Hero Image - Optimized for Largest Contentful Paint */
 .hero-lcp-container {
   position: relative;
@@ -46,17 +42,26 @@
   transition: opacity 0.5s ease-in-out;
   opacity: 1;
 }
-app-home-about, 
-app-home-services, 
+
+app-home-about,
+app-home-services,
 app-home-projects {
   display: block;
   animation: fadeIn 0.5s ease-in-out;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .hero-lcp-image.hidden {
   opacity: 0;
   pointer-events: none;
@@ -68,7 +73,7 @@ app-home-projects {
   .hero-lcp-image {
     object-position: center top;
   }
-  
+
   .hero-lcp-container {
     contain: layout style paint;
   }

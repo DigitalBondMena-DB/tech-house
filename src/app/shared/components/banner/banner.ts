@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, NgZone, OnChanges, PLATFORM_ID, SimpleChanges, inject, input, signal, viewChild } from '@angular/core';
 import { gsap } from 'gsap';
 import { ClientPartner } from '../../../core/models/home.model';
 
@@ -11,22 +11,21 @@ import { ClientPartner } from '../../../core/models/home.model';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Banner implements AfterViewInit, OnChanges {
-  @Input() customClass: string = '';
-  @Input() direction: 'left' | 'right' = 'left'; // 'left' for right-to-left, 'right' for left-to-right
-  @Input() items: ClientPartner[] = []; // Array of client/partner items
-  @Input() startAnimation?: boolean; // Control when to start animation (optional)
-  @Input() useCssAnimation: boolean = false; // Use CSS animation instead of GSAP
+  customClass = input<string>('');
+  direction = input<'left' | 'right'>('left'); // 'left' for right-to-left, 'right' for left-to-right
+  items = input<ClientPartner[]>([]); // Array of client/partner items
+  startAnimation = input<boolean>(); // Control when to start animation (optional)
+  useCssAnimation = input<boolean>(false); // Use CSS animation instead of GSAP
 
-  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  scrollContainer = viewChild<ElementRef>('scrollContainer');
 
-  private animationInitialized = false;
+  private animationInitialized = signal<boolean>(false);
   private timeline: gsap.core.Tween | gsap.core.Timeline | null = null;
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private isBrowser = isPlatformBrowser(this.platformId);
-  private imagesLoaded = false;
-  private imagesToLoad = 0;
-  private imagesLoadedCount = 0;
+  private imagesToLoad = signal<number>(0);
+  private imagesLoadedCount = signal<number>(0);
 
   // Helper method to get responsive image
   getResponsiveImage(image: { desktop: string; tablet: string; mobile: string } | null | undefined): string {
@@ -44,9 +43,9 @@ export class Banner implements AfterViewInit, OnChanges {
 
   // Get items to display (duplicate for seamless infinite loop)
   getDisplayItems(): ClientPartner[] {
-    if (this.items.length === 0) return [];
+    if (this.items().length === 0) return [];
     // Duplicate items enough times for seamless infinite scrolling (at least 2 sets)
-    return [...this.items, ...this.items, ...this.items];
+    return [...this.items(), ...this.items(), ...this.items()];
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -56,7 +55,7 @@ export class Banner implements AfterViewInit, OnChanges {
     }
 
     // If using CSS animation, don't initialize GSAP
-    if (this.useCssAnimation) {
+    if (this.useCssAnimation()) {
       return;
     }
 
@@ -69,9 +68,8 @@ export class Banner implements AfterViewInit, OnChanges {
 
       // If items changed from empty to non-empty (most important case for refresh)
       if (previousLength === 0 && currentLength > 0) {
-        this.animationInitialized = false;
-        this.imagesLoaded = false;
-        this.imagesLoadedCount = 0;
+        this.animationInitialized.set(false);
+        this.imagesLoadedCount.set(0);
         // Reset retry count since we now have items
         (this as any).__retryCount = 0;
         // Wait for images to load before re-initializing
@@ -81,9 +79,8 @@ export class Banner implements AfterViewInit, OnChanges {
       }
       // If items changed and we already had items (re-initialize)
       else if (!changes['items'].firstChange && previousLength > 0 && previousLength !== currentLength) {
-        this.animationInitialized = false;
-        this.imagesLoaded = false;
-        this.imagesLoadedCount = 0;
+        this.animationInitialized.set(false);
+        this.imagesLoadedCount.set(0);
         setTimeout(() => {
           this.waitForImagesAndInit();
         }, 200);
@@ -98,17 +95,17 @@ export class Banner implements AfterViewInit, OnChanges {
 
     // If startAnimation changed to true and we haven't started yet, start the animation
     if (changes['startAnimation']) {
-      if (this.startAnimation === true && !this.animationInitialized) {
+      if (this.startAnimation() === true && !this.animationInitialized()) {
         setTimeout(() => {
           this.tryInitAnimation();
         }, 100);
-      } else if (this.startAnimation === false && this.animationInitialized) {
+      } else if (this.startAnimation() === false && this.animationInitialized()) {
         // If startAnimation changed to false, stop animation
         if (this.timeline) {
           this.timeline.kill();
           this.timeline = null;
         }
-        this.animationInitialized = false;
+        this.animationInitialized.set(false);
       }
     }
   }
@@ -130,27 +127,27 @@ export class Banner implements AfterViewInit, OnChanges {
     }
 
     // If using CSS animation, don't initialize GSAP
-    if (this.useCssAnimation) {
+    if (this.useCssAnimation()) {
       return;
     }
 
     // If startAnimation is explicitly set to false, wait for it to become true
     // If it's undefined (not provided), start normally
-    if (this.startAnimation === false) {
+    if (this.startAnimation() === false) {
       // We're waiting for startAnimation to be true
       return;
     }
 
     // If startAnimation is undefined (not provided), start normally
     // If startAnimation is true, start immediately
-    if (this.startAnimation === undefined || this.startAnimation === true) {
-      if (this.items.length > 0 && this.scrollContainer) {
+    if (this.startAnimation() === undefined || this.startAnimation() === true) {
+      if (this.items().length > 0 && this.scrollContainer()) {
         setTimeout(() => {
-          if (!this.animationInitialized && this.scrollContainer) {
+          if (!this.animationInitialized() && this.scrollContainer()) {
             this.waitForImagesAndInit();
           }
         }, 150);
-      } else if (this.items.length === 0) {
+      } else if (this.items().length === 0) {
         // If no items yet, try again after a delay (for when data loads)
         // Limit retries to prevent infinite loops (max 10 retries = 5 seconds)
         const retryCount = (this as any).__retryCount || 0;
@@ -171,16 +168,16 @@ export class Banner implements AfterViewInit, OnChanges {
   }
 
   private waitForImagesAndInit() {
-    if (!this.isBrowser || !this.scrollContainer) {
+    if (!this.isBrowser || !this.scrollContainer()) {
       return;
     }
 
     // If using CSS animation, don't initialize GSAP
-    if (this.useCssAnimation) {
+    if (this.useCssAnimation()) {
       return;
     }
 
-    const container = this.scrollContainer.nativeElement;
+    const container = this.scrollContainer()?.nativeElement;
     const images = container.querySelectorAll('img');
 
     if (images.length === 0) {
@@ -192,9 +189,8 @@ export class Banner implements AfterViewInit, OnChanges {
     }
 
     // Reset image loading state
-    this.imagesLoaded = false;
-    this.imagesToLoad = images.length;
-    this.imagesLoadedCount = 0;
+    this.imagesToLoad.set(images.length);
+    this.imagesLoadedCount.set(0);
 
     // Check if images are already loaded
     let allLoaded = true;
@@ -206,7 +202,7 @@ export class Banner implements AfterViewInit, OnChanges {
         img.addEventListener('load', loadHandler, { once: true });
         img.addEventListener('error', errorHandler, { once: true });
       } else {
-        this.imagesLoadedCount++;
+        this.imagesLoadedCount.update(prev => prev + 1);
       }
     });
 
@@ -218,7 +214,7 @@ export class Banner implements AfterViewInit, OnChanges {
     } else {
       // Wait for images with timeout fallback
       setTimeout(() => {
-        if (!this.animationInitialized) {
+        if (!this.animationInitialized()) {
           // Timeout - initialize anyway
           this.privateInitAnimation();
         }
@@ -227,9 +223,8 @@ export class Banner implements AfterViewInit, OnChanges {
   }
 
   private onImageLoad() {
-    this.imagesLoadedCount++;
-    if (this.imagesLoadedCount >= this.imagesToLoad && !this.animationInitialized) {
-      this.imagesLoaded = true;
+    this.imagesLoadedCount.update(prev => prev + 1);
+    if (this.imagesLoadedCount() >= this.imagesToLoad() && !this.animationInitialized()) {
       setTimeout(() => {
         this.privateInitAnimation();
       }, 100);
@@ -238,12 +233,12 @@ export class Banner implements AfterViewInit, OnChanges {
 
   // Public method to prepare animation (create timeline but don't start)
   public prepareAnimation(): void {
-    if (!this.isBrowser || this.animationInitialized) {
+    if (!this.isBrowser || this.animationInitialized()) {
       return;
     }
 
     // If using CSS animation, don't initialize GSAP
-    if (this.useCssAnimation) {
+    if (this.useCssAnimation()) {
       return;
     }
 
@@ -263,12 +258,12 @@ export class Banner implements AfterViewInit, OnChanges {
     }
 
     // If using CSS animation, don't initialize GSAP
-    if (this.useCssAnimation) {
+    if (this.useCssAnimation()) {
       return;
     }
 
     // If animation is already initialized and playing, do nothing
-    if (this.animationInitialized && this.timeline && !this.timeline.paused()) {
+    if (this.animationInitialized() && this.timeline && !this.timeline.paused()) {
       return;
     }
 
@@ -279,7 +274,7 @@ export class Banner implements AfterViewInit, OnChanges {
     }
 
     // Otherwise wait for images and start
-    if (this.items.length > 0) {
+    if (this.items().length > 0) {
       this.waitForImagesAndInit();
     } else {
       // If no items, try again after a delay
@@ -296,12 +291,12 @@ export class Banner implements AfterViewInit, OnChanges {
     }
 
     // If using CSS animation, don't initialize GSAP
-    if (this.useCssAnimation) {
+    if (this.useCssAnimation()) {
       return;
     }
 
     // Prevent multiple initializations
-    if (this.animationInitialized && !paused) {
+    if (this.animationInitialized() && !paused) {
       return;
     }
 
@@ -311,12 +306,12 @@ export class Banner implements AfterViewInit, OnChanges {
       this.timeline = null;
     }
 
-    if (!this.scrollContainer || !this.scrollContainer.nativeElement) {
-      this.animationInitialized = false;
+    if (!this.scrollContainer || !this.scrollContainer()?.nativeElement) {
+      this.animationInitialized.set(false);
       return;
     }
 
-    const container = this.scrollContainer.nativeElement;
+    const container = this.scrollContainer()?.nativeElement;
 
     // Run measurements outside Angular's change detection to reduce reflow
     this.ngZone.runOutsideAngular(() => {
@@ -371,7 +366,7 @@ export class Banner implements AfterViewInit, OnChanges {
     // Kill any existing tweens on the container
     gsap.killTweensOf(container);
 
-    const isRightToLeft = this.direction === 'left'; // Default direction is right-to-left when direction is 'left'
+    const isRightToLeft = this.direction() === 'left'; // Default direction is right-to-left when direction is 'left'
 
     // Reset position to start with hardware acceleration
     gsap.set(container, {
@@ -382,7 +377,7 @@ export class Banner implements AfterViewInit, OnChanges {
     // Calculate the actual width of one set by measuring first set of items
     // This is more accurate than dividing by 3, especially with gaps
     const items = container.children;
-    const itemsPerSet = this.items.length;
+    const itemsPerSet = this.items().length;
     let actualSingleSetWidth = 0;
 
     if (items.length >= itemsPerSet && itemsPerSet > 0) {
@@ -447,7 +442,7 @@ export class Banner implements AfterViewInit, OnChanges {
     );
 
     this.timeline = tween;
-    this.animationInitialized = true;
+    this.animationInitialized.set(true);
 
     // If not paused, ensure animation is playing
     if (!paused && this.timeline) {
