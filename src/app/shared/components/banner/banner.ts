@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, Input, NgZone, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild, inject } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, NgZone, OnChanges, PLATFORM_ID, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { gsap } from 'gsap';
 import { ClientPartner } from '../../../core/models/home.model';
 
@@ -7,7 +7,8 @@ import { ClientPartner } from '../../../core/models/home.model';
   selector: 'app-banner',
   imports: [NgOptimizedImage],
   templateUrl: './banner.html',
-  styleUrl: './banner.css'
+  styleUrl: './banner.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Banner implements AfterViewInit, OnChanges {
   @Input() customClass: string = '';
@@ -65,7 +66,7 @@ export class Banner implements AfterViewInit, OnChanges {
       const currentItems = changes['items'].currentValue || [];
       const previousLength = Array.isArray(previousItems) ? previousItems.length : 0;
       const currentLength = Array.isArray(currentItems) ? currentItems.length : 0;
-      
+
       // If items changed from empty to non-empty (most important case for refresh)
       if (previousLength === 0 && currentLength > 0) {
         this.animationInitialized = false;
@@ -77,7 +78,7 @@ export class Banner implements AfterViewInit, OnChanges {
         setTimeout(() => {
           this.waitForImagesAndInit();
         }, 200);
-      } 
+      }
       // If items changed and we already had items (re-initialize)
       else if (!changes['items'].firstChange && previousLength > 0 && previousLength !== currentLength) {
         this.animationInitialized = false;
@@ -181,7 +182,7 @@ export class Banner implements AfterViewInit, OnChanges {
 
     const container = this.scrollContainer.nativeElement;
     const images = container.querySelectorAll('img');
-    
+
     if (images.length === 0) {
       // No images, initialize immediately
       setTimeout(() => {
@@ -316,7 +317,7 @@ export class Banner implements AfterViewInit, OnChanges {
     }
 
     const container = this.scrollContainer.nativeElement;
-    
+
     // Run measurements outside Angular's change detection to reduce reflow
     this.ngZone.runOutsideAngular(() => {
       // Use multiple RAF to ensure DOM is fully ready and images are rendered
@@ -324,7 +325,7 @@ export class Banner implements AfterViewInit, OnChanges {
         requestAnimationFrame(() => {
           // Measure container width in RAF to avoid force reflow
           const containerWidth = container.scrollWidth;
-          
+
           if (containerWidth === 0) {
             // Retry if width is still 0 (max 5 retries)
             const retryCount = (container as any).__retryCount || 0;
@@ -344,7 +345,7 @@ export class Banner implements AfterViewInit, OnChanges {
           // Since we duplicated items 3 times, one set is containerWidth / 3
           // But we'll recalculate more accurately in setupAnimation
           const singleSetWidth = containerWidth / 3;
-          
+
           // Ensure we have a valid width
           if (singleSetWidth <= 0 || !isFinite(singleSetWidth)) {
             setTimeout(() => {
@@ -352,7 +353,7 @@ export class Banner implements AfterViewInit, OnChanges {
             }, 200);
             return;
           }
-          
+
           // Run animation setup back inside Angular zone
           this.ngZone.run(() => {
             this.setupAnimation(container, singleSetWidth, paused);
@@ -373,8 +374,8 @@ export class Banner implements AfterViewInit, OnChanges {
     const isRightToLeft = this.direction === 'left'; // Default direction is right-to-left when direction is 'left'
 
     // Reset position to start with hardware acceleration
-    gsap.set(container, { 
-      x: 0, 
+    gsap.set(container, {
+      x: 0,
       force3D: true
     });
 
@@ -383,12 +384,12 @@ export class Banner implements AfterViewInit, OnChanges {
     const items = container.children;
     const itemsPerSet = this.items.length;
     let actualSingleSetWidth = 0;
-    
+
     if (items.length >= itemsPerSet && itemsPerSet > 0) {
       // Get the computed style to account for gap
       const containerStyle = window.getComputedStyle(container);
       const gap = parseFloat(containerStyle.gap || '0') || 0;
-      
+
       // Calculate width of first set by summing individual item widths + gaps
       for (let i = 0; i < itemsPerSet; i++) {
         const item = items[i] as HTMLElement;
@@ -423,15 +424,15 @@ export class Banner implements AfterViewInit, OnChanges {
     const duration = finalSetWidth / pixelsPerSecond;
 
     const targetX = isRightToLeft ? -finalSetWidth : finalSetWidth;
-    
+
     // Create seamless infinite scroll using fromTo for proper seamless loop
     // fromTo ensures that when repeat happens, it starts from 0 again seamlessly
     // Since items are duplicated (3 sets), when we move by finalSetWidth and repeat from 0,
     // the duplicated items will be in the same position, creating a seamless loop
     const tween = gsap.fromTo(container,
-      { 
-        x: 0, 
-        force3D: true 
+      {
+        x: 0,
+        force3D: true
       },
       {
         x: targetX,
@@ -444,10 +445,10 @@ export class Banner implements AfterViewInit, OnChanges {
         lazy: false
       }
     );
-    
+
     this.timeline = tween;
     this.animationInitialized = true;
-    
+
     // If not paused, ensure animation is playing
     if (!paused && this.timeline) {
       this.timeline.play();

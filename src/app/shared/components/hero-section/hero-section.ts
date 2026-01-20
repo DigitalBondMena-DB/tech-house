@@ -1,15 +1,15 @@
-import { Component, Input, AfterViewInit, ViewChild, ElementRef, OnChanges, SimpleChanges, inject, NgZone, PLATFORM_ID } from '@angular/core';
+import { Component, Input, AfterViewInit, ViewChild, ElementRef, OnChanges, SimpleChanges, inject, NgZone, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppButton } from '../app-button/app-button';
-import { HomeBanner } from '../../../features/home/home-banner/home-banner';
 import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-hero-section',
   imports: [AppButton, CommonModule, NgOptimizedImage],
   templateUrl: './hero-section.html',
-  styleUrl: './hero-section.css'
+  styleUrl: './hero-section.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeroSection implements AfterViewInit, OnChanges {
   @Input() title?: string;
@@ -68,18 +68,18 @@ export class HeroSection implements AfterViewInit, OnChanges {
     const text = this.subtitle;
     const element = this.subtitleElement.nativeElement;
     const container = this.subtitleContainer.nativeElement;
-    
+
     // Safe requestAnimationFrame wrapper: use native RAF in browser
     // or fallback to setTimeout during SSR/testing
     const raf = typeof requestAnimationFrame === 'function'
       ? requestAnimationFrame.bind(globalThis)
       : (cb: FrameRequestCallback) => setTimeout(() => {
-          const time = (typeof performance !== 'undefined' && (performance as any).now) 
-            ? (performance as any).now() 
-            : Date.now();
-          cb(time);
-        }, 16);
-    
+        const time = (typeof performance !== 'undefined' && (performance as any).now)
+          ? (performance as any).now()
+          : Date.now();
+        cb(time);
+      }, 16);
+
     // Run measurements outside Angular's change detection to reduce reflow
     this.ngZone.runOutsideAngular(() => {
       raf(() => {
@@ -127,7 +127,7 @@ export class HeroSection implements AfterViewInit, OnChanges {
     totalPadding: number
   ) {
     const text = this.subtitle!;
-    
+
     // Clear the element
     element.textContent = '';
 
@@ -135,7 +135,7 @@ export class HeroSection implements AfterViewInit, OnChanges {
     this.typingAnimation = gsap.timeline({ repeat: -1, repeatDelay: 2 });
 
     // Set initial state - text hidden and positioned from right, container width 0
-    gsap.set(element, { 
+    gsap.set(element, {
       opacity: 0,
       x: 50
     });

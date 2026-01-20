@@ -2,11 +2,10 @@
   <div class="banner-background min-h-20"></div>
   <div class="banner-container min-h-20">
     <div class="banner-track min-h-20">
-      <!-- 5 copies for seamless infinite loop -->
       @for (i of [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]; track i) {
-        <div class="banner-item">
-          <span class="banner-text font-bold text-3xl! xl:text-6xl!">{{ scrollTitle() }}</span>
-        </div>
+      <div class="banner-item">
+        <span class="banner-text font-bold text-3xl! xl:text-6xl!">{{ scrollTitle() }}</span>
+      </div>
       }
     </div>
   </div>

@@ -1,10 +1,11 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, computed, effect, inject, NgZone, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
+import { Component, computed, DestroyRef, effect, inject, NgZone, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
 import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-blog-det',
@@ -15,7 +16,8 @@ import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
   encapsulation: ViewEncapsulation.None
 })
 export class BlogDet {
-
+  private readonly timeouts = new Map<string, NodeJS.Timeout>()
+  private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -105,14 +107,14 @@ export class BlogDet {
         cleanedStyles = cleanedStyles.replace(/;\s*;/g, ';').replace(/^\s*;\s*|\s*;\s*$/g, '');
         return `style="${cleanedStyles}"`;
       });
-      html = html.replace(/style\s*=\s*"([^"]*)text-align\s*:\s*(left|right|center)([^"]*)"/gi, 
+      html = html.replace(/style\s*=\s*"([^"]*)text-align\s*:\s*(left|right|center)([^"]*)"/gi,
         (match, before, align, after) => {
           const cleanedBefore = before.replace(/text-align\s*:\s*(left|right|center)\s*;?\s*/gi, '');
           const cleanedAfter = after.replace(/text-align\s*:\s*(left|right|center)\s*;?\s*/gi, '');
           return `style="${cleanedBefore}text-align: justify;${cleanedAfter}"`;
         });
-        html = html.replace(/text-align\s*:\s*(left|right|center)\s*;?/gi, 'text-align: justify;');
-        html = html.replace(/style\s*=\s*"([^"]*)"/gi, (match, styles) => {
+      html = html.replace(/text-align\s*:\s*(left|right|center)\s*;?/gi, 'text-align: justify;');
+      html = html.replace(/style\s*=\s*"([^"]*)"/gi, (match, styles) => {
         if (!styles.includes('text-align')) {
           return `style="${styles}; text-align: justify;"`;
         }
@@ -124,7 +126,7 @@ export class BlogDet {
   });
 
   constructor() {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const slug = params['slug'];
       if (!slug) {
         this.router.navigate(['/المقالات']);
@@ -144,7 +146,7 @@ export class BlogDet {
       const activeIndex = this.activeSectionIndex();
       const sections = this.sections();
       if (activeIndex >= 0 && sections.length > 0 && this.isBrowser) {
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           sections.forEach((section, index) => {
             const element = document.getElementById(`section-${index}`);
             if (element) {
@@ -158,6 +160,7 @@ export class BlogDet {
             }
           });
         }, 100);
+        this.timeouts.set('effect1', timeoutId);
       }
     });
   }

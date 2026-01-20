@@ -2,7 +2,7 @@ import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
@@ -40,7 +40,11 @@ import { Country } from './models/country.model';
 
 })
 export class ContactUsSec implements OnInit {
-  // Contact Us Section Data
+  private http = inject(HttpClient);
+  private router = inject(Router);
+  private location = inject(Location);
+  private readonly contactApiUrl = 'https://api.techhouseksa.com/api';
+
   withoutMap = input<boolean>(false);
   withoutTitle = input<boolean>(false);
   removeYPadding = input<boolean>(false);
@@ -55,7 +59,7 @@ export class ContactUsSec implements OnInit {
   countries = COUNTRIES;
 
   // Selected Country - Initialize with Saudi Arabia as default (use exact reference from array)
-  selectedCountryModel: Country = COUNTRIES[0];
+  selectedCountryModel = signal<Country>(COUNTRIES[0]);
 
   // Selected Country Signal (syncs with model) - Initialize with Saudi Arabia
   selectedCountry = signal<Country>(COUNTRIES[0]);
@@ -129,11 +133,9 @@ export class ContactUsSec implements OnInit {
   phoneControl!: AbstractControl;
   messageControl!: AbstractControl;
 
-  // HTTP Client
-  private http = inject(HttpClient);
+
   // private readonly baseUrl = environment.apiUrl;
   // Contact form uses different API domain
-  private readonly contactApiUrl = 'https://api.techhouseksa.com/api';
 
   // Form submission state
   isSubmitting = signal(false);
@@ -141,15 +143,13 @@ export class ContactUsSec implements OnInit {
   submitError = signal<string | null>(null);
   showSuccessPopup = signal(false);
 
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private location = inject(Location);
+
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
     // Ensure default value is properly set (Saudi Arabia is first in COUNTRIES array)
-    this.selectedCountryModel = COUNTRIES[0];
+    this.selectedCountryModel.set(COUNTRIES[0]);
     this.selectedCountry.set(COUNTRIES[0]);
     this.initializeForm();
 
@@ -258,7 +258,7 @@ export class ContactUsSec implements OnInit {
   onCountryChange(country: Country) {
     if (country) {
       this.selectedCountry.set(country);
-      this.selectedCountryModel = country;
+      this.selectedCountryModel.set(country);
 
       // Re-validate phone number when country changes
       if (this.phoneControl) {

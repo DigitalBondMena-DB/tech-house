@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, inject, input, computed, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, computed, ChangeDetectionStrategy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Blog } from '../../../core/models/home.model';
@@ -26,7 +26,7 @@ export class HomeBlogs {
   //! button data
   btnText = "مقالات اكثر";
 
-  activeCard: number = 2; // Default to middle card (index 1)
+  activeCard = signal<number>(2); // Default to middle card (index 1)
 
   constructor(private router: Router) { }
 
@@ -35,7 +35,7 @@ export class HomeBlogs {
     if (event) {
       event.stopPropagation();
     }
-    this.activeCard = cardNumber;
+    this.activeCard.set(cardNumber);
   }
 
   //! method to navigate to blog details

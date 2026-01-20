@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, OnInit, PLATFORM_ID, QueryList, ViewChildren } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, DestroyRef, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, viewChildren } from '@angular/core';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -12,6 +12,7 @@ import { Banner } from '../../shared/components/banner/banner';
 import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-sec';
 import { HeroSection } from '../../shared/components/hero-section/hero-section';
 import { SectionTitle } from '../../shared/components/section-title/section-title';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 // Register GSAP plugins only in browser
 if (typeof window !== 'undefined') {
@@ -20,18 +21,20 @@ if (typeof window !== 'undefined') {
 
 @Component({
   selector: 'app-about-us',
-  standalone: true,
   imports: [CommonModule, HeroSection, SectionTitle, AppButton, Banner, BannerReverse, ContactUsSec, SkeletonModule],
   templateUrl: './about-us.html',
-  styleUrls: ['./about-us.css']
+  styleUrls: ['./about-us.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class AboutUs implements OnInit, AfterViewInit {
+export class AboutUs implements OnInit, AfterViewInit, OnDestroy {
+  private readonly timeouts = new Map<string, NodeJS.Timeout>()
+  private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
   private sharedFeatureService = inject(SharedFeatureService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
-
-  @ViewChildren('cardElement') cards!: QueryList<ElementRef<HTMLElement>>;
+  private ngZone = inject(NgZone);
+  cards = viewChildren<ElementRef<HTMLElement>>('cardElement');
 
   // Signals
   aboutData = this.featureService.aboutData;
@@ -51,16 +54,16 @@ export class AboutUs implements OnInit, AfterViewInit {
   isAllDataLoaded = computed(() => {
     // Check banner section
     if (!this.bannerSection()) return false;
-    
+
     // Check about information
     if (!this.aboutInformation()) return false;
-    
+
     // Check about sections
     if (!this.aboutSections()?.length) return false;
-    
+
     // Check partners or clients
     if (!this.partners()?.length && !this.clients()?.length) return false;
-    
+
     return true;
   });
 
@@ -71,9 +74,10 @@ export class AboutUs implements OnInit, AfterViewInit {
         const allLoaded = this.isAllDataLoaded();
         if (allLoaded) {
           // Force scroll to top when all data is loaded
-          setTimeout(() => {
+          const scrollTimer = setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'instant' });
           }, 50);
+          this.timeouts.set('scrollTrigger', scrollTimer);
         }
       });
     }
@@ -83,49 +87,45 @@ export class AboutUs implements OnInit, AfterViewInit {
     if (this.isBrowser) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
+
   }
 
   ngAfterViewInit(): void {
-    // Load data when view initializes
+    this.sharedFeatureService.loadPartnersClients().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => { });
     this.featureService.loadAboutData();
-    // Subscribe to ensure data is loaded
-    this.sharedFeatureService.loadPartnersClients().subscribe(()=>{});
-
     if (this.isBrowser) {
       // Wait for cards to be rendered
-      setTimeout(() => {
+      const animationTimer = setTimeout(() => {
         this.animateCards();
       }, 100);
+      this.timeouts.set('animationTimer', animationTimer);
     }
   }
 
   private animateCards(): void {
-    if (!this.cards || this.cards.length === 0) return;
+    // أولاً: استدعاء الـ Signal للحصول على المصفوفة
+    const cardElements = this.cards();
 
-    this.cards.forEach((card, index) => {
-      const element = card.nativeElement;
-      
-      // Set initial state
-      gsap.set(element, {
-        scale: 0.8,
-        opacity: 0,
-        y: 50
-      });
+    if (!cardElements || cardElements.length === 0) return;
 
-      // Animate on scroll
-      gsap.to(element, {
-        scale: 1,
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        delay: index * 0.15, // Stagger effect
-        scrollTrigger: {
-          trigger: element,
-          start: 'top 80%',
-          end: 'top 50%',
-          toggleActions: 'play none none none'
-        }
+    this.ngZone.runOutsideAngular(() => {
+      // التكرار على العناصر؛ كل 'card' هنا هو ElementRef
+      cardElements.forEach((card: ElementRef<HTMLElement>, index: number) => {
+        const element = card.nativeElement; // الآن nativeElement ستعمل بشكل صحيح
+
+        gsap.from(element, {
+          scale: 0.8,
+          opacity: 0,
+          y: 50,
+          duration: 0.8,
+          ease: 'power3.out',
+          delay: index * 0.15,
+          scrollTrigger: {
+            trigger: element,
+            start: 'top 90%',
+            toggleActions: 'play none none none'
+          }
+        });
       });
     });
   }
@@ -140,13 +140,13 @@ export class AboutUs implements OnInit, AfterViewInit {
 
   getResponsiveImage(image: { desktop: string; tablet: string; mobile: string } | null | undefined): string {
     if (!image) return '/images/placeholder.png';
-    
+
     let imageUrl = '';
     if (this.isBrowser) {
       const width = window.innerWidth;
       imageUrl = width < 768 ? (image.mobile || image.desktop || '') :
-                width < 1024 ? (image.tablet || image.desktop || '') :
-                (image.desktop || '');
+        width < 1024 ? (image.tablet || image.desktop || '') :
+          (image.desktop || '');
     } else {
       imageUrl = image.desktop || '';
     }
@@ -161,5 +161,19 @@ export class AboutUs implements OnInit, AfterViewInit {
     const baseUrl = environment.apiUrl.replace('/api', '');
     const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
     return `${baseUrl}/${cleanUrl}`;
+  }
+  private clearAllTimeouts(): void {
+    if (this.timeouts.size > 0) {
+      this.timeouts.forEach((id, key) => {
+        clearTimeout(id);
+      })
+      this.timeouts.clear();
+    }
+  }
+  ngOnDestroy(): void {
+    if (this.isBrowser) {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+      this.clearAllTimeouts();
+    }
   }
 }

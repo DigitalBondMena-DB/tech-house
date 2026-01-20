@@ -145,7 +145,7 @@ export class FeatureService {
         if (data) {
           this.serviceDetailsResponseSignal.set(data);
           const serviceDetailsData = data.service
-          this.separatedSeoTags.getSeoTagsDirect({ image_url: serviceDetailsData.banner_image ?? '',...serviceDetailsData }, 'about')
+          this.separatedSeoTags.getSeoTagsDirect({ image_url: serviceDetailsData.banner_image ?? '', ...serviceDetailsData }, 'about')
         }
       }),
       catchError((err) => {

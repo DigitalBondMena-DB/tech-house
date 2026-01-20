@@ -44,15 +44,9 @@
       </div>
     </div>
   </section>
-  <!-- Home Banner - Deferred for better LCP -->
-  @defer (on viewport; when heroSection()) {
   <app-home-banner class="translate-y-60 md:translate-y-40 relative z-20"
     [scrollTitle]="heroSection()!.scroll_title"></app-home-banner>
-  } @placeholder {
-  <div class="translate-y-60 md:translate-y-40 min-h-20 hero-banner-skeleton relative z-20">
-    <p-skeleton width="100%" height="80px" styleClass="rounded-lg"></p-skeleton>
-  </div>
-  }
+
 
   <!-- About Section - Deferred for better LCP -->
   @defer (when isAboutLoaded()) {

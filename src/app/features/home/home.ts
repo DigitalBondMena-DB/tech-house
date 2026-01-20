@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { afterNextRender, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, ElementRef, inject, OnInit, PLATFORM_ID, signal, viewChild } from '@angular/core';
+import { afterNextRender, ChangeDetectionStrategy, Component, computed, DestroyRef, effect, ElementRef, inject, OnDestroy, OnInit, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { debounceTime, forkJoin, fromEvent } from 'rxjs';
 import { FeatureService } from '../../core/services/featureService';
@@ -16,6 +16,7 @@ import { HomeClientsReview } from './home-clients-review/home-clients-review';
 import { HomeProjects } from './home-projects/home-projects';
 import { HomeServices } from './home-services/home-services';
 import { SeparatedSeoTags } from '../../core/services/separated-seo-tags';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 
 @Component({
@@ -25,13 +26,14 @@ import { SeparatedSeoTags } from '../../core/services/separated-seo-tags';
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Home implements OnInit {
+export class Home implements OnInit, OnDestroy {
+  private readonly detroyRef = inject(DestroyRef);
   private featureService = inject(FeatureService);
   private separatedSeoTags = inject(SeparatedSeoTags)
   private sharedFeatureService = inject(SharedFeatureService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
-
+  private timeOutVideoRef!: NodeJS.Timeout;
   // 🔹 Home Data from API
   homeData = computed(() => this.featureService.homeData());
 
@@ -60,6 +62,7 @@ export class Home implements OnInit {
       });
     }
   }
+
   private playVideoSafely() {
     const video = this.videoRef()?.nativeElement;
     if (!video) return;
@@ -67,7 +70,7 @@ export class Home implements OnInit {
     video.muted = true;
     video.playsInline = true;
     video.autoplay = true;
-    setTimeout(() => {
+    this.timeOutVideoRef = setTimeout(() => {
       video.play().catch(() => {
         console.warn('Autoplay blocked');
       });
@@ -143,31 +146,26 @@ export class Home implements OnInit {
   ngOnInit(): void {
     if (this.isBrowser) {
       this.screenWidth.set(window.innerWidth);
-      console.log(this.screenWidth());
-
-      fromEvent(window, 'resize').pipe(debounceTime(150)).subscribe(() => {
+      fromEvent(window, 'resize').pipe(debounceTime(150), takeUntilDestroyed(this.detroyRef)).subscribe(() => {
         this.screenWidth.set(window.innerWidth);
       })
-      // Prevent scroll during page load - more robust method
-      // this.disableScroll();
     }
 
-    // 🔥 PARALLEL API LOADING - Load all APIs simultaneously to reduce critical path latency
-    // This replaces sequential loading which was causing 2.6s+ latency
     forkJoin({
       home: this.featureService.loadHomeData(),
       counters: this.sharedFeatureService.loadCounters(),
       partners: this.sharedFeatureService.loadPartnersClients()
-    }).subscribe({
-      next: () => {
-        // SEO logic moved to effect for better signal integration
-      },
+    }).pipe(takeUntilDestroyed(this.detroyRef)).subscribe({
       error: (err: any) => {
         console.error('Error loading home page data:', err);
       }
     });
   }
 
-
+  ngOnDestroy(): void {
+    if (this.timeOutVideoRef) {
+      clearTimeout(this.timeOutVideoRef);
+    }
+  }
 
 }
