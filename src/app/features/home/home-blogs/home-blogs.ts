@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, inject, input, computed, signal } from '@angular/core';
+import { Component, inject, input, computed, signal, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Blog } from '../../../core/models/home.model';
@@ -10,7 +10,9 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
   selector: 'app-home-blogs',
   imports: [SectionTitle, AppButton, NgOptimizedImage, SkeletonModule],
   templateUrl: './home-blogs.html',
-  styleUrl: './home-blogs.css'
+  styleUrl: './home-blogs.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class HomeBlogs {
   blogs = input<Blog[]>([]);

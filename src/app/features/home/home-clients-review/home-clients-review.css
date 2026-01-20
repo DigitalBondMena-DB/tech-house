@@ -9,8 +9,8 @@
 }
 
 
-.bg-client-linear{
-      background: linear-gradient(to top, #440000, #ED2924);
+.bg-client-linear {
+    background: linear-gradient(to top, #440000, #ED2924);
 }
 
 /* Testimonials container with slide animation */
@@ -28,7 +28,7 @@
 
 /* Smooth transitions - scale happens first, then position */
 .testimonial-image {
-    transition: 
+    transition:
         transform 1.2s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
         filter 1.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -36,7 +36,7 @@
 
 /* When transitioning from center to side, scale down happens first (faster transition) */
 .testimonial-image.scale-100:not(:hover) {
-    transition: 
+    transition:
         transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.5s,
         opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
         filter 1.2s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
@@ -72,6 +72,43 @@
 }
 
 
+
+/* Angular 20 Animations */
+.testimonial-enter {
+    animation: testimonial-fade-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.testimonial-leave {
+    animation: testimonial-fade-out 0.4s ease-in both;
+}
+
+@keyframes testimonial-fade-in {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+        filter: blur(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes testimonial-fade-out {
+    from {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.8);
+        filter: blur(10px);
+    }
+}
 
 /* No animations - only transitions for smooth movement */
 /* Images will smoothly transition from their current position to new position */

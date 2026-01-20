@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, inject } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { SharedFeatureService } from '../../../core/services/sharedFeatureService';
 
 @Component({
@@ -7,7 +7,7 @@ import { SharedFeatureService } from '../../../core/services/sharedFeatureServic
   imports: [CommonModule],
   templateUrl: './circle-sidebar.html',
   styleUrl: './circle-sidebar.css',
-  standalone: true
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CircleSidebar implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);

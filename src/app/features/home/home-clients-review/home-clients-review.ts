@@ -1,5 +1,5 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, computed, effect, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, input, signal } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Testimonial } from '../../../core/models/home.model';
 
@@ -7,7 +7,9 @@ import { Testimonial } from '../../../core/models/home.model';
   selector: 'app-home-clients-review',
   imports: [NgOptimizedImage, SkeletonModule],
   templateUrl: './home-clients-review.html',
-  styleUrl: './home-clients-review.css'
+  styleUrl: './home-clients-review.css',
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeClientsReview {
   testimonials = input<Testimonial[]>([]);
@@ -28,7 +30,7 @@ export class HomeClientsReview {
     }
 
     const centerIndex = this.currentCenterIndex();
-    const total = this.testimonials.length;
+    const total = testimonials.length;
 
     // If only 1 testimonial, show it in center with placeholders
     if (total === 1) {

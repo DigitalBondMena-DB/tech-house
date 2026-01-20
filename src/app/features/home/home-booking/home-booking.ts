@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, input, OnDestroy, PLATFORM_ID, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, OnDestroy, PLATFORM_ID, viewChild } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { CTASection } from '../../../core/models/home.model';
 import { AppButton } from '../../../shared/components/app-button/app-button';
@@ -10,7 +10,9 @@ import { rafThrottle } from '../../../core/utils/performance.utils';
   selector: 'app-home-booking',
   imports: [AppButton, SkeletonModule],
   templateUrl: './home-booking.html',
-  styleUrl: './home-booking.css'
+  styleUrl: './home-booking.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class HomeBooking implements AfterViewInit, OnDestroy {
   //! Input for CTA Section data

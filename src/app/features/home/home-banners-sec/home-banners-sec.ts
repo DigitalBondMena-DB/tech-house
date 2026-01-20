@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SharedFeatureService } from '../../../core/services/sharedFeatureService';
 import { BannerReverse } from '../../../shared/components/banner-reverse/banner-reverse';
@@ -9,7 +9,8 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
   selector: 'app-home-banners-sec',
   imports: [SectionTitle, Banner, BannerReverse, SkeletonModule],
   templateUrl: './home-banners-sec.html',
-  styleUrl: './home-banners-sec.css'
+  styleUrl: './home-banners-sec.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeBannersSec implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);

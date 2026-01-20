@@ -1,6 +1,7 @@
 import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -23,7 +24,8 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
   standalone: true,
   imports: [SectionTitle, NgOptimizedImage, SkeletonModule, RouterLink],
   templateUrl: './home-about.html',
-  styleUrl: './home-about.css'
+  styleUrl: './home-about.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeAbout implements AfterViewInit, OnDestroy {
 

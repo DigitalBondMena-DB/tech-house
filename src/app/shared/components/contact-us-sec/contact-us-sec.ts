@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -35,7 +35,9 @@ import { Country } from './models/country.model';
     SuccessPopup
   ],
   templateUrl: './contact-us-sec.html',
-  styleUrl: './contact-us-sec.css'
+  styleUrl: './contact-us-sec.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class ContactUsSec implements OnInit {
   // Contact Us Section Data

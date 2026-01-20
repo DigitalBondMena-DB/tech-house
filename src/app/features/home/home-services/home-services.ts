@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, input, viewChildren, viewChild, computed, effect, signal, PLATFORM_ID, NgZone, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, input, viewChildren, viewChild, computed, effect, signal, PLATFORM_ID, NgZone, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -18,7 +18,9 @@ if (typeof window !== 'undefined') {
   imports: [SectionTitle, AppButton, NgOptimizedImage, SkeletonModule],
   templateUrl: './home-services.html',
   styleUrl: './home-services.css',
-  standalone: true
+  standalone: true,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class HomeServices implements AfterViewInit, OnDestroy {
   services = input<Service[]>([]);

@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { afterNextRender, AfterViewInit, ChangeDetectorRef, Component, computed, effect, ElementRef, inject, OnInit, PLATFORM_ID, signal, viewChild } from '@angular/core';
+import { afterNextRender, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, computed, effect, ElementRef, inject, OnInit, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { debounceTime, forkJoin, fromEvent } from 'rxjs';
 import { FeatureService } from '../../core/services/featureService';
@@ -22,7 +22,8 @@ import { SeparatedSeoTags } from '../../core/services/separated-seo-tags';
   selector: 'app-home',
   imports: [HomeBanner, HomeAbout, HomeBannersSec, HomeServices, HomeProjects, HomeBooking, HomeClientsReview, HomeBlogs, ContactUsSec, CircleSidebar, SkeletonModule, AppButton],
   templateUrl: './home.html',
-  styleUrl: './home.css'
+  styleUrl: './home.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Home implements OnInit {
   private featureService = inject(FeatureService);

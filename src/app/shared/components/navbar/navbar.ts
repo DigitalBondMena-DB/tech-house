@@ -1,18 +1,20 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, HostListener, inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { rafThrottle } from '../../../core/utils/performance.utils';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink,RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css'
+  styleUrl: './navbar.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class Navbar implements OnInit, OnDestroy {
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
-  
+
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private isBrowser = isPlatformBrowser(this.platformId);
@@ -35,10 +37,10 @@ export class Navbar implements OnInit, OnDestroy {
           });
         });
       });
-      
+
       // Use passive event listener for better scroll performance
       window.addEventListener('scroll', this.throttledScrollHandler, { passive: true });
-      
+
       // Handle window resize to reset scroll state when switching to small screen
       this.resizeHandler = () => {
         this.ngZone.run(() => {

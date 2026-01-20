@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ResponsiveImage } from '../../../core/models/home.model';
@@ -9,7 +9,9 @@ import { SharedFeatureService } from '../../../core/services/sharedFeatureServic
   selector: 'app-footer',
   imports: [CommonModule, RouterModule],
   templateUrl: './footer.html',
-  styleUrl: './footer.css'
+  styleUrl: './footer.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class Footer implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);

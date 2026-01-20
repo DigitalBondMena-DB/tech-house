@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, input, PLATFORM_ID, signal, viewChildren, computed } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, input, PLATFORM_ID, signal, viewChildren, computed, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/all';
@@ -12,7 +12,9 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
   selector: 'app-home-projects',
   imports: [SectionTitle, AppButton, NgOptimizedImage, SkeletonModule],
   templateUrl: './home-projects.html',
-  styleUrl: './home-projects.css'
+  styleUrl: './home-projects.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+
 })
 export class HomeProjects implements AfterViewInit {
   projects = input<Project[]>([]);
