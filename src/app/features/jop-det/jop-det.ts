@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser, Location } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { Component, computed, effect, inject, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
+import { Component, computed, DestroyRef, effect, inject, OnDestroy, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, NavigationEnd, Router } from "@angular/router";
@@ -18,10 +18,10 @@ import { AppButton } from "../../shared/components/app-button/app-button";
 import { COUNTRIES } from "../../shared/components/contact-us-sec/models/countries";
 import { Country } from "../../shared/components/contact-us-sec/models/country.model";
 import { SuccessPopup } from "../../shared/components/success-popup/success-popup";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-jop-det',
-  standalone: true,
   imports: [
     CommonModule,
     AppButton,
@@ -37,10 +37,12 @@ import { SuccessPopup } from "../../shared/components/success-popup/success-popu
   ],
   templateUrl: './jop-det.html',
   styleUrl: './jop-det.css',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: true,
 })
-export class JopDet {
-
+export class JopDet implements OnDestroy {
+  private readonly timeouts = new Map<string, NodeJS.Timeout>()
+  private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
   private route = inject(ActivatedRoute);
   router = inject(Router);
@@ -187,11 +189,12 @@ export class JopDet {
     // Listen to route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
+      , takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
       this.checkUrlForDone();
     });
 
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const slug = params['slug'];
       if (!slug) {
         this.router.navigate(['/الوظائف']);
@@ -228,13 +231,14 @@ export class JopDet {
 
     // Timeout for loading state
     if (this.isBrowser) {
-      setTimeout(() => {
+      const timeOutId = setTimeout(() => {
         if (this.isLoading() && !this.job()) {
           this.isLoading.set(false);
           this.hasError.set(true);
           this.errorMessage.set('تعذر تحميل بيانات الوظيفة. يرجى المحاولة مرة أخرى.');
         }
       }, 10000); // 10 seconds timeout
+      this.timeouts.set('loadingTimeout', timeOutId);
     }
   }
 
@@ -245,12 +249,13 @@ export class JopDet {
 
   scrollToApply(): void {
     if (this.isBrowser) {
-      setTimeout(() => {
+      const timeOutId = setTimeout(() => {
         const applySection = document.querySelector('#apply-form');
         if (applySection) {
           applySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 100);
+      this.timeouts.set('scrollToApplyTimeout', timeOutId);
     }
   }
 
@@ -609,7 +614,7 @@ export class JopDet {
 
       // Use the correct API domain for job form submission
       const jobApiUrl = 'https://api.techhouseksa.com/api';
-      this.http.post(`${jobApiUrl}${API_END_POINTS.SUBMIT_JOB_FORM}`, formData).subscribe({
+      this.http.post(`${jobApiUrl}${API_END_POINTS.SUBMIT_JOB_FORM}`, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (response) => {
           this.isSubmitting.set(false);
           this.submitSuccess.set(true);
@@ -625,9 +630,10 @@ export class JopDet {
         error: (error) => {
           this.isSubmitting.set(false);
           this.submitError.set(error.error?.message || 'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.');
-          setTimeout(() => {
+          const timeOutId = setTimeout(() => {
             this.submitError.set(null);
           }, 5000);
+          this.timeouts.set('submitErrorTimeout', timeOutId);
         }
       });
     } else {
@@ -736,16 +742,17 @@ export class JopDet {
       const contactApiUrl = 'https://api.techhouseksa.com/api';
 
       // Submit to API
-      this.http.post(`${contactApiUrl}${API_END_POINTS.SUBMIT_CONTACT_FORM}`, formData).subscribe({
+      this.http.post(`${contactApiUrl}${API_END_POINTS.SUBMIT_CONTACT_FORM}`, formData).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: (response) => {
           this.isSubmitting.set(false);
           this.submitSuccess.set(true);
           // Reset form after successful submission
           this.contactForm.reset();
           // Clear success message after 5 seconds
-          setTimeout(() => {
+          const timeOutId = setTimeout(() => {
             this.submitSuccess.set(false);
           }, 5000);
+          this.timeouts.set('submitSuccessTimeout', timeOutId);
         },
         error: (error) => {
           this.isSubmitting.set(false);
@@ -773,9 +780,10 @@ export class JopDet {
 
           this.submitError.set(errorMessage);
           // Clear error message after 8 seconds for network errors
-          setTimeout(() => {
+          const timeOutId = setTimeout(() => {
             this.submitError.set(null);
           }, 8000);
+          this.timeouts.set('submitErrorTimeout2', timeOutId);
         }
       });
     } else {
@@ -863,6 +871,13 @@ export class JopDet {
     const currentUrl = this.router.url.split('?')[0];
     if (currentUrl.endsWith('/تم')) {
       this.showSuccessPopup.set(true);
+    }
+  }
+  ngOnDestroy(): void {
+    if (this.timeouts.size > 0) {
+      this.timeouts.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
     }
   }
 }

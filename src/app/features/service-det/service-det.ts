@@ -1,11 +1,12 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, computed, effect, inject, NgZone, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
+import { Component, computed, DestroyRef, effect, inject, NgZone, OnDestroy, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
 import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
 import { SectionTitle } from "../../shared/components/section-title/section-title";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
     selector: 'app-service-det',
@@ -15,8 +16,9 @@ import { SectionTitle } from "../../shared/components/section-title/section-titl
     styleUrl: './service-det.css',
     encapsulation: ViewEncapsulation.None
 })
-export class ServiceDet {
-
+export class ServiceDet implements OnDestroy {
+    private readonly timeouts = new Map<string, NodeJS.Timeout>();
+    private readonly destroyRef = inject(DestroyRef);
     private featureService = inject(FeatureService);
     private route = inject(ActivatedRoute);
     private router = inject(Router);
@@ -131,7 +133,7 @@ export class ServiceDet {
     });
 
     constructor() {
-        this.route.params.subscribe(params => {
+        this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
             const slug = params['slug'];
             if (!slug) {
                 this.router.navigate(['/الخدمات']);
@@ -151,7 +153,7 @@ export class ServiceDet {
             const activeIndex = this.activeSectionIndex();
             const sections = this.sections();
             if (activeIndex >= 0 && sections.length > 0 && this.isBrowser) {
-                setTimeout(() => {
+                const timeoutId = setTimeout(() => {
                     sections.forEach((section, index) => {
                         const element = document.getElementById(`section-${index}`);
                         if (element) {
@@ -165,6 +167,7 @@ export class ServiceDet {
                         }
                     });
                 }, 100);
+                this.timeouts.set('section-heading', timeoutId);
             }
         });
     }
@@ -211,7 +214,7 @@ export class ServiceDet {
             if (this.isBrowser) {
                 this.ngZone.runOutsideAngular(() => {
                     requestAnimationFrame(() => {
-                        setTimeout(() => {
+                        const timeoutId = setTimeout(() => {
                             const sectionId = `section-${i}`;
                             let attempts = 0;
                             const findAndScroll = () => {
@@ -230,11 +233,13 @@ export class ServiceDet {
                                     });
                                 } else if (attempts < 5) {
                                     attempts++;
-                                    setTimeout(findAndScroll, 100);
+                                    const timeoutId = setTimeout(findAndScroll, 100);
+                                    this.timeouts.set(`section-scroll-nest-${i}`, timeoutId);
                                 }
                             };
                             findAndScroll();
                         }, 200);
+                        this.timeouts.set(`section-scroll-${i}`, timeoutId);
                     });
                 });
             }
@@ -284,5 +289,13 @@ export class ServiceDet {
 
     getResponsiveImageFromObject(img: any): string {
         return this.getResponsiveImage(img);
+    }
+    ngOnDestroy(): void {
+        if (this.timeouts.size > 0) {
+            this.timeouts.forEach((timeout) => {
+                clearTimeout(timeout);
+            });
+            this.timeouts.clear();
+        }
     }
 }

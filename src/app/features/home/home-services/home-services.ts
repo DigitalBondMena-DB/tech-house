@@ -4,7 +4,6 @@ import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Service } from '../../../core/models/home.model';
-import { debounce } from '../../../core/utils/performance.utils';
 import { AppButton } from '../../../shared/components/app-button/app-button';
 import { SectionTitle } from '../../../shared/components/section-title/section-title';
 
@@ -23,6 +22,7 @@ if (typeof window !== 'undefined') {
 
 })
 export class HomeServices implements AfterViewInit, OnDestroy {
+  private readonly timeouts = new Map<string, NodeJS.Timeout>();
   services = input<Service[]>([]);
 
   // 🔹 Loading state as signal
@@ -96,9 +96,10 @@ export class HomeServices implements AfterViewInit, OnDestroy {
     }
 
     if (!this.isLoading() && !this.animationsInitialized()) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         this.initAnimations();
       }, 200);
+      this.timeouts.set('initAnimationsTimeout', timeoutId);
     }
   }
 
@@ -119,7 +120,7 @@ export class HomeServices implements AfterViewInit, OnDestroy {
     });
 
     // Use setTimeout to ensure DOM is fully ready
-    setTimeout(() => {
+    const timeOutId = setTimeout(() => {
       // Animate right side titles (appearing from left to right)
       if (this.titleRight1()?.nativeElement && this.titleBgRight1()?.nativeElement) {
         this.animateTitle(this.titleRight1()?.nativeElement, this.titleBgRight1()?.nativeElement, 'right');
@@ -174,7 +175,8 @@ export class HomeServices implements AfterViewInit, OnDestroy {
       // and again after a short delay for image rendering
       if (typeof ScrollTrigger !== 'undefined') {
         ScrollTrigger.refresh();
-        setTimeout(() => ScrollTrigger.refresh(), 500);
+        const timeOutId = setTimeout(() => ScrollTrigger.refresh(), 500);
+        this.timeouts.set('refreshScrollTriggerTimeout', timeOutId);
       }
 
       // Setup resize observer for dynamic height changes
@@ -192,6 +194,7 @@ export class HomeServices implements AfterViewInit, OnDestroy {
 
       this.animationsInitialized.set(true);
     }, 200);
+    this.timeouts.set('initAnimationsTimeout2', timeOutId);
   }
 
   ngOnDestroy() {
@@ -210,6 +213,10 @@ export class HomeServices implements AfterViewInit, OnDestroy {
       if (this.resizeObserver) {
         this.resizeObserver.disconnect();
       }
+    }
+    if (this.timeouts.size > 0) {
+      this.timeouts.forEach((timeout) => clearTimeout(timeout));
+      this.timeouts.clear()
     }
   }
 

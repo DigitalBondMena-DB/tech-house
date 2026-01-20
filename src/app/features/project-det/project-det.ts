@@ -1,11 +1,11 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, computed, effect, inject, PLATFORM_ID, signal, ViewChild, ViewEncapsulation } from "@angular/core";
+import { Component, computed, DestroyRef, effect, inject, OnDestroy, PLATFORM_ID, signal, ViewChild, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CarouselComponent, CarouselModule, OwlOptions, SlidesOutputData } from 'ngx-owl-carousel-o';
-
 import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
   selector: 'app-project-det',
@@ -15,8 +15,9 @@ import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-
   styleUrl: './project-det.css',
   encapsulation: ViewEncapsulation.None
 })
-export class ProjectDet {
-
+export class ProjectDet implements OnDestroy {
+  private readonly timeouts = new Map<string, NodeJS.Timeout>();
+  private readonly destroyRef = inject(DestroyRef);
 
   private featureService = inject(FeatureService);
   private route = inject(ActivatedRoute);
@@ -137,15 +138,15 @@ export class ProjectDet {
 
   // Handle carousel slide change
   onCarouselTranslated(data: SlidesOutputData): void {
- 
-  if (data.startPosition !== undefined) {
-    const slidesCount = this.projectImages().length;
-    const realIndex = data.startPosition % slidesCount;
-    
-    this.activeSlideIndex.set(realIndex);
-    console.log('Active Index:', realIndex);
+
+    if (data.startPosition !== undefined) {
+      const slidesCount = this.projectImages().length;
+      const realIndex = data.startPosition % slidesCount;
+
+      this.activeSlideIndex.set(realIndex);
+      console.log('Active Index:', realIndex);
+    }
   }
-}
 
   // Navigate to previous slide
   carouselPrev(): void {
@@ -159,14 +160,14 @@ export class ProjectDet {
 
   // Go to specific slide
   goToSlide(index: number): void {
-  const images = this.projectImages();
-  if (index >= 0 && index < images.length) {
-    const slideId = images[index].id.toString();
-    this.owlCarousel.to(slideId);
-    
-    this.activeSlideIndex.set(index);
+    const images = this.projectImages();
+    if (index >= 0 && index < images.length) {
+      const slideId = images[index].id.toString();
+      this.owlCarousel.to(slideId);
+
+      this.activeSlideIndex.set(index);
+    }
   }
-}
 
   // ===== IMAGE POPUP =====
   popupImage = signal<string | null>(null);
@@ -222,7 +223,7 @@ export class ProjectDet {
   });
 
   constructor() {
-    this.route.params.subscribe(params => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const slug = params['slug'];
       if (!slug) {
         this.router.navigate(['/المشاريع']);
@@ -293,13 +294,14 @@ export class ProjectDet {
 
     // Timeout for loading state
     if (this.isBrowser) {
-      setTimeout(() => {
+      const timeOuId = setTimeout(() => {
         if (this.isLoading() && !this.project()) {
           this.isLoading.set(false);
           this.hasError.set(true);
           this.errorMessage.set('تعذر تحميل بيانات المشروع. يرجى المحاولة مرة أخرى.');
         }
-      }, 10000); // 10 seconds timeout
+      }, 10000);
+      this.timeouts.set('loadingTimeout', timeOuId);
     }
   }
 
@@ -309,12 +311,13 @@ export class ProjectDet {
       this.activeSectionIndex.set(i);
       // Scroll to top of content area
       if (this.isBrowser) {
-        setTimeout(() => {
+        const timeOutId = setTimeout(() => {
           const contentElement = document.querySelector('.project-main-content');
           if (contentElement) {
             // contentElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         }, 100);
+        this.timeouts.set('scrollTimeout', timeOutId);
       }
     }
   }
@@ -365,5 +368,12 @@ export class ProjectDet {
     if (typeof image === 'string') return image;
     if (image.main_image) return image.main_image;
     return this.getResponsiveImage(image);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timeouts.size > 0) {
+      this.timeouts.forEach((timeout) => clearTimeout(timeout));
+      this.timeouts.clear();
+    }
   }
 }

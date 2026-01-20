@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, computed, DestroyRef, effect, ElementRef, inject, NgZone, OnDestroy, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -9,6 +9,7 @@ import { SharedFeatureService } from '../../core/services/sharedFeatureService';
 import { debounce } from '../../core/utils/performance.utils';
 import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-sec';
 import { HeroSection } from '../../shared/components/hero-section/hero-section';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-projects',
@@ -23,6 +24,8 @@ import { HeroSection } from '../../shared/components/hero-section/hero-section';
   styleUrl: './projects.css'
 })
 export class Projects implements OnInit, AfterViewInit, OnDestroy {
+  private timeouts = new Map<string, NodeJS.Timeout>();
+  private readonly destroyRef = inject(DestroyRef);
   private featureService = inject(FeatureService);
   private sharedFeatureService = inject(SharedFeatureService);
   private router = inject(Router);
@@ -71,9 +74,10 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
         const allLoaded = this.isAllDataLoaded();
         if (allLoaded) {
           // Force scroll to top when all data is loaded
-          setTimeout(() => {
+          const timeOutId = setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'instant' });
           }, 50);
+          this.timeouts.set('scrollToTop', timeOutId);
         }
       });
     }
@@ -91,7 +95,7 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     // Check for service query parameter
     if (this.isBrowser) {
-      this.route.queryParams.subscribe(params => {
+      this.route.queryParams.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
         const serviceSlug = params['service'];
         if (serviceSlug) {
           // Wait for serviceTitles to be loaded, then find the service index by slug
@@ -103,27 +107,31 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
               const serviceIndex = serviceTitles.findIndex(st => st.slug === serviceSlug);
               if (serviceIndex !== -1) {
                 // Select the service (index + 1 because index 0 is "الكل")
-                setTimeout(() => {
+                const timeOutId = setTimeout(() => {
                   this.selectService(serviceSlug, serviceIndex + 1);
                 }, 300);
+                this.timeouts.set('selectService', timeOutId);
                 return;
               }
               // Service not found in loaded serviceTitles, fall through to default behavior
               if (this.selectedIndex() === null) {
-                setTimeout(() => {
+                const timeOutId = setTimeout(() => {
                   this.selectService(null, 0);
                 }, 300);
+                this.timeouts.set('selectService2', timeOutId);
               }
             } else if (retryCount < maxRetries) {
               // If serviceTitles not loaded yet, wait a bit and try again
               retryCount++;
-              setTimeout(checkService, 100);
+              const timeOutId = setTimeout(checkService, 100);
+              this.timeouts.set('checkService', timeOutId);
             } else {
               // Max retries reached, fall through to default behavior
               if (this.selectedIndex() === null) {
-                setTimeout(() => {
+                const timeOutId = setTimeout(() => {
                   this.selectService(null, 0);
                 }, 300);
+                this.timeouts.set('selectService3', timeOutId);
               }
             }
           };
@@ -132,9 +140,10 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
         }
         // No service parameter, select "الكل"
         if (this.selectedIndex() === null) {
-          setTimeout(() => {
+          const timeOutId = setTimeout(() => {
             this.selectService(null, 0);
           }, 300);
+          this.timeouts.set('selectService4', timeOutId);
         }
       });
     } else {
@@ -250,6 +259,10 @@ export class Projects implements OnInit, AfterViewInit, OnDestroy {
     if (this.isBrowser && this.resizeHandler) {
       window.removeEventListener('resize', this.resizeHandler);
       this.resizeHandler = undefined;
+    }
+    if (this.timeouts.size > 0) {
+      this.timeouts.forEach((timeout) => clearTimeout(timeout));
+      this.timeouts.clear()
     }
   }
 

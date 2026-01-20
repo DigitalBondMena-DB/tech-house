@@ -2,7 +2,7 @@ import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { API_END_POINTS } from '../constant/ApiEndPoints';
-import { Counter, CountersResponse, ContactUsData, ContactUsResponse, ServiceTitle, ServicesSectionResponse, ClientPartner, PartnersClientsResponse, PrivacyPolicyData, PrivacyPolicyResponse, ContactHero, ContactHeroResponse } from '../models/home.model';
+import { Counter, CountersResponse, ContactUsData, ContactUsResponse, ServiceTitle, ServicesSectionResponse, PartnersClientsResponse, PrivacyPolicyData, PrivacyPolicyResponse, ContactHero, ContactHeroResponse } from '../models/home.model';
 import { Observable, catchError, of } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 
@@ -69,6 +69,8 @@ export class SharedFeatureService {
     return this.http.get<CountersResponse>(`${this.baseUrl}${API_END_POINTS.COUNTERS}`).pipe(
       map((data) => {
         if (data && data.counters) {
+          console.log(data.counters);
+
           this.countersResponseSignal.set(data.counters);
           this.countersLoading = false;
           return data.counters;

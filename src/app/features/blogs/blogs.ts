@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -22,7 +22,8 @@ import { SectionTitle } from '../../shared/components/section-title/section-titl
   templateUrl: './blogs.html',
   styleUrl: './blogs.css'
 })
-export class Blogs implements OnInit, AfterViewInit {
+export class Blogs implements OnInit, AfterViewInit, OnDestroy {
+  private timeoutRef!: NodeJS.Timeout;
   private featureService = inject(FeatureService);
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
@@ -55,7 +56,7 @@ export class Blogs implements OnInit, AfterViewInit {
         const allLoaded = this.isAllDataLoaded();
         if (allLoaded) {
           // Force scroll to top when all data is loaded
-          setTimeout(() => {
+          this.timeoutRef = setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'instant' });
           }, 50);
         }
@@ -107,5 +108,10 @@ export class Blogs implements OnInit, AfterViewInit {
     const baseUrl = environment.apiUrl.replace('/api', '');
     const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
     return `${baseUrl}/${cleanUrl}`;
+  }
+  ngOnDestroy(): void {
+    if (this.timeoutRef) {
+      clearTimeout(this.timeoutRef);
+    }
   }
 }

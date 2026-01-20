@@ -3,7 +3,7 @@ import { HeroSection } from '../../shared/components/hero-section/hero-section';
 import { CommonModule } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SharedFeatureService } from '../../core/services/sharedFeatureService';
-import { PrivacyPolicyData, ResponsiveImage } from '../../core/models/home.model';
+import { ResponsiveImage } from '../../core/models/home.model';
 
 @Component({
   selector: 'app-privacy-policy',
@@ -31,10 +31,10 @@ export class PrivacyPolicy implements OnInit, AfterViewInit {
     return data?.bannerSection?.image || data?.image;
   });
   sections = computed(() => this.privacyPolicyData()?.sections ?? []);
-  
+
   // 🔹 Privacy Policy Content
   privacyPolicyContent = computed(() => this.privacyPolicyData()?.privacyPolicy);
-  
+
   // 🔹 Helper method to split text by line breaks
   splitTextByLines(text: string | undefined): string[] {
     if (!text) return [];
@@ -50,7 +50,7 @@ export class PrivacyPolicy implements OnInit, AfterViewInit {
   // 🔹 Helper method to get responsive image based on screen size
   getResponsiveImage(image: ResponsiveImage | undefined): string {
     if (!image) return '';
-    
+
     if (typeof window !== 'undefined') {
       const width = window.innerWidth;
       if (width < 768) {

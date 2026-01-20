@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, computed, effect, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { environment } from '../../../environments/environment';
@@ -12,7 +12,8 @@ import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-
   templateUrl: './jops.html',
   styleUrl: './jops.css'
 })
-export class Jops implements OnInit, AfterViewInit {
+export class Jops implements OnInit, AfterViewInit, OnDestroy {
+  private timeout!: NodeJS.Timeout;
   private featureService = inject(FeatureService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
@@ -67,7 +68,7 @@ export class Jops implements OnInit, AfterViewInit {
         const allLoaded = this.isAllDataLoaded();
         if (allLoaded) {
           // Force scroll to top when all data is loaded
-          setTimeout(() => {
+          this.timeout = setTimeout(() => {
             window.scrollTo({ top: 0, behavior: 'instant' });
           }, 50);
         }
@@ -119,6 +120,11 @@ export class Jops implements OnInit, AfterViewInit {
     }
     if (job?.slug) {
       this.router.navigate(['/الوظائف', job.slug]);
+    }
+  }
+  ngOnDestroy(): void {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
     }
   }
 }

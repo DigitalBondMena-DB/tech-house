@@ -15,6 +15,7 @@ import { rafThrottle } from '../../../core/utils/performance.utils';
 
 })
 export class HomeBooking implements AfterViewInit, OnDestroy {
+  private readonly timeouts = new Map<string, NodeJS.Timeout>();
   //! Input for CTA Section data
   ctasection = input<CTASection | null>(null);
 
@@ -38,9 +39,10 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
         const videoUrl = this.ctasection()?.video;
         if (videoUrl) {
           // Wait a bit for the video element to be available
-          setTimeout(() => {
+          const timeOutId = setTimeout(() => {
             this.playVideo();
           }, 200);
+          this.timeouts.set('playVideoTimeout', timeOutId);
         }
       });
     }
@@ -54,9 +56,10 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
 
     if (this.ctasection()?.video) {
       // Wait for video element to be ready
-      setTimeout(() => {
+      const timeOutId = setTimeout(() => {
         this.initializeVideo();
       }, 100);
+      this.timeouts.set('initializeVideoTimeout', timeOutId);
     }
   }
 
@@ -88,9 +91,10 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
     if (!video) {
       // Retry if video element is not ready yet
       if (this.ctasection()?.video) {
-        setTimeout(() => {
+        const timeOutId = setTimeout(() => {
           this.initializeVideo();
         }, 200);
+        this.timeouts.set('initializeVideoTimeout2', timeOutId);
       }
       return;
     }
@@ -130,9 +134,10 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
     video.load();
 
     // Fallback: try to play after a delay
-    setTimeout(() => {
+    const timeOutId = setTimeout(() => {
       this.playVideo();
     }, 2000);
+    this.timeouts.set('playVideoTimeout2', timeOutId);
   }
 
   private playVideo(): void {
@@ -201,5 +206,9 @@ export class HomeBooking implements AfterViewInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.cleanupInteractionListeners();
+    if (this.timeouts.size > 0) {
+      this.timeouts.forEach((timeout) => clearTimeout(timeout));
+      this.timeouts.clear();
+    }
   }
 }

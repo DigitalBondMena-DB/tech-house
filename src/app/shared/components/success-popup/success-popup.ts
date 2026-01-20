@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, input, Input, output, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -10,13 +10,13 @@ import { Router } from '@angular/router';
   styleUrl: './success-popup.css'
 })
 export class SuccessPopup {
-  @Input() isVisible: boolean = false;
-  @Input() title: string = '';
-  @Input() message: string = '';
-  @Input() buttonText: string = 'العودة إلى الصفحة الرئيسية';
-  @Output() close = new EventEmitter<void>();
+  isVisible = input<boolean>(false);
+  title = input<string>('');
+  message = input<string>('');
+  buttonText = input<string>('العودة إلى الصفحة الرئيسية');
+  close = output<void>();
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   onClose(): void {
     this.close.emit();

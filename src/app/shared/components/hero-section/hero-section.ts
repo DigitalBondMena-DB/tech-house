@@ -1,4 +1,4 @@
-import { Component, Input, AfterViewInit, ViewChild, ElementRef, OnChanges, SimpleChanges, inject, NgZone, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, OnChanges, SimpleChanges, inject, NgZone, PLATFORM_ID, ChangeDetectionStrategy, input, viewChild } from '@angular/core';
 import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppButton } from '../app-button/app-button';
@@ -12,20 +12,20 @@ import { gsap } from 'gsap';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class HeroSection implements AfterViewInit, OnChanges {
-  @Input() title?: string;
-  @Input() btn?: string;
-  @Input() subtitle?: string;
-  @Input() paragraph?: string;
-  @Input() image?: string;
-  @Input() imagePosition: 'left' | 'center' | 'none' = 'none';
-  @Input() subtitleAboveTitle: boolean = false;
-  @Input() imageClass: string = ''; // Custom classes for the image
-  @Input() customClass: string = ''; // Custom classes for the hero section
-  @Input() jobInfo?: Array<{ label: string; icon: string }>; // Job info cards
-  @Input() btnClass: string = ''; // Custom classes for the button
+  title = input<string>();
+  btn = input<string>();
+  subtitle = input<string>();
+  paragraph = input<string>();
+  image = input<string>();
+  imagePosition = input<'left' | 'center' | 'none'>("none");
+  subtitleAboveTitle = input<boolean>(false);
+  imageClass = input<string>(''); // Custom classes for the image
+  customClass = input<string>(''); // Custom classes for the hero section
+  jobInfo = input<Array<{ label: string; icon: string }>>(); // Job info cards
+  btnClass = input<string>(''); // Custom classes for the button
 
-  @ViewChild('subtitleElement', { static: false }) subtitleElement!: ElementRef<HTMLSpanElement>;
-  @ViewChild('subtitleContainer', { static: false }) subtitleContainer!: ElementRef<HTMLDivElement>;
+  subtitleElement = viewChild<ElementRef<HTMLSpanElement>>('subtitleElement');
+  subtitleContainer = viewChild<ElementRef<HTMLDivElement>>('subtitleContainer');
 
   private typingAnimation: gsap.core.Timeline | null = null;
   private sanitizer = inject(DomSanitizer);
@@ -41,13 +41,13 @@ export class HeroSection implements AfterViewInit, OnChanges {
   }
 
   ngAfterViewInit() {
-    if (this.subtitle && this.subtitleAboveTitle) {
+    if (this.subtitle() && this.subtitleAboveTitle()) {
       this.initTypingAnimation();
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['subtitle'] && !changes['subtitle'].firstChange && this.subtitleAboveTitle) {
+    if (changes['subtitle'] && !changes['subtitle'].firstChange && this.subtitleAboveTitle()) {
       if (this.typingAnimation) {
         this.typingAnimation.kill();
       }
@@ -63,11 +63,11 @@ export class HeroSection implements AfterViewInit, OnChanges {
       return;
     }
 
-    if (!this.subtitleElement || !this.subtitle || !this.subtitleContainer) return;
+    if (!this.subtitleElement() || !this.subtitle() || !this.subtitleContainer()) return;
 
-    const text = this.subtitle;
-    const element = this.subtitleElement.nativeElement;
-    const container = this.subtitleContainer.nativeElement;
+    const text = this.subtitle();
+    const element = this.subtitleElement()?.nativeElement;
+    const container = this.subtitleContainer()?.nativeElement;
 
     // Safe requestAnimationFrame wrapper: use native RAF in browser
     // or fallback to setTimeout during SSR/testing
@@ -93,28 +93,37 @@ export class HeroSection implements AfterViewInit, OnChanges {
         tempElement.style.visibility = 'hidden';
         tempElement.style.position = 'absolute';
         tempElement.style.whiteSpace = 'nowrap';
-        tempElement.style.fontSize = window.getComputedStyle(element).fontSize;
-        tempElement.style.fontFamily = window.getComputedStyle(element).fontFamily;
-        tempElement.style.fontWeight = window.getComputedStyle(element).fontWeight;
+        if (element) {
+          tempElement.style.fontSize = window.getComputedStyle(element).fontSize;
+          tempElement.style.fontFamily = window.getComputedStyle(element).fontFamily;
+          tempElement.style.fontWeight = window.getComputedStyle(element).fontWeight;
+        }
         document.body.appendChild(tempElement);
 
         // Pre-calculate widths for each character position
         const widths: number[] = [];
-        for (let i = 0; i <= text.length; i++) {
-          tempElement.textContent = text.substring(0, i);
-          widths.push(tempElement.offsetWidth);
+        if (text) {
+          for (let i = 0; i <= text.length; i++) {
+            tempElement.textContent = text.substring(0, i);
+            widths.push(tempElement.offsetWidth);
+          }
         }
         document.body.removeChild(tempElement);
 
         // Get container padding to add to width
-        const containerStyle = window.getComputedStyle(container);
-        const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
-        const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
-        const totalPadding = paddingLeft + paddingRight;
+        let totalPadding = 0;
+        if (container) {
+          const containerStyle = window.getComputedStyle(container);
+          const paddingLeft = parseFloat(containerStyle.paddingLeft) || 0;
+          const paddingRight = parseFloat(containerStyle.paddingRight) || 0;
+          totalPadding = paddingLeft + paddingRight;
+        }
 
         // Run animation setup back inside Angular zone
         this.ngZone.run(() => {
-          this.setupAnimation(element, container, widths, totalPadding);
+          if (element && container && totalPadding) {
+            this.setupAnimation(element, container, widths, totalPadding);
+          }
         });
       });
     });
@@ -126,7 +135,7 @@ export class HeroSection implements AfterViewInit, OnChanges {
     widths: number[],
     totalPadding: number
   ) {
-    const text = this.subtitle!;
+    const text = this.subtitle();
 
     // Clear the element
     element.textContent = '';
@@ -154,41 +163,43 @@ export class HeroSection implements AfterViewInit, OnChanges {
       });
 
     // Type each character one by one and expand container width
-    for (let i = 0; i < text.length; i++) {
-      const currentText = text.substring(0, i + 1);
-      const currentWidth = widths[i + 1] + totalPadding;
+    if (text) {
+      for (let i = 0; i < text.length; i++) {
+        const currentText = text.substring(0, i + 1);
+        const currentWidth = widths[i + 1] + totalPadding;
 
+        this.typingAnimation
+          .to({}, {
+            duration: 0.2,
+            onComplete: () => {
+              element.textContent = currentText;
+            }
+          })
+          .to(container, {
+            width: currentWidth,
+            duration: 0.2,
+            ease: 'power2.out'
+          }, '<');
+      }
+
+      // Wait before disappearing
       this.typingAnimation
-        .to({}, {
-          duration: 0.2,
+        .to({}, { duration: 1.5 })
+        // Text fades out and slides to right, container width shrinks
+        .to(element, {
+          opacity: 0,
+          x: 50,
+          duration: 0.4,
+          ease: 'power2.in',
           onComplete: () => {
-            element.textContent = currentText;
+            element.textContent = '';
           }
         })
         .to(container, {
-          width: currentWidth,
-          duration: 0.2,
-          ease: 'power2.out'
-        }, '<');
+          width: 0,
+          duration: 0.3,
+          ease: 'power2.in'
+        }, '-=0.3');
     }
-
-    // Wait before disappearing
-    this.typingAnimation
-      .to({}, { duration: 1.5 })
-      // Text fades out and slides to right, container width shrinks
-      .to(element, {
-        opacity: 0,
-        x: 50,
-        duration: 0.4,
-        ease: 'power2.in',
-        onComplete: () => {
-          element.textContent = '';
-        }
-      })
-      .to(container, {
-        width: 0,
-        duration: 0.3,
-        ease: 'power2.in'
-      }, '-=0.3');
   }
 }

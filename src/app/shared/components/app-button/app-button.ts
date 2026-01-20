@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -10,14 +10,14 @@ import { RouterLink } from '@angular/router';
 
 })
 export class AppButton {
-  @Input() customClass: string = '';
-  @Input() btnText: string = '';
-  @Input() disabled: boolean = false;
-  @Input() routerLink: string | null = null;
-  @Output() buttonClick = new EventEmitter<void>();
+  customClass = input<string>('');
+  btnText = input<string>('');
+  disabled = input<boolean>(false);
+  routerLink = input<string | null>(null);
+  buttonClick = output<void>();
 
   onClick() {
-    if (!this.disabled) {
+    if (!this.disabled()) {
       this.buttonClick.emit();
     }
   }

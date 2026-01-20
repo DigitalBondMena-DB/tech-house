@@ -1,8 +1,8 @@
-import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
 import { provideClientHydration, withEventReplay, withHttpTransferCacheOptions } from '@angular/platform-browser';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import Aura from '@primeuix/themes/aura';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 
@@ -23,10 +23,14 @@ export const appConfig: ApplicationConfig = {
         includePostRequests: false,
       })
     ),
-    provideAnimationsAsync(),
     providePrimeNG({
-      theme: "none",
-      unstyled: true,
+      theme: {
+        preset: Aura,
+        options: {
+          darkModeSelector: false,
+
+        },
+      },
     }),
     provideHttpClient(
       withFetch(),

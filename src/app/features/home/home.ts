@@ -47,20 +47,18 @@ export class Home implements OnInit, OnDestroy {
   }
 
   constructor() {
-    // Watch for data loading completion and enable scroll when ready
-    if (this.isBrowser) {
-      afterNextRender(() => {
-        if (!this.isSmallScreen()) {
-          this.playVideoSafely();
-        }
-      });
-      effect(() => {
-        const homeData = this.homeData();
-        if (homeData) {
-          this.separatedSeoTags.getSeoTagsDirect(homeData.seotag, 'home');
-        }
-      });
-    }
+    afterNextRender(() => {
+      if (!this.isSmallScreen()) {
+        this.playVideoSafely();
+      }
+    });
+
+    effect(() => {
+      const homeData = this.homeData();
+      if (homeData) {
+        this.separatedSeoTags.getSeoTagsDirect(homeData.seotag, 'home');
+      }
+    });
   }
 
   private playVideoSafely() {

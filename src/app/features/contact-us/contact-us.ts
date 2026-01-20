@@ -1,11 +1,12 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, ChangeDetectorRef, Component, computed, effect, ElementRef, inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, computed, DestroyRef, effect, ElementRef, inject, OnDestroy, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { environment } from '../../../environments/environment';
 import { SharedFeatureService } from '../../core/services/sharedFeatureService';
 import { CircleSidebar } from '../../shared/components/circle-sidebar/circle-sidebar';
 import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-sec';
 import { HeroSection } from '../../shared/components/hero-section/hero-section';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-contact-us',
@@ -20,6 +21,7 @@ import { HeroSection } from '../../shared/components/hero-section/hero-section';
   styleUrl: './contact-us.css'
 })
 export class ContactUs implements OnInit, AfterViewInit, OnDestroy {
+  private destroyRef = inject(DestroyRef)
   private sharedFeatureService = inject(SharedFeatureService);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
@@ -78,13 +80,13 @@ export class ContactUs implements OnInit, AfterViewInit, OnDestroy {
     // On client: checks TransferState first, then loads if needed
     this.sharedFeatureService.loadContactHero();
     this.sharedFeatureService.loadContactUsData();
-    this.sharedFeatureService.loadCounters();
+    this.sharedFeatureService.loadCounters().pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }
 
   ngAfterViewInit(): void {
     if (!this.isBrowser) return;
     this.viewReady = true;
-    
+
     // Setup Intersection Observer if counters are already loaded
     const counters = this.counters();
     if (counters?.length) {
@@ -169,26 +171,26 @@ export class ContactUs implements OnInit, AfterViewInit, OnDestroy {
   // 🔹 Helper method to add base URL if image is relative
   private addBaseUrlIfNeeded(url: string): string {
     if (!url) return '';
-    
+
     // If URL is already absolute (starts with http:// or https://), return as is
     if (url.startsWith('http://') || url.startsWith('https://')) {
       return url;
     }
-    
+
     // If URL starts with /, it's relative to root, return as is
     if (url.startsWith('/')) {
       return url;
     }
-    
+
     // Otherwise, add base URL from environment (remove /api and add image path)
     // API URL is: https://dashboard.techhouseksa.com/api
     // Base URL should be: https://dashboard.techhouseksa.com
     const baseUrl = environment.apiUrl.replace('/api', '');
-    
+
     // Remove leading slash from url if exists to avoid double slashes
     const cleanUrl = url.startsWith('/') ? url.substring(1) : url;
     const fullUrl = `${baseUrl}/${cleanUrl}`;
-    
+
     return fullUrl;
   }
 
@@ -197,7 +199,7 @@ export class ContactUs implements OnInit, AfterViewInit, OnDestroy {
     if (!image) {
       return '/images/placeholder.webp';
     }
-    
+
     let imageUrl = '';
     if (this.isBrowser) {
       const width = window.innerWidth;
@@ -211,11 +213,11 @@ export class ContactUs implements OnInit, AfterViewInit, OnDestroy {
     } else {
       imageUrl = image.desktop || '';
     }
-    
+
     if (!imageUrl) {
       return '/images/placeholder.webp';
     }
-    
+
     // Add base URL if needed (الصور تأتي كـ URLs كاملة بالفعل، لكن للاحتياط)
     const finalUrl = this.addBaseUrlIfNeeded(imageUrl);
     return finalUrl;
