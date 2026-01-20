@@ -1,5 +1,5 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, inject, input, viewChildren, viewChild, computed, effect, signal, PLATFORM_ID, NgZone } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, inject, input, viewChildren, viewChild, computed, effect, signal, PLATFORM_ID, NgZone, OnDestroy } from '@angular/core';
 import gsap from 'gsap';
 import ScrollTrigger from 'gsap/ScrollTrigger';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -20,7 +20,7 @@ if (typeof window !== 'undefined') {
   styleUrl: './home-services.css',
   standalone: true
 })
-export class HomeServices implements AfterViewInit {
+export class HomeServices implements AfterViewInit, OnDestroy {
   services = input<Service[]>([]);
 
   // 🔹 Loading state as signal
@@ -31,9 +31,10 @@ export class HomeServices implements AfterViewInit {
 
 
 
-  private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
+  private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
+  private resizeObserver: ResizeObserver | null = null;
 
   // Cache window width to avoid repeated reads
   enrichedServices = computed(() => {
@@ -116,38 +117,38 @@ export class HomeServices implements AfterViewInit {
     });
 
     // Use setTimeout to ensure DOM is fully ready
-    this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => {
-        // Animate right side titles (appearing from left to right)
-        if (this.titleRight1()?.nativeElement && this.titleBgRight1()?.nativeElement) {
-          this.animateTitle(this.titleRight1()?.nativeElement, this.titleBgRight1()?.nativeElement, 'right');
-        }
-        if (this.titleRight2()?.nativeElement && this.titleBgRight2()?.nativeElement) {
-          this.animateTitle(this.titleRight2()?.nativeElement, this.titleBgRight2()?.nativeElement, 'right');
-        }
+    setTimeout(() => {
+      // Animate right side titles (appearing from left to right)
+      if (this.titleRight1()?.nativeElement && this.titleBgRight1()?.nativeElement) {
+        this.animateTitle(this.titleRight1()?.nativeElement, this.titleBgRight1()?.nativeElement, 'right');
+      }
+      if (this.titleRight2()?.nativeElement && this.titleBgRight2()?.nativeElement) {
+        this.animateTitle(this.titleRight2()?.nativeElement, this.titleBgRight2()?.nativeElement, 'right');
+      }
 
-        // Animate left side titles (appearing from right to left)
-        if (this.titleLeft1()?.nativeElement && this.titleBgLeft1()?.nativeElement) {
-          this.animateTitle(this.titleLeft1()?.nativeElement, this.titleBgLeft1()?.nativeElement, 'left');
-        }
-        if (this.titleLeft2()?.nativeElement && this.titleBgLeft2()?.nativeElement) {
-          this.animateTitle(this.titleLeft2()?.nativeElement, this.titleBgLeft2()?.nativeElement, 'left');
-        }
+      // Animate left side titles (appearing from right to left)
+      if (this.titleLeft1()?.nativeElement && this.titleBgLeft1()?.nativeElement) {
+        this.animateTitle(this.titleLeft1()?.nativeElement, this.titleBgLeft1()?.nativeElement, 'left');
+      }
+      if (this.titleLeft2()?.nativeElement && this.titleBgLeft2()?.nativeElement) {
+        this.animateTitle(this.titleLeft2()?.nativeElement, this.titleBgLeft2()?.nativeElement, 'left');
+      }
 
-        // Animate images with rotation and scale effect (no repeat on scroll)
-        if (this.images() && this.images().length > 0) {
-          this.images().forEach((img: ElementRef, index: number) => {
-            if (img?.nativeElement) {
-              // Set initial state first
-              gsap.set(img.nativeElement, {
-                opacity: 0,
-                rotateY: -90,
-                scale: 0.9,
-                transformStyle: "preserve-3d",
-                perspective: 1000
-              });
+      // Animate images with rotation and scale effect (no repeat on scroll)
+      if (this.images() && this.images().length > 0) {
+        this.images().forEach((img: ElementRef, index: number) => {
+          if (img?.nativeElement) {
+            // Set initial state first
+            gsap.set(img.nativeElement, {
+              opacity: 0,
+              rotateY: -90,
+              scale: 0.9,
+              transformStyle: "preserve-3d",
+              perspective: 1000
+            });
 
-              // Create animation with ScrollTrigger
+            // Create animation with ScrollTrigger
+            this.ngZone.runOutsideAngular(() => {
               gsap.to(img.nativeElement, {
                 opacity: 1,
                 rotateY: 0,
@@ -156,23 +157,58 @@ export class HomeServices implements AfterViewInit {
                 ease: "power3.out",
                 scrollTrigger: {
                   trigger: img.nativeElement,
-                  start: "top 80%",
+                  start: "top 85%",
                   toggleActions: "play none none none",
-                  once: true
+                  once: true,
+                  invalidateOnRefresh: true
                 }
               });
-            }
+            });
+          }
+        });
+      }
+
+      // Refresh ScrollTrigger after all animations are set up
+      // and again after a short delay for image rendering
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.refresh();
+        setTimeout(() => ScrollTrigger.refresh(), 500);
+      }
+
+      // Setup resize observer for dynamic height changes
+      if (this.isBrowser && !this.resizeObserver) {
+        this.resizeObserver = new ResizeObserver(() => {
+          this.ngZone.runOutsideAngular(() => {
+            ScrollTrigger.refresh();
           });
+        });
+        const container = document.querySelector('app-home-services');
+        if (container) {
+          this.resizeObserver.observe(container);
         }
+      }
 
-        // Refresh ScrollTrigger after all animations are set up
-        if (typeof ScrollTrigger !== 'undefined') {
-          ScrollTrigger.refresh();
-        }
+      this.animationsInitialized.set(true);
+    }, 200);
+  }
 
-        this.animationsInitialized.set(true);
-      }, 100);
-    })
+  ngOnDestroy() {
+    if (this.isBrowser) {
+      if (typeof ScrollTrigger !== 'undefined') {
+        ScrollTrigger.getAll().forEach(trigger => {
+          const triggerElement = trigger.trigger;
+          if (triggerElement && triggerElement instanceof Element) {
+            const parent = triggerElement.closest('app-home-services');
+            if (parent) {
+              trigger.kill();
+            }
+          }
+        });
+      }
+      if (this.resizeObserver) {
+        this.resizeObserver.disconnect();
+      }
+    }
   }
 
   private animateTitle(titleElement: HTMLElement, bgElement: HTMLElement, direction: 'left' | 'right') {
@@ -180,24 +216,25 @@ export class HomeServices implements AfterViewInit {
     if (!this.isBrowser || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
       return;
     }
-    this.ngZone.runOutsideAngular(() => {
-      // Set initial state
-      gsap.set(bgElement, {
-        x: direction === 'right' ? '-100%' : '100%',
-        width: '100%',
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        [direction === 'right' ? 'left' : 'right']: 0
-      });
+    // Set initial state
+    gsap.set(bgElement, {
+      x: direction === 'right' ? '-100%' : '100%',
+      width: '100%',
+      position: 'absolute',
+      top: 0,
+      bottom: 0,
+      [direction === 'right' ? 'left' : 'right']: 0
+    });
 
-      // Create a timeline for the title animation (no repeat on scroll)
+    // Create a timeline for the title animation (no repeat on scroll)
+    this.ngZone.runOutsideAngular(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: titleElement,
-          start: 'top 80%',
+          start: 'top 85%',
           toggleActions: 'play none none none',
-          markers: false
+          markers: false,
+          invalidateOnRefresh: true
         }
       });
 
@@ -226,7 +263,7 @@ export class HomeServices implements AfterViewInit {
           '-=0.5' // Slight overlap with the background animation
         );
       }
-    })
+    });
   }
 
 
