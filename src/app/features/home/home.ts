@@ -1,4 +1,4 @@
-import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { afterNextRender, ChangeDetectionStrategy, Component, computed, DestroyRef, effect, ElementRef, inject, OnDestroy, OnInit, PLATFORM_ID, signal, viewChild } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { debounceTime, forkJoin, fromEvent } from 'rxjs';
@@ -21,7 +21,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
-  imports: [HomeBanner, HomeAbout, HomeBannersSec, HomeServices, HomeProjects, HomeBooking, HomeClientsReview, HomeBlogs, ContactUsSec, CircleSidebar, SkeletonModule, AppButton],
+  imports: [HomeBanner, HomeAbout, HomeBannersSec, HomeServices, HomeProjects, HomeBooking, HomeClientsReview, HomeBlogs, ContactUsSec, CircleSidebar, SkeletonModule, AppButton, NgOptimizedImage],
   templateUrl: './home.html',
   styleUrl: './home.css',
   changeDetection: ChangeDetectionStrategy.OnPush
