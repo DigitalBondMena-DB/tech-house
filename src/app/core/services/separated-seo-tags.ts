@@ -17,11 +17,7 @@ export class SeparatedSeoTags {
         image_url: seoTags.image_url,
         page_schema: seoTags?.page_schema
       };
-      console.log(seoTags);
-      
       this.seoHelper.updatePageSEO(seo);
-      console.log(seoTags);
-      
     } else {
       this.seoHelper.updateSEOWithFallback();
     }

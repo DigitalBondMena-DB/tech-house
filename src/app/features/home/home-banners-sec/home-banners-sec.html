@@ -7,11 +7,12 @@
         </div>
         <div class="w-full min-h-30">
             @defer (on viewport; when partners().length > 0) {
-                <app-banner #partnersBanner [items]="partners()" direction="right" [useCssAnimation]="true" customClass="-rotate-2 relative -right-1 rounded-l-full w-[95%] mt-10" class="min-h-30"></app-banner>
+            <app-banner #partnersBanner [items]="partners()" direction="right"
+                customClass="-rotate-2 relative -right-1 rounded-l-full w-[95%] mt-10" class="min-h-30"></app-banner>
             } @placeholder {
-                <div class="min-h-30 flex items-center justify-center">
-                    <p-skeleton width="100%" height="64px" styleClass="rounded-lg"></p-skeleton>
-                </div>
+            <div class="min-h-30 flex items-center justify-center">
+                <p-skeleton width="100%" height="64px" styleClass="rounded-lg"></p-skeleton>
+            </div>
             }
         </div>
 
@@ -24,11 +25,13 @@
         </div>
         <div class="w-full overflow-hidden pb-10 min-h-30">
             @defer (on viewport; when clients().length > 0) {
-                <app-banner-reverse #clientsBanner [items]="clients()" [useCssAnimation]="true" customClass="-rotate-2 relative -left-10 md:-left-50 rounded-r-full w-[95%] mt-10" class="min-h-30"></app-banner-reverse>
+            <app-banner-reverse #clientsBanner [items]="clients()"
+                customClass="-rotate-2 relative -left-10 md:-left-50 rounded-r-full w-[95%] mt-10"
+                class="min-h-30"></app-banner-reverse>
             } @placeholder {
-                <div class="min-h-30 flex items-center justify-center">
-                    <p-skeleton width="100%" height="64px" styleClass="rounded-lg"></p-skeleton>
-                </div>
+            <div class="min-h-30 flex items-center justify-center">
+                <p-skeleton width="100%" height="64px" styleClass="rounded-lg"></p-skeleton>
+            </div>
             }
         </div>
     </div>

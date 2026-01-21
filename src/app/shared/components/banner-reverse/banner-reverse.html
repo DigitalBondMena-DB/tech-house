@@ -4,51 +4,11 @@
     <div #scrollContainer class="banner-track flex items-center gap-8 min-h-[64px]">
       <!-- Multiple copies to ensure no gaps - seamless infinite loop -->
       @if (items() && items().length > 0) {
+
+      @for(_o of [1,2,3]; track $index){
       <!-- First set - visible on all screens -->
       @for (item of items(); track $index) {
-      @let hasUrl = item?.url;
-      @let imageUrl = getResponsiveImage(item?.image) || 'images/banner.webp';
-      @if (hasUrl) {
-      <a [href]="item.url" target="_blank" rel="noopener noreferrer"
-        class="banner-item h-16 flex items-center px-2 shrink-0 min-w-[180px]">
-        <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy"
-          class="h-full w-auto max-w-[180px] md:max-w-[220px] lg:max-w-[260px]">
-      </a>
-      } @else {
-      <div class="banner-item h-16 flex items-center px-2 shrink-0 min-w-[180px]">
-        <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy"
-          class="h-full w-auto max-w-[180px] md:max-w-[220px] lg:max-w-[260px]">
-      </div>
-      }
-      }
-      <!-- Second set - duplicate for seamless loop -->
-      @for (item of items(); track $index) {
-      @let hasUrl = item?.url;
-      @let imageUrl = getResponsiveImage(item?.image) || 'images/banner.webp';
-      @if (hasUrl) {
-      <a [href]="item.url" target="_blank" rel="noopener noreferrer"
-        class="banner-item h-16 flex items-center px-2 shrink-0 min-w-[180px]">
-        <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy"
-          class="h-full w-auto max-w-[180px] md:max-w-[220px] lg:max-w-[260px]">
-      </a>
-      } @else {
-      <div class="banner-item h-16 flex items-center px-2 shrink-0 min-w-[180px]">
-        <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy"
-          class="h-full w-auto max-w-[180px] md:max-w-[220px] lg:max-w-[260px]">
-      </div>
-      }
-      }
-      <!-- Third set - duplicate for seamless loop -->
-      @for (item of items(); track $index) {
-      @let hasUrl = item?.url;
-      @let imageUrl = getResponsiveImage(item?.image) || 'images/banner.webp';
-      @if (hasUrl) {
-      <a [href]="item.url" target="_blank" rel="noopener noreferrer"
-        class="banner-item h-16 flex items-center px-2 shrink-0 min-w-[180px]">
-        <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy"
-          class="h-full w-auto max-w-[180px] md:max-w-[220px] lg:max-w-[260px]">
-      </a>
-      } @else {
+      @let imageUrl = item?.image?.desktop || 'images/banner.webp';
       <div class="banner-item h-16 flex items-center px-2 shrink-0 min-w-[180px]">
         <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy"
           class="h-full w-auto max-w-[180px] md:max-w-[220px] lg:max-w-[260px]">

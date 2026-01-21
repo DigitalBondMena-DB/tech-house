@@ -9,6 +9,7 @@
 @theme {
     --main-color: #ED2924;
     --primary-font-color: #440000;
+    --animation-duration: 20s;
 }
 
 .icon-container {

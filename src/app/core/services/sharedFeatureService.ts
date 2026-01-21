@@ -69,8 +69,6 @@ export class SharedFeatureService {
     return this.http.get<CountersResponse>(`${this.baseUrl}${API_END_POINTS.COUNTERS}`).pipe(
       map((data) => {
         if (data && data.counters) {
-          console.log(data.counters);
-
           this.countersResponseSignal.set(data.counters);
           this.countersLoading = false;
           return data.counters;
@@ -197,8 +195,6 @@ export class SharedFeatureService {
           this.contactUsResponseSignal.set(contactData);
         }
         this.contactUsLoading = false;
-        console.log(contactUs);
-
       }),
       catchError((err) => {
         // Only log if it's not a network/CORS error (status 0)

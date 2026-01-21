@@ -327,7 +327,6 @@ export class ContactUsSec implements OnInit {
           this.showSuccessPopup.set(true);
           // Add "done" to the route path using Location API
           const currentUrl = decodeURIComponent(this.location.path().split('?')[0]);
-          console.log(currentUrl);
           if (!currentUrl.endsWith('/تم')) {
             const queryParams = this.router.parseUrl(this.router.url).queryParams;
             const queryString = Object.keys(queryParams).length > 0

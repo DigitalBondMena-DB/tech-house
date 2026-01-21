@@ -144,7 +144,6 @@ export class ProjectDet implements OnDestroy {
       const realIndex = data.startPosition % slidesCount;
 
       this.activeSlideIndex.set(realIndex);
-      console.log('Active Index:', realIndex);
     }
   }
 
