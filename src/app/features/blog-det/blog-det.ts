@@ -1,11 +1,12 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, computed, DestroyRef, effect, inject, NgZone, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
+import { Component, computed, DestroyRef, effect, inject, NgZone, OnInit, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
 import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { SharedFeatureService } from "../../core/services/sharedFeatureService";
 
 @Component({
   selector: 'app-blog-det',
@@ -15,7 +16,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
   styleUrl: './blog-det.css',
   encapsulation: ViewEncapsulation.None
 })
-export class BlogDet {
+export class BlogDet implements OnInit {
   private readonly timeouts = new Map<string, NodeJS.Timeout>()
   private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
@@ -24,16 +25,19 @@ export class BlogDet {
   private sanitizer = inject(DomSanitizer);
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
-
+  private sharedFeatureService = inject(SharedFeatureService);
+  contactUsData = this.sharedFeatureService.contactUsData;
   isBrowser = isPlatformBrowser(this.platformId);
+  ngOnInit(): void {
+    console.log(this.contactUsData());
 
+  }
   // ===== DATA =====
   blogDetailsData = computed(() => this.featureService.blogDetailsData());
   blog = computed(() => this.blogDetailsData()?.blog ?? null);
   relatedBlogs = computed(() => this.blogDetailsData()?.related_blogs ?? []);
 
   hasBlog = computed(() => !!this.blog());
-
   // ===== HERO IMAGE =====
   heroImage = computed(() => {
     const blog = this.blog();
@@ -93,8 +97,8 @@ export class BlogDet {
         <p class="text-lg text-[#B91C17]! font-medium">احصل على استشارتك المجانية الآن مع خبير من بيت التكنولوجيا</p>
       </div>
       <div class="mt-3 gap-2 flex items-center justify-center">
-        <a href="https://wa.me/201022810069" target="_blank" class="px-6 py-2 bg-green-500 hover:bg-green-400 transition-colors duration-150 rounded-full text-white">واتس اب</a>
-        <a href="tel:+201022810069" class="px-6 py-2 bg-[#B91C17] hover:bg-[#ED2924] transition-colors duration-150 rounded-full text-white">اتصل بنا</a>
+        <a href="${this.contactUsData()?.whatsapp_number}" target="_blank" class="px-6 py-2 bg-green-500 hover:bg-green-400 transition-colors duration-150 rounded-full text-white">واتس اب</a>
+        <a href="tel:${this.contactUsData()?.phone}" target="_blank" class="px-6 py-2 bg-[#B91C17] hover:bg-[#ED2924] transition-colors duration-150 rounded-full text-white">اتصل بنا</a>
       </div>
     </div>`;
           return ctaHtml + currentH2; // سيتم وضع الـ CTA "قبل" العنوان الذي وصل للرقم المحدد

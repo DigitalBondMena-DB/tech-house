@@ -5,8 +5,10 @@
     <!-- LCP Background Image - Always rendered for optimal performance -->
     <div class="hero-lcp-container h-[90vh] lg:h-screen w-full relative">
       <!-- LCP Image - Baseline for ALL devices to ensure consistent LCP score -->
+      @if(isSmallScreen()) {
       <img [ngSrc]="'/images/hero/hero.webp'" priority alt="ابتكارات تسويقية رقمية تصنع الفرق لشركتك"
         class="hero-lcp-image absolute inset-0 w-full h-full object-cover z-0" width="1920" height="1080" />
+      }
 
       <!-- Video Background - Loaded after First Paint on larger screens -->
       @if(!isSmallScreen()) {
@@ -26,7 +28,7 @@
             @if (!heroSection()) {
             <!-- Skeleton button while loading -->
             <div class="hero-skeleton mt-6 min-h-12.5">
-              <p-skeleton width="200px" height="50px" styleClass="rounded-full"></p-skeleton>
+              <p-skeleton width="200px" height="50px" class="rounded-full"></p-skeleton>
             </div>
             } @else {
             @if (heroSection()!.input_title) {
@@ -53,20 +55,20 @@
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-125" style="contain: layout style;">
     <div class="flex justify-between items-center min-h-15 mb-10">
-      <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="30px" styleClass="rounded-lg"></p-skeleton>
+      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+      <p-skeleton width="150px" height="30px" class="rounded-lg"></p-skeleton>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-2 items-start mt-10 min-h-125 gap-10">
       <div class="min-h-100">
-        <p-skeleton width="100%" height="80px" styleClass="mb-6 rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="80px" class="mb-6 rounded-lg"></p-skeleton>
         <div class="flex items-center justify-start mt-10 min-h-50">
           @for (i of [1,2,3]; track i) {
-          <p-skeleton [shape]="'circle'" width="140px" height="140px" styleClass="m-6"></p-skeleton>
+          <p-skeleton [shape]="'circle'" width="140px" height="140px" class="m-6"></p-skeleton>
           }
         </div>
       </div>
       <div class="ms-auto min-h-125 min-w-125">
-        <p-skeleton width="500px" height="500px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="500px" height="500px" class="rounded-lg"></p-skeleton>
       </div>
     </div>
   </section>
@@ -78,10 +80,10 @@
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-75">
     <div class="flex flex-col items-center justify-center min-h-75">
-      <p-skeleton width="200px" height="40px" styleClass="rounded-lg mb-8"></p-skeleton>
+      <p-skeleton width="200px" height="40px" class="rounded-lg mb-8"></p-skeleton>
       <div class="flex gap-4 w-full justify-center">
         @for (i of [1,2,3,4,5,6]; track i) {
-        <p-skeleton width="120px" height="80px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="120px" height="80px" class="rounded-lg"></p-skeleton>
         }
       </div>
     </div>
@@ -94,15 +96,15 @@
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
     <div class="flex justify-between items-center mb-10">
-      <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="50px" styleClass="rounded-full"></p-skeleton>
+      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+      <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       @for (i of [1,2,3]; track i) {
       <div class="min-h-100">
-        <p-skeleton width="100%" height="300px" styleClass="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="80%" height="30px" styleClass="rounded-lg mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="60px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="300px" class="rounded-lg mb-4"></p-skeleton>
+        <p-skeleton width="80%" height="30px" class="rounded-lg mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="60px" class="rounded-lg"></p-skeleton>
       </div>
       }
     </div>
@@ -115,15 +117,15 @@
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
     <div class="flex justify-between items-center mb-10">
-      <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="50px" styleClass="rounded-full"></p-skeleton>
+      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+      <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       @for (i of [1,2,3]; track i) {
       <div class="min-h-87.5">
-        <p-skeleton width="100%" height="250px" styleClass="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="70%" height="25px" styleClass="rounded-lg mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="50px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="250px" class="rounded-lg mb-4"></p-skeleton>
+        <p-skeleton width="70%" height="25px" class="rounded-lg mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="50px" class="rounded-lg"></p-skeleton>
       </div>
       }
     </div>
@@ -137,9 +139,9 @@
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-100">
     <div
       class="flex flex-col items-center justify-center min-h-100 bg-linear-to-l from-[#440000] to-[#ED2924] rounded-2xl p-10">
-      <p-skeleton width="300px" height="40px" styleClass="rounded-lg mb-4"></p-skeleton>
-      <p-skeleton width="80%" height="60px" styleClass="rounded-lg mb-6"></p-skeleton>
-      <p-skeleton width="200px" height="50px" styleClass="rounded-full"></p-skeleton>
+      <p-skeleton width="300px" height="40px" class="rounded-lg mb-4"></p-skeleton>
+      <p-skeleton width="80%" height="60px" class="rounded-lg mb-6"></p-skeleton>
+      <p-skeleton width="200px" height="50px" class="rounded-full"></p-skeleton>
     </div>
   </section>
   }
@@ -150,19 +152,19 @@
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-125" style="contain: layout style;">
     <div class="flex justify-between items-center mb-10">
-      <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
+      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       @for (i of [1,2,3]; track i) {
       <div class="min-h-75 bg-white rounded-lg p-6 shadow-lg">
         <div class="flex items-center mb-4">
-          <p-skeleton [shape]="'circle'" width="60px" height="60px" styleClass="mr-4"></p-skeleton>
+          <p-skeleton [shape]="'circle'" width="60px" height="60px" class="mr-4"></p-skeleton>
           <div>
-            <p-skeleton width="120px" height="20px" styleClass="rounded-lg mb-2"></p-skeleton>
-            <p-skeleton width="80px" height="15px" styleClass="rounded-lg"></p-skeleton>
+            <p-skeleton width="120px" height="20px" class="rounded-lg mb-2"></p-skeleton>
+            <p-skeleton width="80px" height="15px" class="rounded-lg"></p-skeleton>
           </div>
         </div>
-        <p-skeleton width="100%" height="100px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="100px" class="rounded-lg"></p-skeleton>
       </div>
       }
     </div>
@@ -175,16 +177,16 @@
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
     <div class="flex justify-between items-center mb-10">
-      <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="50px" styleClass="rounded-full"></p-skeleton>
+      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+      <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       @for (i of [1,2,3]; track i) {
       <div class="min-h-100">
-        <p-skeleton width="100%" height="250px" styleClass="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="80%" height="25px" styleClass="rounded-lg mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="60px" styleClass="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="120px" height="30px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="100%" height="250px" class="rounded-lg mb-4"></p-skeleton>
+        <p-skeleton width="80%" height="25px" class="rounded-lg mb-2"></p-skeleton>
+        <p-skeleton width="100%" height="60px" class="rounded-lg mb-4"></p-skeleton>
+        <p-skeleton width="120px" height="30px" class="rounded-lg"></p-skeleton>
       </div>
       }
     </div>
@@ -199,19 +201,19 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-stretch min-h-150">
       <!-- Right Side - Contact Form Skeleton -->
       <div class="flex flex-col h-full min-h-150">
-        <p-skeleton width="200px" height="40px" styleClass="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="80%" height="30px" styleClass="rounded-lg mb-8"></p-skeleton>
+        <p-skeleton width="200px" height="40px" class="rounded-lg mb-4"></p-skeleton>
+        <p-skeleton width="80%" height="30px" class="rounded-lg mb-8"></p-skeleton>
         <div class="flex flex-col gap-6 flex-1">
-          <p-skeleton width="100%" height="60px" styleClass="rounded-lg"></p-skeleton>
-          <p-skeleton width="100%" height="60px" styleClass="rounded-lg"></p-skeleton>
-          <p-skeleton width="100%" height="60px" styleClass="rounded-lg"></p-skeleton>
-          <p-skeleton width="100%" height="150px" styleClass="rounded-lg"></p-skeleton>
-          <p-skeleton width="200px" height="50px" styleClass="rounded-full mt-4"></p-skeleton>
+          <p-skeleton width="100%" height="60px" class="rounded-lg"></p-skeleton>
+          <p-skeleton width="100%" height="60px" class="rounded-lg"></p-skeleton>
+          <p-skeleton width="100%" height="60px" class="rounded-lg"></p-skeleton>
+          <p-skeleton width="100%" height="150px" class="rounded-lg"></p-skeleton>
+          <p-skeleton width="200px" height="50px" class="rounded-full mt-4"></p-skeleton>
         </div>
       </div>
       <!-- Left Side - Map Skeleton -->
       <div class="h-full rounded-2xl overflow-hidden min-h-150">
-        <p-skeleton width="100%" height="600px" styleClass="rounded-2xl"></p-skeleton>
+        <p-skeleton width="100%" height="600px" class="rounded-2xl"></p-skeleton>
       </div>
     </div>
   </section>

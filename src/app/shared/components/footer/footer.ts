@@ -1,5 +1,5 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ResponsiveImage } from '../../../core/models/home.model';
@@ -16,8 +16,6 @@ import { SharedFeatureService } from '../../../core/services/sharedFeatureServic
 export class Footer implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);
   private sanitizer = inject(DomSanitizer);
-  private platformId = inject(PLATFORM_ID);
-  private isBrowser = isPlatformBrowser(this.platformId);
 
   // Contact Us Data from API
   contactUsData = this.sharedFeatureService.contactUsData;

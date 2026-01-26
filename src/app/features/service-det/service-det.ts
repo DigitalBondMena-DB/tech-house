@@ -62,65 +62,41 @@ export class ServiceDet implements OnDestroy {
         }
         return null;
     });
-
     fullContent = computed(() => {
         const activeIndex = this.activeSectionIndex();
-        let html = this.service()?.large_text ?? 'لا يوجد محتوى';
+        let html = this.service()?.large_text ?? '';
 
         if (html) {
             const sections = this.sections();
-            html = html.replace(/<h2([^>]*)>(.*?)<\/h2>/gi, (match, attributes, content) => {
+            let h2Count = 0; // عداد للعناوين
+
+            html = html.replace(/<h2([^>]*)>([\s\S]*?)<\/h2>/gi, (match, attributes, content) => {
+
+                h2Count++;
                 const cleanContent = content.replace(/<[^>]*>/g, '').trim();
 
-                const sectionIndex = sections.findIndex(s => {
-                    const cleanTitle = s.title.trim();
-                    return cleanContent === cleanTitle || cleanContent.includes(cleanTitle) || cleanTitle.includes(cleanContent);
-                });
-
+                const sectionIndex = sections.findIndex(s => s.title.trim() === cleanContent || cleanContent.includes(s.title.trim()));
                 const finalIndex = sectionIndex >= 0 ? sectionIndex : -1;
+                let newAttributes = attributes.includes('id=')
+                    ? attributes.replace(/id="[^"]*"/, `id="section-${finalIndex}"`)
+                    : `${attributes} id="section-${finalIndex}"`;
 
-                let classAttr = '';
-                if (finalIndex === activeIndex && finalIndex >= 0) {
-                    classAttr = ' class="section-heading-active"';
-                } else {
-                    classAttr = ' class="section-heading"';
-                }
+                const currentH2 = `<h2${newAttributes} class="${finalIndex === activeIndex ? 'section-heading-active' : 'section-heading'}">${content}</h2>`;
 
-                let newAttributes = attributes;
-                if (finalIndex >= 0) {
-                    if (newAttributes.includes('id=')) {
-                        newAttributes = newAttributes.replace(/id="[^"]*"/, `id="section-${finalIndex}"`);
-                    } else {
-                        newAttributes = `${newAttributes} id="section-${finalIndex}"`;
-                    }
-                }
-
-                if (!newAttributes.includes('class=')) {
-                    newAttributes = `${newAttributes}${classAttr}`;
-                } else {
-                    newAttributes = newAttributes.replace(/class="([^"]*)"/, (m: string, classes: string) => {
-                        return `class="${classes} ${finalIndex === activeIndex && finalIndex >= 0 ? 'section-heading-active' : 'section-heading'}"`;
-                    });
-                }
-
-                return `<h2${newAttributes}>${content}</h2>`;
+                return currentH2;
             });
-
             html = html.replace(/style\s*=\s*"([^"]*)"/gi, (match, styles) => {
                 let cleanedStyles = styles.replace(/font-family\s*:\s*[^;]+;?\s*/gi, '');
                 cleanedStyles = cleanedStyles.replace(/;\s*;/g, ';').replace(/^\s*;\s*|\s*;\s*$/g, '');
                 return `style="${cleanedStyles}"`;
             });
-
             html = html.replace(/style\s*=\s*"([^"]*)text-align\s*:\s*(left|right|center)([^"]*)"/gi,
                 (match, before, align, after) => {
                     const cleanedBefore = before.replace(/text-align\s*:\s*(left|right|center)\s*;?\s*/gi, '');
                     const cleanedAfter = after.replace(/text-align\s*:\s*(left|right|center)\s*;?\s*/gi, '');
                     return `style="${cleanedBefore}text-align: justify;${cleanedAfter}"`;
                 });
-
             html = html.replace(/text-align\s*:\s*(left|right|center)\s*;?/gi, 'text-align: justify;');
-
             html = html.replace(/style\s*=\s*"([^"]*)"/gi, (match, styles) => {
                 if (!styles.includes('text-align')) {
                     return `style="${styles}; text-align: justify;"`;
@@ -143,7 +119,7 @@ export class ServiceDet implements OnDestroy {
         });
 
         effect(() => {
-            const html = this.service()?.text;
+            const html = this.service()?.large_text;
             if (html) {
                 this.extractSections(html);
             }
@@ -169,6 +145,7 @@ export class ServiceDet implements OnDestroy {
                 }, 100);
                 this.timeouts.set('section-heading', timeoutId);
             }
+
         });
     }
 
@@ -207,6 +184,7 @@ export class ServiceDet implements OnDestroy {
         this.sections.set(result);
         this.activeSectionIndex.set(0);
     }
+
 
     navigateToSection(i: number) {
         if (i >= 0 && i < this.sections().length) {

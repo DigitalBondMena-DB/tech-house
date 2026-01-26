@@ -3,20 +3,20 @@
     <div class="container mx-auto px-5 lg:px-20 min-h-[400px]">
       <!-- Skeleton Loader -->
       @if (isLoading()) {
-      <p-skeleton width="200px" height="40px" styleClass="rounded-lg mx-auto mb-10"></p-skeleton>
+      <p-skeleton width="200px" height="40px" class="rounded-lg mx-auto mb-10"></p-skeleton>
       <div class="w-full flex items-center justify-center gap-2 my-10 min-h-[120px]">
         @for (i of [1,2,3]; track i) {
-        <p-skeleton [shape]="'circle'" width="128px" height="128px" styleClass=""></p-skeleton>
+        <p-skeleton [shape]="'circle'" width="128px" height="128px" class=""></p-skeleton>
         }
       </div>
-      <p-skeleton width="80%" height="80px" styleClass="rounded-lg mx-auto mb-5"></p-skeleton>
+      <p-skeleton width="80%" height="80px" class="rounded-lg mx-auto mb-5"></p-skeleton>
       <div class="flex items-center justify-center my-5 gap-1 min-h-[40px]">
         @for (i of [1,2,3,4,5]; track i) {
-        <p-skeleton width="20px" height="20px" styleClass="rounded"></p-skeleton>
+        <p-skeleton width="20px" height="20px" class="rounded"></p-skeleton>
         }
       </div>
-      <p-skeleton width="300px" height="50px" styleClass="rounded-lg mx-auto mt-10"></p-skeleton>
-      <p-skeleton width="200px" height="30px" styleClass="rounded-lg mx-auto mt-2"></p-skeleton>
+      <p-skeleton width="300px" height="50px" class="rounded-lg mx-auto mt-10"></p-skeleton>
+      <p-skeleton width="200px" height="30px" class="rounded-lg mx-auto mt-2"></p-skeleton>
       } @else {
       <h3 class="text-2xl font-bold text-white min-h-[40px]">اراء العملاء
       </h3>

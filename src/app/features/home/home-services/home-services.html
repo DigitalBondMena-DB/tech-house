@@ -2,32 +2,32 @@
     <!-- Skeleton Loader -->
     @if (isLoading()) {
     <div class="flex justify-center mb-20 min-h-15">
-        <p-skeleton width="200px" height="40px" styleClass="rounded-lg"></p-skeleton>
+        <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-5 container mx-auto px-5 lg:px-20 gap-10 min-h-250">
         <!-- Right Column Skeleton -->
         <div class="col-span-1 lg:col-span-2 flex flex-col items-center lg:items-end gap-10">
-            <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
-            <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
-            <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
-            <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
+            <p-skeleton width="100%" height="400px" class="rounded-2xl"></p-skeleton>
+            <p-skeleton width="100%" height="250px" class="rounded-lg"></p-skeleton>
+            <p-skeleton width="100%" height="400px" class="rounded-2xl"></p-skeleton>
+            <p-skeleton width="100%" height="250px" class="rounded-lg"></p-skeleton>
         </div>
         <!-- Middle Column Skeleton -->
         <div class="hidden lg:flex lg:col-span-1 flex-col items-center h-full relative">
-            <p-skeleton width="2px" height="100%" styleClass="rounded-full"></p-skeleton>
+            <p-skeleton width="2px" height="100%" class="rounded-full"></p-skeleton>
         </div>
         <!-- Left Column Skeleton -->
         <div class="col-span-1 lg:col-span-2 flex flex-col items-center lg:items-start gap-10">
-            <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
-            <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
-            <p-skeleton width="100%" height="250px" styleClass="rounded-lg"></p-skeleton>
-            <p-skeleton width="100%" height="400px" styleClass="rounded-2xl"></p-skeleton>
+            <p-skeleton width="100%" height="250px" class="rounded-lg"></p-skeleton>
+            <p-skeleton width="100%" height="400px" class="rounded-2xl"></p-skeleton>
+            <p-skeleton width="100%" height="250px" class="rounded-lg"></p-skeleton>
+            <p-skeleton width="100%" height="400px" class="rounded-2xl"></p-skeleton>
         </div>
     </div>
 
     <div class="flex justify-center mt-20">
-        <p-skeleton width="200px" height="50px" styleClass="rounded-full"></p-skeleton>
+        <p-skeleton width="200px" height="50px" class="rounded-full"></p-skeleton>
     </div>
     } @else {
     <app-section-title [title]="servicesTitle" customClass="flex justify-center mb-20 min-h-[60px]">
@@ -42,14 +42,9 @@
             <!-- @if (services.length > 0) { -->
             <!-- First Image (service 0) - Right side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img 
-                [ngSrc]="enrichedServices()[0].defaultImg" 
-                loading="lazy"
-                [attr.srcset]="enrichedServices()[0].srcset"
-                [alt]="enrichedServices()[0].title || ''" 
-                sizes="(max-width: 768px) 100vw, 33vw"
-                     width="500"
-                    height="370" 
+                <img [ngSrc]="enrichedServices()[0].defaultImg" loading="lazy"
+                    [attr.srcset]="enrichedServices()[0].srcset" [alt]="enrichedServices()[0].title || ''"
+                    sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover center" #imgEl>
             </div>
             <!-- } -->
@@ -64,14 +59,9 @@
             <!-- @if (services.length > 2) { -->
             <!-- Second Image (service 2) - Right side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img 
-                [ngSrc]="enrichedServices()[2].defaultImg" 
-                loading="lazy"
-                [attr.srcset]="enrichedServices()[2].srcset"
-                [alt]="enrichedServices()[2].title || ''" 
-                sizes="(max-width: 768px) 100vw, 33vw"
-                    width="500" 
-                    height="370"
+                <img [ngSrc]="enrichedServices()[2].defaultImg" loading="lazy"
+                    [attr.srcset]="enrichedServices()[2].srcset" [alt]="enrichedServices()[2].title || ''"
+                    sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover" #imgEl>
             </div>
             <!-- } -->
@@ -127,14 +117,9 @@
             <!-- @if (services.length > 1) { -->
             <!-- First Image (service 1) - Left side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img 
-                [ngSrc]="enrichedServices()[1].defaultImg" 
-                loading="lazy"
-                [attr.srcset]="enrichedServices()[1].srcset"
-                [alt]="enrichedServices()[1].title || ''" 
-                sizes="(max-width: 768px) 100vw, 33vw"
-                     width="500" 
-                     height="370"
+                <img [ngSrc]="enrichedServices()[1].defaultImg" loading="lazy"
+                    [attr.srcset]="enrichedServices()[1].srcset" [alt]="enrichedServices()[1].title || ''"
+                    sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover" #imgEl>
             </div>
             <!-- } -->
@@ -151,13 +136,9 @@
             <!-- @if (services.length > 3) { -->
             <!-- Second Image (service 3) - Left side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img 
-                [ngSrc]="enrichedServices()[3].defaultImg" 
-                loading="lazy"
-                [attr.srcset]="enrichedServices()[3].srcset"
-                [alt]="enrichedServices()[3].title || ''" 
-                sizes="(max-width: 768px) 100vw, 33vw"
-                     width="500" height="370"
+                <img [ngSrc]="enrichedServices()[3].defaultImg" loading="lazy"
+                    [attr.srcset]="enrichedServices()[3].srcset" [alt]="enrichedServices()[3].title || ''"
+                    sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover" #imgEl>
             </div>
             <!-- } -->
