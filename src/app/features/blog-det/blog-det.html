@@ -14,29 +14,28 @@
     {{ blog()?.title }}
   </h1>
   <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100" dir="rtl">
-  <div class="flex items-center gap-2 px-4 py-2 bg-[#ED2924]/10 rounded-full border border-[#ED2924]/20">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#ED2924]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-    
-    <span class="text-sm md:text-base font-medium text-gray-700">
-      تم النشر في: 
-      <time 
-        [attr.datetime]="blog()?.publish_at_ar" 
-        class="text-[#ED2924] font-bold"
-      >
-        {{ blog()?.publish_at_ar }}
-      </time>
-    </span>
-  </div>
+    <div class="flex items-center gap-2 px-4 py-2 bg-[#ED2924]/10 rounded-full border border-[#ED2924]/20">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#ED2924]" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
 
-  <span class="h-4 w-px bg-gray-300 hidden md:block"></span>
+      <span class="text-sm md:text-base font-medium text-gray-700">
+        تم النشر في:
+        <time [attr.datetime]="blog()?.publish_at_ar" class="text-[#ED2924] font-bold">
+          {{ blog()?.publish_at_ar }}
+        </time>
+      </span>
+    </div>
 
-  <div class="hidden md:flex items-center gap-1 text-gray-500 text-sm">
-    <span>بواسطة:</span>
-    <span class="hover:text-[#ED2924] transition-colors cursor-default">فريق عمل بيت التكنولوجيا</span>
+    <span class="h-4 w-px bg-gray-300 hidden md:block"></span>
+
+    <div class="hidden md:flex items-center gap-1 text-gray-500 text-sm">
+      <span>بواسطة:</span>
+      <span class="hover:text-[#ED2924] transition-colors cursor-default">فريق عمل بيت التكنولوجيا</span>
+    </div>
   </div>
-</div>
 
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12" dir="rtl">
 
@@ -49,15 +48,16 @@
               <img src="images/title/title.webp" alt="title-icon">
               <h2 class="toc-title">محتويات المقالة</h2>
             </div>
-            <ul class="toc-list">
+            <ul class="toc-list max-h-[310px] overflow-y-auto [direction:ltr]!">
               @for (section of sections(); track section.id; let i = $index) {
-              <li class="toc-item" [class.toc-item-active]="isSectionActive(i)" (click)="navigateToSection(i)">
+              <li class="toc-item [direction:rtl]!" [class.toc-item-active]="isSectionActive(i)"
+                (click)="navigateToSection(i)">
                 <span class="toc-number">{{ i + 1 }}.</span>
                 <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
-                @if (isSectionActive(i)) {
+                <!-- @if (isSectionActive(i)) {
   
                 <span class="toc-active-bar"></span>
-                }
+                } -->
               </li>
               }
               @if (sections().length === 0) {
@@ -68,14 +68,14 @@
             </ul>
           </div>
         </div>
-  
+
         <!-- Related Blogs -->
         <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
           <div class="flex items-center gap-2 mb-4 md:mb-6">
             <img src="images/title/title.webp" alt="title-icon">
             <h2 class="text-xl md:text-2xl font-bold text-[#440000]">المشاركات الأخيرة</h2>
           </div>
-  
+
           <div class="space-y-6">
             @for (related of relatedBlogs(); track related.slug) {
             <div class=" rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
@@ -101,14 +101,11 @@
 
     <!-- Article Content -->
     <div class="lg:col-span-2">
-      <div
-        class="article-content"
-        [innerHTML]="fullContent()"></div>
+      <div class="article-content" [innerHTML]="fullContent()"></div>
     </div>
 
   </div>
 </section>
 }
 
-<app-contact-us-sec [slug]="blog()?.slug"
-          [type]="'المقالات'" />
+<app-contact-us-sec [slug]="blog()?.slug" [type]="'المقالات'" />

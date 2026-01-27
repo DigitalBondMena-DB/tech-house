@@ -417,7 +417,15 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    direction: rtl
+    direction: rtl;
+
+    &::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: #940000;
+    }
 }
 
 .toc-item {
@@ -453,16 +461,6 @@
     color: inherit
 }
 
-.toc-active-bar {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 7px;
-    border-radius: 47px;
-    background-color: #940000
-}
-
 @media (max-width:768px) {
     .toc-title {
         font-size: 1.25rem
@@ -470,11 +468,6 @@
 
     .toc-item {
         font-size: .9rem
-    }
-
-    .toc-active-bar {
-        right: -1rem;
-        width: 3px
     }
 }
 
