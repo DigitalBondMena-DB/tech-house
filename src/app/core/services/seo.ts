@@ -122,7 +122,6 @@ export class SEOService {
   setScripSchema(pageSchema: string | undefined) {
     const existingSchemas = this.document.body.querySelectorAll('.dynamic-schema');
     existingSchemas.forEach(el => this.renderer.removeChild(this.document.body, el));
-    console.log(pageSchema);
     
     if (
     !pageSchema || 

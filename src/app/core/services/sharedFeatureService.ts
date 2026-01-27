@@ -192,7 +192,6 @@ export class SharedFeatureService {
               twitter_url: contactUs.social.twitter_url
             } : undefined
           };
-          console.log(contactUs);
           
 
           this.contactUsResponseSignal.set(contactData);

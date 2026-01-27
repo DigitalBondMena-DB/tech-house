@@ -56,7 +56,7 @@ export class ContactUsSec implements OnInit {
 
 
   // Countries List
-  countries = COUNTRIES;
+  countries = signal(COUNTRIES);
 
   // Selected Country - Initialize with Saudi Arabia as default (use exact reference from array)
   selectedCountryModel = signal<Country>(COUNTRIES[0]);

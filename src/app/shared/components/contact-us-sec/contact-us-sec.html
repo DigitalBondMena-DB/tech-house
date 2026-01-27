@@ -37,10 +37,10 @@
 
                     <!-- Phone Number -->
                     <div class="flex flex-col gap-1">
-                        <p-floatlabel variant="on">
+                        <p-floatlabel dir="ltr"  variant="on">
                             <p-inputGroup>
                                 <p-inputGroupAddon class="p-1 cursor-pointer">
-                                    <p-select [autofocus]="false" [options]="countries" [(ngModel)]="selectedCountryModel"
+                                    <p-select  [autofocus]="false" [options]="countries()" [(ngModel)]="selectedCountryModel"
                                         [ngModelOptions]="{standalone: true}" (onChange)="onCountryChange($event.value)"
                                         optionLabel="name" [dataKey]="'code'"
                                         [style]="{'width': '140px', 'border': 'none'}"
@@ -61,9 +61,9 @@
                                         </ng-template>
                                     </p-select>
                                 </p-inputGroupAddon>
-                                <input id="phone" type="tel" pInputText formControlName="phone"
+                                <input id="phone" type="tel"  pInputText formControlName="phone"
                                     [placeholder]="phonePlaceholder()" (keypress)="onPhoneKeyPress($event)"
-                                    [invalid]="phoneControl.invalid && phoneControl.touched" class="w-full" />
+                                    [invalid]="phoneControl.invalid && phoneControl.touched" class="w-full placeholder:text-right" />
                             </p-inputGroup>
                             <label for="phone">رقم الجوال</label>
                         </p-floatlabel>
