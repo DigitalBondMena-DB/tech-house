@@ -161,6 +161,8 @@ export interface ContactUsData {
     linkedin_url?: string;
     tiktok_url?: string;
     snapchat_url?: string;
+    twitter_url?:string;
+
   };
   contactInfo?: {
     email?: string;
@@ -409,6 +411,7 @@ export interface BlogDetail {
   text: string; // HTML content
   slug: string;
   publish_at_ar: string;
+  update_date:string
   image: string[]; // Array of 3 image URLs [mobile, tablet, desktop]
   banner_image: string | string[] | null; // Banner image URL (string or array)
   meta_title: string;

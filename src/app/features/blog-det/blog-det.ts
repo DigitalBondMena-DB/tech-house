@@ -16,7 +16,7 @@ import { SharedFeatureService } from "../../core/services/sharedFeatureService";
   styleUrl: './blog-det.css',
   encapsulation: ViewEncapsulation.None
 })
-export class BlogDet implements OnInit {
+export class BlogDet {
   private readonly timeouts = new Map<string, NodeJS.Timeout>()
   private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
@@ -28,10 +28,7 @@ export class BlogDet implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);
   contactUsData = this.sharedFeatureService.contactUsData;
   isBrowser = isPlatformBrowser(this.platformId);
-  ngOnInit(): void {
-    console.log(this.contactUsData());
 
-  }
   // ===== DATA =====
   blogDetailsData = computed(() => this.featureService.blogDetailsData());
   blog = computed(() => this.blogDetailsData()?.blog ?? null);

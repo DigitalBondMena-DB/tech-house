@@ -70,11 +70,6 @@ export class ContactUs implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // Scroll to top when contact page loads
-    if (this.isBrowser) {
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
-
     // Load data in ngOnInit (runs on both server and client)
     // On server: loads data and saves to TransferState
     // On client: checks TransferState first, then loads if needed

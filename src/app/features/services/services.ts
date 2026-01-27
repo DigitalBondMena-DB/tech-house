@@ -97,7 +97,7 @@ export class Services implements OnInit, AfterViewInit {
     return `${baseUrl}/${cleanUrl}`;
   }
 
-  getProjectsUrl(service: any): string {
+  getServiceUrl(service: any): string {
 
     return '/الخدمات/' + service.slug;
   }

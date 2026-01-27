@@ -2,8 +2,7 @@
 <div class="min-h-screen">
     @if (bannerSection()) {
     <app-hero-section [title]="bannerSection()?.title || ''" [paragraph]="bannerSection()?.text || ''"
-        customClass=" h-[90vh] lg:h-[80vh]!"
-        [image]="bannerSection()?.image ? getResponsiveImage(bannerSection()?.image) : undefined"
+        customClass=" h-[90vh] lg:h-[80vh]!" [image]="bannerSection()?.image?.desktop"
         [imagePosition]="bannerSection()?.image ? 'left' : 'none'"
         imageClass=" absolute -bottom-[0px]! -left-[0px]! lg:-left-[0px]!">
     </app-hero-section>
@@ -22,16 +21,17 @@
         @if (projectItems().length > 0) {
         <div class="projects-grid grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             @for (project of projectItems(); track project.id) {
-            <div class="project-card cursor-pointer " (click)="navigateToProjectDetails(project)">
-                <!-- Project Image -->
-                <div class="project-image mb-4">
-                    <img loading="lazy" decoding="async" [src]="getResponsiveImage(project.image)" [alt]="project.title"
-                        class="w-full h-75 rounded-2xl object-cover"
+            <article class="project-card group cursor-pointer relative">
+                <a [routerLink]="navigateToProjectDetails(project)" class="absolute inset-0 z-10"
+                    [attr.aria-label]="project.title"></a>
+
+                <div class="project-image mb-4 overflow-hidden rounded-2xl">
+                    <img loading="lazy" decoding="async" [src]="project.image.desktop" [alt]="project.title"
+                        class="w-full h-75 object-cover transition-transform duration-300 group-hover:scale-105"
                         (error)="$event.target.src = '/images/project.webp'">
                 </div>
 
-                <!-- Project Tags -->
-                @if (project.types && project.types.length > 0) {
+                @if (project.types?.length) {
                 <div class="project-tags flex flex-wrap gap-2 mb-3">
                     @for (type of project.types; track type) {
                     <span class="project-tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm">
@@ -41,18 +41,16 @@
                 </div>
                 }
 
-                <!-- Project Title -->
-                <h3 class="text-xl md:text-2xl font-bold text-[#440000] mb-2 line-clamp-1" [title]="project.title">
+                <h3 class="text-xl md:text-2xl font-bold text-[#440000] mb-2 line-clamp-1">
                     {{ project.title }}
                 </h3>
 
-                <!-- Project Brief -->
                 @if (project.brief) {
-                <p class="project-brief text-base text-[#440000] leading-relaxed">
+                <p class="project-brief text-base text-[#440000]/80 leading-relaxed line-clamp-2">
                     {{ project.brief }}
                 </p>
                 }
-            </div>
+            </article>
             }
         </div>
         } @else {

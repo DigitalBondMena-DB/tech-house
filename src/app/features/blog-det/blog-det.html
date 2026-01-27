@@ -1,13 +1,11 @@
-@if (hasBlog()) {
 <section class="blog-hero-section" [style.background-image]="'url(' + heroImage() + ')'">
   <div class="blog-hero-overlay"></div>
   <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
     <div class="blog-hero-content h-full flex items-center justify-center text-center" dir="rtl"></div>
   </div>
 </section>
-}
 
-@if (hasBlog()) {
+
 <section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
   <!-- العنوان الأساسي للمقالة -->
   <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[#940000] mb-8 md:mb-12 " dir="rtl">
@@ -31,6 +29,11 @@
 
     <span class="h-4 w-px bg-gray-300 hidden md:block"></span>
 
+    <div class="hidden md:flex items-center gap-1 text-gray-500 text-sm">
+      <span>تم التعديل في:</span>
+      <span class="hover:text-[#ED2924] transition-colors cursor-default">{{blog()?.update_date}}</span>
+    </div>
+    <span class="h-4 w-px bg-gray-300 hidden md:block"></span>
     <div class="hidden md:flex items-center gap-1 text-gray-500 text-sm">
       <span>بواسطة:</span>
       <span class="hover:text-[#ED2924] transition-colors cursor-default">فريق عمل بيت التكنولوجيا</span>
@@ -108,6 +111,6 @@
 
   </div>
 </section>
-}
 
-<app-contact-us-sec [slug]="blog()?.slug" [type]="'المقالات'" />
+
+  <app-contact-us-sec [slug]="blog()?.slug" [type]="'المقالات'" />

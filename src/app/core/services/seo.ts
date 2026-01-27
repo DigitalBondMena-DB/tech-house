@@ -11,8 +11,6 @@ export interface SEOData {
 
   description?: string;
 
-  keywords?: string;
-
   image?: string;
 
   type?: string;
@@ -71,14 +69,11 @@ export class SEOService {
     effect(() => {
       const url = this.currentUrlSignal();
 
-      // إزالة /ar أو /en وأي علامات مائلة زائدة في النهاية
       const cleanPath = url.replace(/^\/(ar|en)/, '').replace(/\/$/, '');
       const fullUrl = `${this.baseUrl}${cleanPath || ''}`;
 
-      // تحديث الروابط الأساسية
       this.updateCanonicalAndAlternate(fullUrl);
 
-      // تحديث og:url ليكون مطابقاً
       this.meta.updateTag({ property: 'og:url', content: fullUrl });
     });
   }
@@ -116,8 +111,8 @@ export class SEOService {
   updateSEOFromBackend(seoData: Seotag, config: SEOConfig = { updateLinks: true, fallbackToDefault: false }): void {
     this.clearExistingMetaTags();
 
-    const title = seoData.meta_title || (config.fallbackToDefault ? this.getDefaultTitle() : '');
-    const description = seoData.meta_description || (config.fallbackToDefault ? this.getDefaultDescription() : '');
+    const title = seoData?.meta_title ;
+    const description = seoData?.meta_description;
 
     if (title) this.setTitle(title);
     if (description) this.setDescription(description);
@@ -127,8 +122,14 @@ export class SEOService {
   setScripSchema(pageSchema: string | undefined) {
     const existingSchemas = this.document.body.querySelectorAll('.dynamic-schema');
     existingSchemas.forEach(el => this.renderer.removeChild(this.document.body, el));
-
-    if (!pageSchema || pageSchema.toLowerCase() === 'page schema' || pageSchema.trim() === '') return;
+    console.log(pageSchema);
+    
+    if (
+    !pageSchema || 
+    !pageSchema.includes('application/ld+json')
+  ) {
+    return;
+  }
 
     try {
       const tempDiv = this.renderer.createElement('div');
@@ -149,7 +150,7 @@ export class SEOService {
     }
   }
 
-  private setTitle(title: string): void {
+  private setTitle(title: string): void {    
     this.titleService.setTitle(title);
     this.meta.updateTag({ name: 'title', content: title });
     this.meta.updateTag({ property: 'og:title', content: title });
@@ -166,10 +167,8 @@ export class SEOService {
     const isSeoTag = this.isSeotag(seoData);
 
     // الكلمات المفتاحية
-    const keywords = !isSeoTag && (seoData as SEOData).keywords
-      ? (seoData as SEOData).keywords
-      : 'ميدي تريد, التصدير, الاستيراد, بضائع';
-    this.meta.updateTag({ name: 'keywords', content: keywords! });
+    
+      
 
     // الصورة
     const imgPath = !isSeoTag && (seoData as SEOData).image ? (seoData as SEOData).image : this.defaultImage;
@@ -185,14 +184,11 @@ export class SEOService {
   }
 
   private clearExistingMetaTags(): void {
-    const tags = ['name="description"', 'property="og:title"', 'name="keywords"', 'property="og:url"'];
+    const tags = ['name="description"', 'property="og:title"', 'property="og:url"'];
     tags.forEach(tag => this.meta.removeTag(tag));
   }
 
   private isSeotag(data: any): data is Seotag {
     return data && ('meta_title' in data || 'meta_description' in data);
   }
-
-  private getDefaultTitle() { return 'ميدي تريد | حلول التصدير والاستيراد'; }
-  private getDefaultDescription() { return 'شركة ميدي تريد للتجارة الدولية...'; }
 }

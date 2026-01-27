@@ -56,4 +56,8 @@ export class Footer implements OnInit {
     const encodedAddress = encodeURIComponent(address);
     return `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
   }
+  getServiceUrl(service: any): string {
+
+    return '/الخدمات/' + service.slug;
+  }
 }

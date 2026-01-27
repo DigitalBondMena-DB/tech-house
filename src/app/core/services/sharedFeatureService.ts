@@ -188,9 +188,12 @@ export class SharedFeatureService {
               instagram_url: contactUs.social.instagram_url,
               linkedin_url: contactUs.social.linkedin_url,
               tiktok_url: contactUs.social.tiktok_url,
-              snapchat_url: contactUs.social.snapchat_url
+              snapchat_url: contactUs.social.snapchat_url,
+              twitter_url: contactUs.social.twitter_url
             } : undefined
           };
+          console.log(contactUs);
+          
 
           this.contactUsResponseSignal.set(contactData);
         }

@@ -64,7 +64,7 @@
                 <!-- Apply Now Button -->
                 @if (heroBtn()) {
                 <div class="job-hero-actions mt-6">
-                    <button class="job-apply-btn" (click)="scrollToApply()">
+                    <button class="job-apply-btn" >
                         {{ heroBtnText() }}
                         <img src="/images/icons/arrow-left.webp" alt="" width="22" height="22" class="apply-arrow w-[14px] h-[14px] md:w-[18px] md:h-[18px]">
                     </button>
@@ -155,7 +155,7 @@
                     <p-floatlabel variant="on">
                         <p-inputGroup>
                             <p-inputGroupAddon class="p-1 cursor-pointer">
-                                <p-select [options]="countries" [(ngModel)]="selectedCountryModel"
+                                <p-select [autofocus]="false" [options]="countries" [(ngModel)]="selectedCountryModel"
                                     [ngModelOptions]="{standalone: true}" (onChange)="onCountryChange($event.value)"
                                     optionLabel="name" [dataKey]="'code'" [style]="{'width': '140px', 'border': 'none'}"
                                     [panelStyle]="{'max-height': '300px'}" [showClear]="false" [appendTo]="'self'"

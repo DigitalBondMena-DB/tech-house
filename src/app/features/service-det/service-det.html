@@ -31,7 +31,7 @@
                                     (click)="navigateToSection(i)">
                                     <span class="toc-number">{{ i + 1 }}.</span>
                                     <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
-    
+
                                 </li>
                                 }
                                 @if (sections().length === 0) {
@@ -48,8 +48,11 @@
                         <img src="images/title/title.webp" alt="title-icon">
                         <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
                     </div>
+                    @defer (when hasService()) {
                     <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true"
                         [slug]="service()?.slug" [type]="'الخدمات'" />
+                    }
+
                 </div>
 
             </div>

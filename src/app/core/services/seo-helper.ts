@@ -11,7 +11,7 @@ export class SEOHelperService {
   /**
    * Handle SEO for general pages (about, services, etc.)
    */
-  updatePageSEO(seoData: SeoITags): void {
+  updatePageSEO(seoData: SeoITags): void {    
     this.seoService.updateSEOFromBackend(seoData);
   }
 

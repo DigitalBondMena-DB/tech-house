@@ -43,7 +43,7 @@
                     }
 
                     <!-- View Projects Link -->
-                    <a [routerLink]="getProjectsUrl(service)" [queryParams]="getServiceQueryParams(service)"
+                    <a [routerLink]="getServiceUrl(service)" [queryParams]="getServiceQueryParams(service)"
                         class="text-[#B90000] text-base md:text-lg font-semibold hover:underline mt-4 transition-colors flex items-center gap-2">
                         عرض الخدمة
                         <svg class="w-4 h-4 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -59,7 +59,7 @@
                     @if (service.image) {
                     <div class="service-icon-wrapper relative">
                         <img [ngSrc]="getResponsiveImage(service.image)" [alt]="service.title" width="300" height="300"
-                            class="w-full max-w-[200px] md:max-w-[250px] lg:max-w-[420px] h-auto rounded-2xl">
+                            class="w-full max-w-50 md:max-w-62.5 lg:max-w-105 h-auto rounded-2xl">
                     </div>
                     }
                 </div>
