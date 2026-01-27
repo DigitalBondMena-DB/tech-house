@@ -48,24 +48,26 @@
               <img src="images/title/title.webp" alt="title-icon">
               <h2 class="toc-title">محتويات المقالة</h2>
             </div>
-            <ul class="toc-list max-h-[310px] overflow-y-auto [direction:ltr]!">
-              @for (section of sections(); track section.id; let i = $index) {
-              <li class="toc-item [direction:rtl]!" [class.toc-item-active]="isSectionActive(i)"
-                (click)="navigateToSection(i)">
-                <span class="toc-number">{{ i + 1 }}.</span>
-                <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
-                <!-- @if (isSectionActive(i)) {
-  
-                <span class="toc-active-bar"></span>
-                } -->
-              </li>
-              }
-              @if (sections().length === 0) {
-              <li class="toc-item">
-                <span class="toc-text">لا توجد عناوين متاحة</span>
-              </li>
-              }
-            </ul>
+            <div class="max-h-77.5 overflow-y-auto [direction:ltr]!">
+              <ul class="toc-list">
+                @for (section of sections(); track section.id; let i = $index) {
+                <li class="toc-item" [class.toc-item-active]="isSectionActive(i)"
+                  (click)="navigateToSection(i)">
+                  <span class="toc-number">{{ i + 1 }}.</span>
+                  <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
+                  <!-- @if (isSectionActive(i)) {
+    
+                  <span class="toc-active-bar"></span>
+                  } -->
+                </li>
+                }
+                @if (sections().length === 0) {
+                <li class="toc-item">
+                  <span class="toc-text">لا توجد عناوين متاحة</span>
+                </li>
+                }
+              </ul>
+            </div>
           </div>
         </div>
 
