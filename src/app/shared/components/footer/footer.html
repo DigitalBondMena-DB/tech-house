@@ -11,30 +11,36 @@
                 <div class="text-sm max-w-xs text-white" [innerHTML]="getSanitizedHtml(contactUsData()?.footer_text)">
                 </div>
                 <div class="flex flex-col space-y-2 text-white text-xs">
-                    <span class="flex items-center justify-start">
-                        <img src="/images/social-icons/call-outline (1).webp" loading="lazy" decoding="async"
-                            alt="phone " class="w-5 h-5 me-2">
-                        <a [href]="'tel:' + contactUsData()?.phone" class="hover:underline [direction:ltr]">
-                            {{ contactUsData()?.phone }}
-                        </a>
-                    </span>
-                    <span class="flex items-center justify-start">
-                        <img src="/images/social-icons/call-outline (2).webp" loading="lazy" decoding="async"
-                            alt="email " class="w-5 h-5 me-2">
-                        <a [href]="'mailto:' + contactUsData()?.email" class="hover:underline">
-                            {{ contactUsData()?.email }}
-                        </a>
-                    </span>
-                    <span class="flex items-center justify-start">
-                        <img src="/images/social-icons/call-outline (3).webp" loading="lazy" decoding="async"
-                            alt="address " class="w-5 h-5 me-2">
-                        @if (contactUsData()?.address) {
-                        <a [href]="contactUsData()?.social?.map_url || getGoogleMapsUrl(contactUsData()?.address)"
-                            target="_blank" rel="noopener noreferrer" class="hover:underline">
-                            {{ contactUsData()?.address }}
-                        </a>
-                        }
-                    </span>
+                    @if(contactUsData()?.phone) {
+                        <span class="flex items-center justify-start">
+                            <img src="/images/social-icons/call-outline (1).webp" loading="lazy" decoding="async"
+                                alt="phone " class="w-5 h-5 me-2">
+                            <a [href]="'tel:' + contactUsData()?.phone" class="hover:underline [direction:ltr]">
+                                {{ contactUsData()?.phone }}
+                            </a>
+                        </span>
+                    }
+                    @if(contactUsData()?.email){
+                        <span class="flex items-center justify-start">
+                            <img src="/images/social-icons/call-outline (2).webp" loading="lazy" decoding="async"
+                                alt="email " class="w-5 h-5 me-2">
+                            <a [href]="'mailto:' + contactUsData()?.email" class="hover:underline">
+                                {{ contactUsData()?.email }}
+                            </a>
+                        </span>
+                    }
+                    @if(contactUsData()?.address) {
+                        <span class="flex items-center justify-start">
+                            <img src="/images/social-icons/call-outline (3).webp" loading="lazy" decoding="async"
+                                alt="address " class="w-5 h-5 me-2">
+                            @if (contactUsData()?.address) {
+                            <a [href]="contactUsData()?.social?.map_url || getGoogleMapsUrl(contactUsData()?.address)"
+                                target="_blank" rel="noopener noreferrer" class="hover:underline">
+                                {{ contactUsData()?.address }}
+                            </a>
+                            }
+                        </span>
+                    }
                 </div>
                 <div class="flex flex-row-reverse items-center justify-end gap-4">
                     @if (contactUsData()?.social?.facebook_url) {
