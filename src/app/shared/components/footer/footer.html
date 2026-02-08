@@ -12,34 +12,34 @@
                 </div>
                 <div class="flex flex-col space-y-2 text-white text-xs">
                     @if(contactUsData()?.phone) {
-                        <span class="flex items-center justify-start">
-                            <img src="/images/social-icons/call-outline (1).webp" loading="lazy" decoding="async"
-                                alt="phone " class="w-5 h-5 me-2">
-                            <a [href]="'tel:' + contactUsData()?.phone" class="hover:underline [direction:ltr]">
-                                {{ contactUsData()?.phone }}
-                            </a>
-                        </span>
+                    <span class="flex items-center justify-start">
+                        <img src="/images/social-icons/call-outline (1).webp" loading="lazy" decoding="async"
+                            alt="phone " class="w-5 h-5 me-2">
+                        <a [href]="'tel:' + contactUsData()?.phone" class="hover:underline [direction:ltr]">
+                            {{ contactUsData()?.phone }}
+                        </a>
+                    </span>
                     }
                     @if(contactUsData()?.email){
-                        <span class="flex items-center justify-start">
-                            <img src="/images/social-icons/call-outline (2).webp" loading="lazy" decoding="async"
-                                alt="email " class="w-5 h-5 me-2">
-                            <a [href]="'mailto:' + contactUsData()?.email" class="hover:underline">
-                                {{ contactUsData()?.email }}
-                            </a>
-                        </span>
+                    <span class="flex items-center justify-start">
+                        <img src="/images/social-icons/call-outline (2).webp" loading="lazy" decoding="async"
+                            alt="email " class="w-5 h-5 me-2">
+                        <a [href]="'mailto:' + contactUsData()?.email" class="hover:underline">
+                            {{ contactUsData()?.email }}
+                        </a>
+                    </span>
                     }
                     @if(contactUsData()?.address) {
-                        <span class="flex items-center justify-start">
-                            <img src="/images/social-icons/call-outline (3).webp" loading="lazy" decoding="async"
-                                alt="address " class="w-5 h-5 me-2">
-                            @if (contactUsData()?.address) {
-                            <a [href]="contactUsData()?.social?.map_url || getGoogleMapsUrl(contactUsData()?.address)"
-                                target="_blank" rel="noopener noreferrer" class="hover:underline">
-                                {{ contactUsData()?.address }}
-                            </a>
-                            }
-                        </span>
+                    <span class="flex items-center justify-start">
+                        <img src="/images/social-icons/call-outline (3).webp" loading="lazy" decoding="async"
+                            alt="address " class="w-5 h-5 me-2">
+                        @if (contactUsData()?.address) {
+                        <a [href]="contactUsData()?.social?.map_url || getGoogleMapsUrl(contactUsData()?.address)"
+                            target="_blank" rel="noopener noreferrer" class="hover:underline">
+                            {{ contactUsData()?.address }}
+                        </a>
+                        }
+                    </span>
                     }
                 </div>
                 <div class="flex flex-row-reverse items-center justify-end gap-4">
@@ -69,8 +69,11 @@
                     }
                     @if (contactUsData()?.social?.twitter_url) {
                     <a [href]="contactUsData()?.social?.twitter_url" target="_blank" rel="noopener noreferrer">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 640 640" width="20" height="20">
-                            <path d="M453.2 112L523.8 112L369.6 288.2L551 528L409 528L297.7 382.6L170.5 528L99.8 528L264.7 339.5L90.8 112L236.4 112L336.9 244.9L453.2 112zM428.4 485.8L467.5 485.8L215.1 152L173.1 152L428.4 485.8z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 640 640" width="20"
+                            height="20">
+                            <path
+                                d="M453.2 112L523.8 112L369.6 288.2L551 528L409 528L297.7 382.6L170.5 528L99.8 528L264.7 339.5L90.8 112L236.4 112L336.9 244.9L453.2 112zM428.4 485.8L467.5 485.8L215.1 152L173.1 152L428.4 485.8z" />
+                        </svg>
                     </a>
                     }
                     @if (contactUsData()?.social?.tiktok_url) {
@@ -88,7 +91,7 @@
                     @if (servicesSection(); as services) {
                     @if (services && services.length > 0) {
                     @for (service of services; track service.slug || service.title) {
-                    <li >
+                    <li>
                         <a [routerLink]="getServiceUrl(service)">
                             {{ service.title }}
                         </a>
@@ -130,8 +133,6 @@
     <div class="bg-[#2B0000]  py-4  text-sm text-white  md:flex-row ">
         <div class="container mx-auto px-5 lg:px-20 flex justify-center md:justify-between  items-end">
             <div class="flex items-end">
-
-                <!-- {{ contactUsData()?.copyright || 'جميع الحقوق محفوظة © 2025' }} -->
                 <span class="text-xs flex items-end justify-center ">جميع الحقوق محفوظة <img
                         src="/images/logo/logo-light2.webp" alt="logo" class="mx-5  w-16" loading="lazy"
                         decoding="async">

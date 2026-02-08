@@ -1,4 +1,5 @@
-<section class="blog-hero-section" [style.background-image]="'url(' + heroImage() + ')'">
+<section class="blog-hero-section relative">
+  <img [src]="heroImage()" [alt]="blog()?.title" class="inset-0 w-full h-full absolute object-cover">
   <div class="blog-hero-overlay"></div>
   <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
     <div class="blog-hero-content h-full flex items-center justify-center text-center" dir="rtl"></div>
@@ -7,7 +8,6 @@
 
 
 <section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
-  <!-- العنوان الأساسي للمقالة -->
   <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[#940000] mb-8 md:mb-12 " dir="rtl">
     {{ blog()?.title }}
   </h1>

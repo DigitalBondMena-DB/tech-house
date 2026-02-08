@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { environment } from '../../../environments/environment';
@@ -17,8 +17,9 @@ import { SectionTitle } from '../../shared/components/section-title/section-titl
     ContactUsSec,
     SectionTitle,
     PaginatorModule,
-    SkeletonModule
-  ],
+    SkeletonModule,
+    RouterLink
+],
   templateUrl: './blogs.html',
   styleUrl: './blogs.css'
 })
@@ -84,10 +85,6 @@ export class Blogs implements OnInit, AfterViewInit, OnDestroy {
       const newPage = Math.floor(event.first / event.rows) + 1;
       this.loadBlogs(newPage);
     }
-  }
-
-  navigateToBlogDetail(blog: any): void {
-    this.router.navigate(['/المقالات', blog.slug]);
   }
 
   getResponsiveImage(image: { desktop: string; tablet: string; mobile: string } | null | undefined): string {

@@ -5,6 +5,7 @@ import { API_END_POINTS } from '../constant/ApiEndPoints';
 import { Counter, CountersResponse, ContactUsData, ContactUsResponse, ServiceTitle, ServicesSectionResponse, PartnersClientsResponse, PrivacyPolicyData, PrivacyPolicyResponse, ContactHero, ContactHeroResponse } from '../models/home.model';
 import { Observable, catchError, of } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
+import { SeparatedSeoTags } from './separated-seo-tags';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ import { tap, map } from 'rxjs/operators';
 export class SharedFeatureService {
   private http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
-
+private separatedSeoTags = inject(SeparatedSeoTags)
   // 🔹 Internal API Response Signal Reference
   private countersResponseSignal = signal<Counter[] | null>(null);
   private contactUsResponseSignal = signal<ContactUsData | null>(null);
@@ -100,7 +101,7 @@ export class SharedFeatureService {
     this.http.get<ContactHeroResponse | any>(`${this.baseUrl}${API_END_POINTS.CONTACT_HERO}`).subscribe({
       next: (data) => {
         let heroData: ContactHero | null = null;
-
+        this.separatedSeoTags.getSeoTagsDirect(data?.seotag, 'contact us')
         if (data.bannerSection) {
           heroData = {
             title: data.bannerSection.title || '',
@@ -154,7 +155,7 @@ export class SharedFeatureService {
   // =====================
   // CONTACT US API (for Footer) - Returns Observable for parallel loading
   // =====================
-  loadContactUsData(): Observable<ContactUsData | null> {
+  loadContactUsData(): Observable<ContactUsData | null> {    
     if (this.contactUsResponseSignal() || this.contactUsLoading) {
       return of(this.contactUsResponseSignal());
     }
@@ -162,9 +163,8 @@ export class SharedFeatureService {
     this.contactUsLoading = true;
 
     return this.http.get<ContactUsResponse | any>(`${this.baseUrl}${API_END_POINTS.CONTACT_US}`).pipe(
-      tap((data) => {
+      tap((data) => {                
         const contactUs = data.contactUs || data;
-
         if (contactUs) {
           const contactData: ContactUsData = {
             footer_text: contactUs.footer_text,
@@ -192,8 +192,6 @@ export class SharedFeatureService {
               twitter_url: contactUs.social.twitter_url
             } : undefined
           };
-          
-
           this.contactUsResponseSignal.set(contactData);
         }
         this.contactUsLoading = false;

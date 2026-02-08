@@ -317,6 +317,7 @@ export interface ContactHeroResponse {
   title?: string;
   paragraph?: string;
   image?: ResponsiveImage;
+  seotag:SeoITags
 }
 
 /**

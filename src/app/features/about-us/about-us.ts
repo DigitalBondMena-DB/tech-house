@@ -41,7 +41,7 @@ export class AboutUs implements OnInit, AfterViewInit, OnDestroy {
   bannerSection = computed(() => this.aboutData()?.bannerSection ?? null);
   aboutInformation = computed(() => this.aboutData()?.aboutInformation ?? null);
   aboutSections = computed(() => {
-    const sections = this.aboutData()?.aboutSection ?? [];
+    const sections = this.aboutData()?.aboutSection ?? [];    
     return sections.filter(s => s.is_active).sort((a, b) => a.order - b.order);
   });
 

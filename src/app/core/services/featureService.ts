@@ -94,6 +94,7 @@ export class FeatureService {
   loadAboutData(): void {
     // Check if data already exists
     if (this.aboutResponseSignal()) {
+      this.separatedSeoTags.getSeoTagsDirect(this.aboutResponseSignal()?.seotag, 'about')
       return;
     }
 
@@ -117,6 +118,7 @@ export class FeatureService {
   loadServicesData(): void {
     // Check if data already exists
     if (this.servicesResponseSignal()) {
+      this.separatedSeoTags.getSeoTagsDirect(this.servicesResponseSignal()?.seotag, 'services')
       return;
     }
 

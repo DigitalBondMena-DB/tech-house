@@ -22,7 +22,7 @@
         <div class="projects-grid grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             @for (project of projectItems(); track project.id) {
             <article class="project-card group cursor-pointer relative">
-                <a [routerLink]="navigateToProjectDetails(project)" class="absolute inset-0 z-10"
+                <a [routerLink]="['/المشاريع', project.slug]" class="absolute inset-0 z-10"
                     [attr.aria-label]="project.title"></a>
 
                 <div class="project-image mb-4 overflow-hidden rounded-2xl">

@@ -33,7 +33,8 @@
 <!-- Project Content -->
 @else if (hasProject()) {
 <!-- Hero Section -->
-<section class="project-hero-section" [style.background-image]="'url(' + heroImage() + ')'">
+<section class="project-hero-section relative" [style.background-image]="'url(' + heroImage() + ')'">
+  <img [src]=" heroImage()" [alt]="project()?.client_name" class="inset-0 w-full h-full absolute object-cover">
   <div class="project-hero-overlay"></div>
   <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
     <div class="project-hero-content h-full flex items-end justify-start pb-8 md:pb-12 gap-4" dir="rtl">

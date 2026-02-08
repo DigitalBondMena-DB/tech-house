@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { environment } from '../../../environments/environment';
 import { FeatureService } from '../../core/services/featureService';
@@ -8,7 +8,7 @@ import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-
 
 @Component({
   selector: 'app-jops',
-  imports: [CommonModule, ContactUsSec, SkeletonModule],
+  imports: [CommonModule, ContactUsSec, SkeletonModule, RouterLink],
   templateUrl: './jops.html',
   styleUrl: './jops.css'
 })
@@ -113,15 +113,6 @@ export class Jops implements OnInit, AfterViewInit, OnDestroy {
     return `${baseUrl}/${cleanUrl}`;
   }
 
-  // Navigate to job details page
-  navigateToJobDetails(job: any, event?: Event): void {
-    if (event) {
-      event.stopPropagation();
-    }
-    if (job?.slug) {
-      this.router.navigate(['/الوظائف', job.slug]);
-    }
-  }
   ngOnDestroy(): void {
     if (this.timeout) {
       clearTimeout(this.timeout);

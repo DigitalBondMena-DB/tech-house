@@ -29,16 +29,18 @@
       </div>
 
       <!-- Left Side - Cards with GSAP Animation -->
-      <div class="  ">
-        <div class="text-center flex flex-col md:flex-row items-center justify-center gap-4">
+      <div >
+        <div class="text-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:flex-row items-center justify-center gap-4">
           @for (section of aboutSections(); track trackByOrder($index, section); let i = $index) {
           <div #cardElement
-            class="timeline-card bg-linear-to-br from-red-700 to-red-900 text-white p-8 rounded-2xl shadow-xl mb-8">
-            <img src="/images/about.webp" alt="about-us-icon" class="w-10 h-10 mx-auto my-4" loading="lazy"
+            class="timeline-card bg-linear-to-br from-red-700 to-red-900 text-white p-8 rounded-2xl shadow-xl h-full">
+            <img [src]="section.image.desktop" alt="about-us-icon" class="w-10 h-10 mx-auto my-4" loading="lazy"
               decoding="async">
             <h3 class="text-3xl font-bold mb-6">{{ section.title }}</h3>
-            <div class="text-lg mb-8 leading-relaxed" [innerHTML]="section.text"></div>
-            <app-app-button routerLink="/contact-us" [btnText]="contactBtnText"
+            <div class="h-[200px] overflow-y-auto" dir="ltr">
+              <div class="text-lg  leading-relaxed" dir="rtl" [innerHTML]="section.text"></div>
+            </div>
+            <app-app-button routerLink="/اتصل-بنا" [btnText]="contactBtnText"
               customClass="px-7 py-4 bg-black/60 text-white rounded-full flex items-center justify-center transition duration-300 mt-6 cursor-pointer mx-auto">
             </app-app-button>
           </div>

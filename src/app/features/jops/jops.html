@@ -2,12 +2,12 @@
 <div class="min-h-screen">
     <!-- Hero Section - Custom (Not using shared hero component) -->
     @if (bannerSection()) {
-    <section class="jobs-hero-section">
-        <div class="hero-background"
-            [style.background-image]="bannerSection()?.image ? 'url(' + getResponsiveImage(bannerSection()?.image) + ')' : ''">
+    <section class="jobs-hero-section z-10 relative">
+        <div class="hero-background relative">
+            <img [src]="bannerSection()?.image ? getResponsiveImage(bannerSection()?.image) : '' " [alt]="bannerSection()?.title" class="inset-0 w-full h-full absolute object-cover">
             <div class="hero-pattern"></div>
             <div class="hero-overlay"></div>
-            <div class="hero-container">
+            <div class="hero-container z-20 relative">
                 <div class="hero-content">
                     <div class="text-center">
                         <h1 class="hero-title">{{ bannerSection()?.title || 'انضم إلى فريقنا' }}</h1>
@@ -76,12 +76,12 @@
                 }
 
                 <!-- Join Now Button -->
-                <button class="join-btn flex items-start justify-start gap-2 underline"
-                    (click)="navigateToJobDetails(job)">
+                <a [routerLink]="['/الوظائف', job.slug]" class="join-btn flex items-start justify-start gap-2 underline"
+                    >
                     انضم الآن
                     <img src="/images/icons/arrow-left.webp" alt="" width="22" height="22"
-                        class="w-[14px] h-[14px] md:w-[18px] md:h-[18px]">
-                </button>
+                        class="w-3.5 h-3.5 md:w-4.5 md:h-4.5">
+                </a>
             </div>
             }
         </div>

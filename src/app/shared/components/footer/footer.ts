@@ -23,15 +23,12 @@ export class Footer implements OnInit {
   // Services Section Data from API
   servicesSection = this.sharedFeatureService.servicesSection;
 
-  ngOnInit(): void {
-    this.loadFooterData()
+  ngOnInit(): void {    
+    this.loadFooterData();
   }
 
   private loadFooterData(): void {
-    // Load data - services have guards to prevent duplicate calls
-    // Subscribe to Observable - data will be set in signal automatically
     this.sharedFeatureService.loadContactUsData().subscribe();
-    // loadServicesSection returns void, so no subscribe needed
     this.sharedFeatureService.loadServicesSection();
   }
 

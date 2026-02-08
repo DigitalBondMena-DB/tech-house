@@ -67,10 +67,4 @@ export class Projects implements OnInit {
       this.loadProjects(newPage, this.selectedSlug());
     }
   }
-
-  // Navigate to project details page
-  navigateToProjectDetails(project: any): string[]  {
-      return ['/المشاريع', project.slug];
-    
-  }
 }

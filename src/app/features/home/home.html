@@ -32,7 +32,7 @@
             </div>
             } @else {
             @if (heroSection()!.input_title) {
-            <app-app-button [btnText]="'ابتكار يصنع كفائتنا'" routerLink="/الخدمات"
+            <app-app-button [btnText]="heroSection()?.input_title ?? 'ابتكار يصنع كفائتنا'" routerLink="/الخدمات"
               customClass="px-7 py-4 bg-black/60 text-white rounded-full flex items-center justify-center transition duration-300 mt-6 cursor-pointer">
             </app-app-button>
             } @else {

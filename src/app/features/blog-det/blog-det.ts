@@ -40,7 +40,6 @@ export class BlogDet {
     const blog = this.blog();
     // Use banner_image if available, otherwise fallback to image
     const imageSource = blog?.banner_image;
-
     // If banner_image is a string (single URL), return it directly
     if (typeof imageSource === 'string') {
       return imageSource;

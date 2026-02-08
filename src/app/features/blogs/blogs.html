@@ -23,14 +23,15 @@
         @if (blogItems().length > 0) {
         <div class="blogs-list">
             @for (blog of blogItems(); track blog.id) {
-            <div class="blog-item mb-12 md:mb-16 last:mb-0 cursor-pointer transition-all duration-500 hover:opacity-90"
-                (click)="navigateToBlogDetail(blog)">
+            <article class="relative blog-item mb-12 md:mb-16 last:mb-0 cursor-pointer transition-all duration-500 hover:opacity-90"
+                >
+                <a [routerLink]="['/المقالات', blog.slug]" class="absolute inset-0 z-10" [attr.aria-label]="blog.title"></a>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                     <!-- Image Side (Left in RTL) -->
                     <div class="blog-image">
                         @if (blog.image) {
                         <img [src]="getResponsiveImage(blog.image)" [alt]="blog.title"
-                            class="w-full h-[400px] rounded-2xl object-cover  transition-all duration-800 ">
+                            class="w-full h-100 rounded-2xl object-cover  transition-all duration-800 ">
                         }
                     </div>
                     <!-- Content Side (Right in RTL) -->
@@ -47,7 +48,7 @@
                                 class="text-[#ED2924] text-base md:text-lg font-semibold underline transition-colors flex items-center gap-2">
                                 عرض التفاصيل
                                 <img src="images/icons/arrow-left.webp" alt="" width="22" height="22"
-                                    class="h-[14px] w-[14px] md:h-[18px] md:w-[18px] ms-1">
+                                    class="h-3.5 w-3.5 md:h-4.5 md:w-4.5 ms-1">
                             </div>
                             <div class="text-sm md:text-base text-gray-500 ">
                                 {{ blog.publish_at_ar }}
@@ -58,7 +59,7 @@
 
 
                 </div>
-            </div>
+            </article>
             }
         </div>
         }

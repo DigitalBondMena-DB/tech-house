@@ -39,9 +39,8 @@ export class SEOService {
   private renderer: Renderer2;
 
   private readonly defaultImage = '/favicon.ico';
-  private readonly baseUrl = 'https://test.techhouseksa.com';
+  private readonly baseUrl = 'https://techhouseksa.com';
 
-  // 1. مراقبة المسار الحالي وتحويله لـ Signal مع فك تشفير الحروف العربية
   private currentUrlSignal = toSignal(
     this.router.events.pipe(
       filter((event) => event instanceof NavigationEnd),
@@ -58,45 +57,49 @@ export class SEOService {
     this.renderer = rendererFactory.createRenderer(null, null);
   }
 
-  /**
-   * دالة المراقبة الأساسية للروابط
-   */
   private getAnchor(): ChildNode | null {
     const anchor = this.document.querySelector('meta[name="og:locale"]');
     return anchor || this.document.head.firstChild;
   }
   initSEOListeners(): void {
-    effect(() => {
-      const url = this.currentUrlSignal();
+  effect(() => {
+    const url = this.currentUrlSignal();
+    const cleanPath = url.replace(/^\/(ar|en)/, '').replace(/\/$/, '');
+    const fullUrl = `${this.baseUrl}${cleanPath || ''}`;
 
-      const cleanPath = url.replace(/^\/(ar|en)/, '').replace(/\/$/, '');
-      const fullUrl = `${this.baseUrl}${cleanPath || ''}`;
+    this.updateCanonicalAndAlternate(fullUrl);
 
-      this.updateCanonicalAndAlternate(fullUrl);
+    this.updateDynamicMetaTag('name', 'og:url', fullUrl);
+  });
+}
 
-      this.meta.updateTag({ property: 'og:url', content: fullUrl });
-    });
-  }
-
-  /**
-   * تحديث Canonical و x-default في دالة واحدة لضمان التطابق
-   */
   private updateCanonicalAndAlternate(url: string): void {
-    // 1. تنظيف القديم
     const existing = this.document.querySelectorAll('link[rel="canonical"], link[rel="alternate"]');
     existing.forEach(el => this.renderer.removeChild(this.document.head, el));
 
     const anchor = this.getAnchor();
     const nextElement = anchor?.nextSibling; // العنصر الذي يلي النقطة الثابتة
 
-    // 2. إنشاء الروابط
     const canonical = this.createLinkElement('canonical', url);
     const xDefault = this.createLinkElement('alternate', url, 'x-default');
 
-    // 3. الإضافة باستخدام insertBefore لضمان الترتيب تحت الـ Static مباشرة
     this.renderer.insertBefore(this.document.head, canonical, nextElement);
     this.renderer.insertBefore(this.document.head, xDefault, nextElement);
   }
+  private updateDynamicMetaTag(attr: string, value: string, contentValue: string): void {
+    
+  const existing = this.document.querySelectorAll(`meta[${attr}="${value}"]`);
+  existing.forEach(el => this.renderer.removeChild(this.document.head, el));
+
+  const meta = this.renderer.createElement('meta');
+  
+  this.renderer.setAttribute(meta, attr, value); 
+  
+  this.renderer.setAttribute(meta, 'content', contentValue); 
+
+  const anchor = this.getAnchor();
+  this.renderer.insertBefore(this.document.head, meta, anchor);
+}
   private createLinkElement(rel: string, href: string, hreflang?: string): HTMLElement {
     const link = this.renderer.createElement('link');
     this.renderer.setAttribute(link, 'rel', rel);
@@ -106,7 +109,6 @@ export class SEOService {
     }
     return link;
   }
-  // --- دوال الـ Meta Tags ---
 
   updateSEOFromBackend(seoData: Seotag, config: SEOConfig = { updateLinks: true, fallbackToDefault: false }): void {
     this.clearExistingMetaTags();
@@ -150,6 +152,7 @@ export class SEOService {
   }
 
   private setTitle(title: string): void {    
+    if(!title) return;
     this.titleService.setTitle(title);
     this.meta.updateTag({ name: 'title', content: title });
     this.meta.updateTag({ property: 'og:title', content: title });
