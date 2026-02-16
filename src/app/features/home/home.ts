@@ -17,6 +17,7 @@ import { HomeProjects } from './home-projects/home-projects';
 import { HomeServices } from './home-services/home-services';
 import { SeparatedSeoTags } from '../../core/services/separated-seo-tags';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { environment } from '../../../environments/environment';
 
 
 @Component({
@@ -27,6 +28,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Home implements OnInit, OnDestroy {
+  isFoundingDay = environment.isFoundingDay
   private readonly detroyRef = inject(DestroyRef);
   private featureService = inject(FeatureService);
   private separatedSeoTags = inject(SeparatedSeoTags)

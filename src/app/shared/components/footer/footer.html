@@ -1,9 +1,16 @@
 <footer class="flex w-full flex-col justify-center md:justify-end h-auto ">
-    <div class="bg-linear ">
+    <div class="bg-linear relative overflow-hidden">
+        @if(isFoundingDay) {
+        <img src="/images/founding-day/founding-circle.png" role="presentation" alt=""
+            class="object-contain absolute -bottom-5 -end-5 size-[260px] mix-blend-overlay" loading="lazy"
+            decoding="async">
+        }
         <div
             class="container z-10 relative mx-auto px-5 lg:px-20 flex flex-col items-start justify-center space-y-12  pb-8 pt-12 md:flex-row md:space-y-0 md:space-x-12 ">
+            @if(!isFoundingDay) {
             <img src="/images/pattern.webp" role="presentation" alt=""
                 class="object-cover absolute inset-0 h-full w-full -z-10" loading="lazy" decoding="async">
+            }
             <div class="flex w-full flex-col space-y-4 md:w-1/2 lg:w-2/5">
                 <div class="w-full text-lg font-extrabold md:w-fit">
                     <img [src]="getResponsiveImage(contactUsData()?.logo)" loading="lazy" decoding="async" alt="logo">

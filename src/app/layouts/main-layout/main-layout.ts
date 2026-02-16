@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Footer } from '../../shared/components/footer/footer';
 import { Navbar } from '../../shared/components/navbar/navbar';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-main-layout',
@@ -11,4 +12,5 @@ import { Navbar } from '../../shared/components/navbar/navbar';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MainLayout {
+  isFoundingDay = environment.isFoundingDay;
 }

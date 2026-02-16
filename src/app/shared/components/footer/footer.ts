@@ -4,6 +4,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { ResponsiveImage } from '../../../core/models/home.model';
 import { SharedFeatureService } from '../../../core/services/sharedFeatureService';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-footer',
@@ -16,14 +17,14 @@ import { SharedFeatureService } from '../../../core/services/sharedFeatureServic
 export class Footer implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);
   private sanitizer = inject(DomSanitizer);
-
+  isFoundingDay = environment.isFoundingDay
   // Contact Us Data from API
   contactUsData = this.sharedFeatureService.contactUsData;
 
   // Services Section Data from API
   servicesSection = this.sharedFeatureService.servicesSection;
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.loadFooterData();
   }
 

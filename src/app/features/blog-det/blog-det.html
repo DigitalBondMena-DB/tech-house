@@ -6,7 +6,6 @@
   </div>
 </section>
 
-
 <section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
   <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-[#940000] mb-8 md:mb-12 " dir="rtl">
     {{ blog()?.title }}
@@ -54,8 +53,7 @@
             <div class="max-h-77.5 overflow-y-auto [direction:ltr]!">
               <ul class="toc-list">
                 @for (section of sections(); track section.id; let i = $index) {
-                <li class="toc-item" [class.toc-item-active]="isSectionActive(i)"
-                  (click)="navigateToSection(i)">
+                <li class="toc-item" [class.toc-item-active]="isSectionActive(i)" (click)="navigateToSection(i)">
                   <span class="toc-number">{{ i + 1 }}.</span>
                   <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
                   <!-- @if (isSectionActive(i)) {
@@ -113,4 +111,4 @@
 </section>
 
 
-  <app-contact-us-sec [slug]="blog()?.slug" [type]="'المقالات'" />
+<app-contact-us-sec [slug]="blog()?.slug" [type]="'المقالات'" />

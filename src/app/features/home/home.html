@@ -41,6 +41,11 @@
             }
             }
           </div>
+          @if(isFoundingDay) {
+          <div>
+            <img src="/images/founding-day/founding-day-logo.png" width="240" height="76" alt="">
+          </div>
+          }
         </div>
       </div>
     </div>
@@ -48,7 +53,11 @@
   <app-home-banner class="translate-y-60 md:translate-y-40 relative z-20"
     [scrollTitle]="heroSection()?.scroll_title || ''"></app-home-banner>
 
-
+  @if(isFoundingDay) {
+  <div class="container mx-auto">
+    <img src="/images/founding-day/banner.png" class="w-full" height="300" alt="">
+  </div>
+  }
   <!-- About Section - Deferred for better LCP -->
   @defer (when isAboutLoaded()) {
   <app-home-about [aboutData]="aboutHome()"></app-home-about>
@@ -194,5 +203,5 @@
   }
   <!-- contact-us - Deferred until main content is loaded for better SSR -->
   <app-contact-us-sec></app-contact-us-sec>
-  
+
 </section>

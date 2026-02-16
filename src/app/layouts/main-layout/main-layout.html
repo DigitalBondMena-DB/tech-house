@@ -1,5 +1,14 @@
 <app-navbar class="flex justify-center items-center"></app-navbar>
-<main>
+<main class="relative">
     <router-outlet class="overflow-hidden"></router-outlet>
+    @if(isFoundingDay) {
+    <div
+        class="bg-[url('/images/founding-day/decoration.png')] w-[40px] h-full top-0 bottom-0 bg-repeat-y left-0 absolute -z-10">
+    </div>
+    <div
+        class="bg-[url('/images/founding-day/decoration.png')] w-[40px] h-full top-0 bottom-0 bg-repeat-y right-0 absolute -z-10">
+    </div>
+    }
+
 </main>
 <app-footer></app-footer>
