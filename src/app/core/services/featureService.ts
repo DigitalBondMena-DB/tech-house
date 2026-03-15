@@ -7,6 +7,8 @@ import { API_END_POINTS } from '../constant/ApiEndPoints';
 import { AboutResponse, BlogDetailsResponse, BlogsResponse, HomeResponse, JobDetailsResponse, JobsResponse, ProjectDetailsResponse, ProjectsResponse, ServiceDetailsResponse, ServicesResponse } from '../models/home.model';
 import { ApiService } from './apiservice';
 import { SeparatedSeoTags } from './separated-seo-tags';
+import { routes } from '../../app.routes';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -139,22 +141,22 @@ export class FeatureService {
   // =====================
   // SERVICE DETAILS API
   // =====================
-  loadServiceDetails(slug: string): void {
+  loadServiceDetails(slug: string): Observable<ServiceDetailsResponse | null> {
     const endpoint = API_END_POINTS.SERVICE_DETAILS.replace('{slug}', slug);
 
-    this.apiService.get<ServiceDetailsResponse>(endpoint).pipe(
+    return this.apiService.get<ServiceDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.serviceDetailsResponseSignal.set(data);
           const serviceDetailsData = data.service
-          this.separatedSeoTags.getSeoTagsDirect({ image_url: serviceDetailsData.banner_image ?? '', ...serviceDetailsData }, 'about')
+          this.separatedSeoTags.getSeoTagsDirect({ image_url: serviceDetailsData?.banner_image ?? '', ...serviceDetailsData }, 'about')
         }
       }),
       catchError((err) => {
         console.error('Error loading service details:', err);
         return of(null);
       })
-    ).subscribe();
+    );
   }
 
 
@@ -181,10 +183,10 @@ export class FeatureService {
   // =====================
   // BLOG DETAILS API
   // =====================
-  loadBlogDetails(slug: string): void {
+  loadBlogDetails(slug: string): Observable<BlogDetailsResponse | null> {
     const endpoint = API_END_POINTS.BLOG_DETAILS.replace('{slug}', slug);
 
-    this.apiService.get<BlogDetailsResponse>(endpoint).pipe(
+    return this.apiService.get<BlogDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.blogDetailsResponseSignal.set(data);
@@ -195,7 +197,7 @@ export class FeatureService {
         console.error('Error loading blog details:', err);
         return of(null);
       })
-    ).subscribe();
+    );
   }
 
   // =====================
@@ -224,7 +226,7 @@ export class FeatureService {
   // =====================
   // PROJECT DETAILS API
   // =====================
-  loadProjectDetails(slug: string): void {
+  loadProjectDetails(slug: string): Observable<ProjectDetailsResponse | null> {
     // Reset previous data
     this.projectDetailsResponseSignal.set(null);
 
@@ -251,7 +253,7 @@ export class FeatureService {
     const endpoint = API_END_POINTS.PROJECT_DETAILS.replace('{slug}', encodedSlug);
 
     // Try both response types - sometimes API might return different structure
-    this.apiService.get<any>(endpoint).pipe(
+    return this.apiService.get<any>(endpoint).pipe(
       tap((data) => {
         if (data) {
           // Check if it's ProjectDetailsResponse (has project property)
@@ -286,7 +288,7 @@ export class FeatureService {
         this.projectDetailsResponseSignal.set(null);
         return of(null);
       })
-    ).subscribe();
+    );
   }
 
   // =====================
@@ -315,7 +317,7 @@ export class FeatureService {
   // =====================
   // JOB DETAILS API
   // =====================
-  loadJobDetails(slug: string): void {
+  loadJobDetails(slug: string): Observable<JobDetailsResponse | null> {
     // Reset previous data
     this.jobDetailsResponseSignal.set(null);
 
@@ -323,7 +325,7 @@ export class FeatureService {
     const encodedSlug = encodeURIComponent(slug);
     const endpoint = API_END_POINTS.JOB_DETAILS.replace('{slug}', encodedSlug);
 
-    this.apiService.get<JobDetailsResponse>(endpoint).pipe(
+    return this.apiService.get<JobDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.jobDetailsResponseSignal.set(data);
@@ -334,7 +336,7 @@ export class FeatureService {
         console.error('Error loading job details:', err);
         return of(null);
       })
-    ).subscribe();
+    );
   }
 
   // =====================

@@ -132,7 +132,11 @@ export class BlogDet {
         this.router.navigate(['/المقالات']);
         return;
       }
-      this.featureService.loadBlogDetails(slug);
+      this.featureService.loadBlogDetails(slug).subscribe(data => {
+        if (!data || !data.blog) {
+          this.router.navigate(['/المقالات']);
+        }
+      });
     });
 
     effect(() => {

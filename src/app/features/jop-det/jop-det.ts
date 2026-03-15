@@ -205,7 +205,11 @@ export class JopDet implements OnDestroy {
       this.hasError.set(false);
       this.errorMessage.set('');
       // Load new data
-      this.featureService.loadJobDetails(slug);
+      this.featureService.loadJobDetails(slug).subscribe(data => {
+        if (!data || !data.job) {
+          this.router.navigate(['/الوظائف']);
+        }
+      });
     });
 
     // Watch for data changes - this will trigger when data arrives

@@ -233,7 +233,11 @@ export class ProjectDet implements OnDestroy {
       this.hasError.set(false);
       this.errorMessage.set('');
       // Load new data
-      this.featureService.loadProjectDetails(slug);
+      this.featureService.loadProjectDetails(slug).subscribe(data => {
+        if (!data || !data.project) {
+          this.router.navigate(['/المشاريع']);
+        }
+      });
     });
 
     // Watch for data changes - this will trigger when data arrives

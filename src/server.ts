@@ -26,9 +26,17 @@ app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => {
+      if (response && response.status === 302) {
+        const redirectedResponse = new Response(response.body, {
+          status: 301,
+          statusText: 'Moved Permanently',
+          headers: response.headers,
+        });
+        return writeResponseToNodeResponse(redirectedResponse, res);
+      }
+      return response ? writeResponseToNodeResponse(response, res) : next();
+    })
     .catch(next);
 });
 

@@ -41,8 +41,8 @@ export class ServiceDet implements OnDestroy {
         if (!service) return '/images/placeholder.webp';
 
         // 1. If banner_image is a direct URL string, use it
-        if (typeof service.banner_image === 'string' && service.banner_image.trim() !== '') {
-            return service.banner_image;
+        if (typeof service?.banner_image === 'string' && service?.banner_image.trim() !== '') {
+            return service?.banner_image;
         }
 
         // 2. Fallback to responsive images (desktop/mobile/etc) via getResponsiveImage
@@ -115,7 +115,11 @@ export class ServiceDet implements OnDestroy {
                 this.router.navigate(['/الخدمات']);
                 return;
             }
-            this.featureService.loadServiceDetails(slug);
+            this.featureService.loadServiceDetails(slug).subscribe(data => {
+                if (!data || !data.service) {
+                    this.router.navigate(['/الخدمات']);
+                }
+            });
         });
 
         effect(() => {
