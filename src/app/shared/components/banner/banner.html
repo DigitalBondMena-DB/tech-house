@@ -10,7 +10,7 @@
       @for (item of items(); track $index) {
       @let imageUrl = item?.image?.desktop || 'images/banner.webp';
       <div class="banner-item h-16 flex items-center px-2 shrink-0 min-w-[180px]">
-        <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy"
+        <img [ngSrc]="imageUrl" [alt]="item?.title || ''" width="260" height="64" loading="lazy" decoding="async"
           class="h-full w-auto max-w-[180px] md:max-w-[220px] lg:max-w-[260px]">
       </div>
       }

@@ -1,0 +1,22 @@
+@font-face {
+    font-family: 'Cairo';
+    src: url('../fonts/cairo/Cairo-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+    size-adjust: 100%;
+    ascent-override: 90%;
+    descent-override: 20%;
+    line-gap-override: 0%;
+}
+
+/* Changa font for h1/h2 - used in LCP */
+@font-face {
+    font-family: 'Changa';
+    src: url('../fonts/changa/Changa-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-display: swap;
+    size-adjust: 100%;
+    ascent-override: 90%;
+    descent-override: 20%;
+    line-gap-override: 0%;
+}

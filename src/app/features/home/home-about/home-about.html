@@ -4,11 +4,9 @@
 
     <a routerLink="/من-نحن" class="underline text-[#ED2924] font-semibold text-xl flex items-center cursor-pointer">
       معرفة المزيد
-      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
-        class="mx-1 w-3.5 h-3.5 md:w-4.5 md:h-4.5 fill-[#ED2924] icon-container" viewBox="0 0 640 640">
-        <path
-          d="M201.4 297.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L269.3 320l137.3-137.4c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z" />
-      </svg>
+      <img src="/images/icons/arrow-left.svg" width="22" height="22"
+        class="h-[16px] w-[16px] md:h-[20px] icon-container md:w-[20px] ms-2 bg-white rounded-full p-0.5" loading="lazy"
+        decoding="async" alt="Arrow" />
     </a>
   </div>
 
@@ -46,7 +44,7 @@
     <!-- IMAGE -->
     <div class="flex justify-end ">
       <img [ngSrc]="getResponsiveImage() || '/images/placeholder.webp'" [alt]="aboutData()?.title || ''" width="800"
-        height="600" class="w-100 lg:w-125  object-contain" />
+        height="600" class="w-100 lg:w-125  object-contain" loading="lazy" decoding="async" />
     </div>
 
   </div>

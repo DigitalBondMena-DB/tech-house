@@ -40,16 +40,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
-                    <div class="flex items-center gap-2 mb-4 md:mb-6">
-                        <img src="images/title/title.webp" alt="title-icon">
-                        <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
+                <ng-template #contactUsTemplate>
+                    <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8 mt-8 lg:mt-0">
+                        <div class="flex items-center gap-2 mb-4 md:mb-6">
+                            <img src="images/title/title.webp" alt="title-icon">
+                            <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
+                        </div>
+                        <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true"
+                            [slug]="service()?.slug" [type]="'الخدمات'" />
                     </div>
-                    <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true"
-                        [slug]="service()?.slug" [type]="'الخدمات'" />
-                    
+                </ng-template>
 
-                </div>
+                @if (isDesktop()) {
+                    <ng-container *ngTemplateOutlet="contactUsTemplate"></ng-container>
+                }
 
             </div>
         </div>
@@ -58,6 +62,10 @@
         <div class="lg:col-span-2">
             <div class="service-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed text-justify!"
                 [innerHTML]="fullContent()"></div>
+                
+            @if (!isDesktop()) {
+                <ng-container *ngTemplateOutlet="contactUsTemplate"></ng-container>
+            }
         </div>
 
     </div>

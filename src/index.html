@@ -28,73 +28,11 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <meta name="google-site-verification" content="mjhD_EVX77q5yDg2wK2qBlkJxTIKsGRgNPljDQL5z6Y">
   <!-- Non-critical CSS - loaded asynchronously -->
-  <link rel="stylesheet" media="print" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css"
-    onload="this.onload=null;this.media='all'">
+
+  <link rel="stylesheet" href="/styles/fonts.css" media="print" onload="this.onload=null;this.media='all'">
   <noscript>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
+    <link rel="stylesheet" href="/styles/fonts.css">
   </noscript>
-  <style>
-    /* Critical font-face for LCP - Cairo Regular */
-    @font-face {
-      font-family: 'Cairo';
-      src: url('/fonts/cairo/Cairo-Regular.woff2') format('woff2');
-      font-weight: 400;
-      font-display: swap;
-      size-adjust: 100%;
-      ascent-override: 90%;
-      descent-override: 20%;
-      line-gap-override: 0%;
-    }
-
-    /* Changa font for h1/h2 - used in LCP */
-    @font-face {
-      font-family: 'Changa';
-      src: url('/fonts/changa/Changa-Regular.woff2') format('woff2');
-      font-weight: 400;
-      font-display: swap;
-      size-adjust: 100%;
-      ascent-override: 90%;
-      descent-override: 20%;
-      line-gap-override: 0%;
-    }
-
-    /* Base font family for immediate rendering */
-    body {
-      font-family: "Cairo", "Segoe UI", Tahoma, sans-serif;
-      font-size-adjust: 0.5;
-    }
-
-    /* Headings use Changa font with fallback to prevent layout shift */
-    h1,
-    h2 {
-      font-family: "Changa", "Cairo", "Segoe UI", Tahoma, sans-serif;
-      font-size-adjust: 0.5;
-    }
-
-    .hero-lcp-container {
-      position: relative;
-      width: 100%;
-      overflow: hidden
-    }
-
-    .hero-lcp-image {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      z-index: 1;
-      display: block;
-      transform: translateZ(0);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden
-    }
-
-    .bg-linear {
-      background: linear-gradient(to left, #440000, #ED2924)
-    }
-  </style>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",

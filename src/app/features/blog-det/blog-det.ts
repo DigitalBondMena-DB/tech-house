@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, computed, DestroyRef, effect, inject, NgZone, OnInit, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
+import { Component, computed, DestroyRef, effect, inject, NgZone, OnInit, PLATFORM_ID, signal, ViewEncapsulation, HostListener } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
@@ -7,6 +7,7 @@ import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-
 import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SharedFeatureService } from "../../core/services/sharedFeatureService";
+import { fromEvent, throttleTime } from "rxjs";
 
 @Component({
   selector: 'app-blog-det',
@@ -35,6 +36,7 @@ export class BlogDet {
   relatedBlogs = computed(() => this.blogDetailsData()?.related_blogs ?? []);
 
   hasBlog = computed(() => !!this.blog());
+  isDesktop = signal<boolean>(true);
   // ===== HERO IMAGE =====
   heroImage = computed(() => {
     const blog = this.blog();
@@ -166,6 +168,17 @@ export class BlogDet {
         }, 100);
         this.timeouts.set('effect1', timeoutId);
       }
+    });
+
+    if (this.isBrowser) {
+      this.checkScreenSize();
+    }
+  }
+
+  private checkScreenSize() {
+    this.isDesktop.set(window.innerWidth >= 1024);
+    fromEvent(window, 'resize').pipe(throttleTime(100), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.isDesktop.set(window.innerWidth >= 1024);
     });
   }
 

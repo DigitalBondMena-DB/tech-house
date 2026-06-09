@@ -42,7 +42,7 @@
             <!-- @if (services.length > 0) { -->
             <!-- First Image (service 0) - Right side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img [ngSrc]="enrichedServices()[0].defaultImg" loading="lazy"
+                <img [ngSrc]="enrichedServices()[0].defaultImg" loading="lazy" decoding="async"
                     [attr.srcset]="enrichedServices()[0].srcset" [alt]="enrichedServices()[0].title || ''"
                     sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover center" #imgEl>
@@ -59,7 +59,7 @@
             <!-- @if (services.length > 2) { -->
             <!-- Second Image (service 2) - Right side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img [ngSrc]="enrichedServices()[2].defaultImg" loading="lazy"
+                <img [ngSrc]="enrichedServices()[2].defaultImg" loading="lazy" decoding="async"
                     [attr.srcset]="enrichedServices()[2].srcset" [alt]="enrichedServices()[2].title || ''"
                     sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover" #imgEl>
@@ -117,7 +117,7 @@
             <!-- @if (services.length > 1) { -->
             <!-- First Image (service 1) - Left side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img [ngSrc]="enrichedServices()[1].defaultImg" loading="lazy"
+                <img [ngSrc]="enrichedServices()[1].defaultImg" loading="lazy" decoding="async"
                     [attr.srcset]="enrichedServices()[1].srcset" [alt]="enrichedServices()[1].title || ''"
                     sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover" #imgEl>
@@ -136,7 +136,7 @@
             <!-- @if (services.length > 3) { -->
             <!-- Second Image (service 3) - Left side -->
             <div class="card  service-card relative z-10 min-h-62.5 xl:min-h-100">
-                <img [ngSrc]="enrichedServices()[3].defaultImg" loading="lazy"
+                <img [ngSrc]="enrichedServices()[3].defaultImg" loading="lazy" decoding="async"
                     [attr.srcset]="enrichedServices()[3].srcset" [alt]="enrichedServices()[3].title || ''"
                     sizes="(max-width: 768px) 100vw, 33vw" width="500" height="370"
                     class="service-img w-125 h-59.5 xl:h-92.5  rounded-2xl object-cover" #imgEl>

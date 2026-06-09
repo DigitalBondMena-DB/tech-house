@@ -7,6 +7,7 @@ import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-
 import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
 import { SectionTitle } from "../../shared/components/section-title/section-title";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { fromEvent, throttleTime } from "rxjs";
 
 @Component({
     selector: 'app-service-det',
@@ -34,6 +35,7 @@ export class ServiceDet implements OnDestroy {
     relatedServices = computed(() => this.serviceDetailsData()?.otherService ?? []);
 
     hasService = computed(() => !!this.service());
+    isDesktop = signal<boolean>(true);
 
     // ===== HERO IMAGE =====
     heroImage = computed(() => {
@@ -150,6 +152,17 @@ export class ServiceDet implements OnDestroy {
                 this.timeouts.set('section-heading', timeoutId);
             }
 
+        });
+
+        if (this.isBrowser) {
+            this.checkScreenSize();
+        }
+    }
+
+    private checkScreenSize() {
+        this.isDesktop.set(window.innerWidth >= 1024);
+        fromEvent(window, 'resize').pipe(throttleTime(100), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+            this.isDesktop.set(window.innerWidth >= 1024);
         });
     }
 

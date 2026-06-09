@@ -1,6 +1,6 @@
 import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, OnDestroy, signal, ElementRef } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -39,10 +39,13 @@ import { Country } from './models/country.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 
 })
-export class ContactUsSec implements OnInit {
+export class ContactUsSec implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private router = inject(Router);
   private location = inject(Location);
+  private el = inject(ElementRef);
+  private observer: IntersectionObserver | null = null;
+  private isCssLoaded = false;
   private readonly contactApiUrl = 'https://api.techhouseksa.com/api';
 
   withoutMap = input<boolean>(false);
@@ -162,6 +165,39 @@ export class ContactUsSec implements OnInit {
     ).subscribe(() => {
       this.checkUrlForDone();
     });
+
+    this.setupIntersectionObserver();
+  }
+
+  ngOnDestroy() {
+    if (this.observer) {
+      this.observer.disconnect();
+    }
+  }
+
+  private setupIntersectionObserver() {
+    if (typeof window !== 'undefined' && typeof IntersectionObserver !== 'undefined') {
+      this.observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !this.isCssLoaded) {
+          this.loadFlagIconsCss();
+          this.isCssLoaded = true;
+          this.observer?.disconnect();
+        }
+      }, { rootMargin: '200px' });
+      this.observer.observe(this.el.nativeElement);
+    } else {
+      this.loadFlagIconsCss();
+    }
+  }
+
+  private loadFlagIconsCss() {
+    if (typeof document !== 'undefined' && !document.getElementById('flag-icons-css')) {
+      const link = document.createElement('link');
+      link.id = 'flag-icons-css';
+      link.rel = 'stylesheet';
+      link.href = 'https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css';
+      document.head.appendChild(link);
+    }
   }
 
   private checkUrlForDone(): void {

@@ -9,15 +9,18 @@
           <span class="absolute -inset-0.5"></span>
           <span class="sr-only">Open main menu</span>
           @if (!isMobileMenuOpen()) {
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"
-            class="size-6">
-            <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <div class="flex flex-col justify-between w-6  gap-1">
+            <span class="block h-0.5 bg-[#440000]"></span>
+            <span class="block h-0.5 bg-[#440000]"></span>
+            <span class="block h-0.5 bg-[#440000]"></span>
+          </div>
           } @else {
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"
-            class="size-6">
-            <path d="M6 18 18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
+          <div class=" size-6 relative">
+            <span
+              class="block h-0.5 w-5 bg-[#440000] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45 absolute"></span>
+            <span
+              class="block h-0.5 w-5 bg-[#440000] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -rotate-45 absolute"></span>
+          </div>
           }
         </button>
       </div>

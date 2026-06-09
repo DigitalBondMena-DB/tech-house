@@ -59,7 +59,7 @@
   </div>
   }
   <!-- About Section - Deferred for better LCP -->
-  @defer (when isAboutLoaded()) {
+  @defer (hydrate on viewport) {
   <app-home-about [aboutData]="aboutHome()"></app-home-about>
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-125" style="contain: layout style;">
@@ -84,7 +84,7 @@
   }
 
   <!-- Clients & Partners Banners - Deferred for better LCP -->
-  @defer (on viewport; when isBannersLoaded()) {
+  @defer (hydrate on viewport) {
   <app-home-banners-sec class=""></app-home-banners-sec>
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-75">
@@ -100,7 +100,7 @@
   }
 
   <!-- Services - Deferred for better LCP -->
-  @defer (when isServicesLoaded()) {
+  @defer (hydrate on viewport) {
   <app-home-services [services]="services()"></app-home-services>
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
@@ -121,7 +121,7 @@
   }
 
   <!-- Projects - Deferred for better LCP -->
-  @defer (when isProjectsLoaded()) {
+  @defer (hydrate on interaction) {
   <app-home-projects [projects]="projects()"></app-home-projects>
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
@@ -142,7 +142,7 @@
   }
 
   <!-- Booking Section - Deferred for better LCP -->
-  @defer (when isBookingLoaded()) {
+  @defer (hydrate on viewport) {
   <app-home-booking [ctasection]="ctasection()"></app-home-booking>
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-100">
@@ -156,7 +156,7 @@
   }
 
   <!-- Clients Review - Deferred for better LCP -->
-  @defer (when isTestimonialsLoaded()) {
+  @defer (hydrate on viewport) {
   <app-home-clients-review [testimonials]="testimonials()"></app-home-clients-review>
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-125" style="contain: layout style;">
@@ -181,7 +181,7 @@
   }
 
   <!-- Blogs - Deferred for better LCP -->
-  @defer (when isBlogsLoaded()) {
+  @defer (hydrate on viewport) {
   <app-home-blogs [blogs]="blogs()"></app-home-blogs>
   } @placeholder {
   <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
@@ -202,6 +202,8 @@
   </section>
   }
   <!-- contact-us - Deferred until main content is loaded for better SSR -->
+  @defer (hydrate on viewport){
   <app-contact-us-sec></app-contact-us-sec>
+  }
 
 </section>

@@ -50,7 +50,7 @@
       (click)="onCardClick(i)">
       <div class="w-1/4 p-5 xl:p-10 ">
         <img [ngSrc]="getResponsiveImage(project.image) || '/images/placeholder.webp'" [alt]="project.title || ''"
-          width="300" height="300" class="w-62.5 h-57.5 xl:w-100 xl:h-75  object-cover ">
+          width="300" height="300" loading="lazy" decoding="async" class="w-62.5 h-57.5 xl:w-100 xl:h-75 object-cover ">
       </div>
       <div class="h-full w-3/4 p-5 xl:p-10 min-h-75">
         <h2 class="text-xl text-[#636363] font-medium mb-6">{{ project.category_name }}</h2>
@@ -78,7 +78,8 @@
       (click)="onCardClick(i)">
       <div class="w-full md:w-1/4 p-4 flex justify-center min-h-50 min-w-50">
         <img [ngSrc]="getResponsiveImage(project.image) || '/images/placeholder.webp'" [alt]="project.title || ''"
-          width="300" height="300" class="w-full max-w-50 md:max-w-62.5 h-50 object-cover">
+          width="300" loading="lazy" decoding="async" height="300"
+          class="w-full max-w-50 md:max-w-62.5 h-50 object-cover">
       </div>
       <div class="w-full md:w-3/4 p-4 min-h-50">
         <h2 class="text-lg md:text-xl text-[#636363] font-medium mb-4">{{ project.category_name }}</h2>
