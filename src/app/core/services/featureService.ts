@@ -1,5 +1,6 @@
 
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { API_END_POINTS } from '../constant/ApiEndPoints';
@@ -17,6 +18,8 @@ import { Router } from '@angular/router';
 export class FeatureService {
 
   private apiService = inject(ApiService);
+  private transferState = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
 
   // 🔹 Internal API Response Signal Reference
   private apiResponseSignal = signal<HomeResponse | null>(null);
@@ -184,13 +187,40 @@ export class FeatureService {
   // BLOG DETAILS API
   // =====================
   loadBlogDetails(slug: string): Observable<BlogDetailsResponse | null> {
-    const endpoint = API_END_POINTS.BLOG_DETAILS.replace('{slug}', slug);
+    // 1. Clean the slug to handle Arabic encoding/spaces cleanly and match client/server exactly
+    let cleanSlug = slug;
+    try {
+      if (slug.includes('%')) {
+        cleanSlug = decodeURIComponent(slug);
+      }
+    } catch (e) {
+      cleanSlug = slug;
+    }
+    cleanSlug = cleanSlug.replace(/\s+/g, '');
+    const encodedSlug = encodeURIComponent(cleanSlug);
+    const endpoint = API_END_POINTS.BLOG_DETAILS.replace('{slug}', encodedSlug);
 
+    // 2. Generate cache key
+    const cacheKey = makeStateKey<BlogDetailsResponse>('blog-details-' + cleanSlug);
+
+    // 3. Check TransferState cache
+    const cachedData = this.transferState.get(cacheKey, null);
+    if (cachedData) {
+      this.blogDetailsResponseSignal.set(cachedData);
+      this.separatedSeoTags.getSeoTagsDirect(cachedData.seotag, 'blogDetails');
+      return of(cachedData);
+    }
+
+    // 4. Fetch from API if not cached
     return this.apiService.get<BlogDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.blogDetailsResponseSignal.set(data);
-          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'blogDetails')
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'blogDetails');
+          // Save to cache if on server
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(cacheKey, data);
+          }
         }
       }),
       catchError((err) => {

@@ -1,5 +1,10 @@
 <section class="blog-hero-section relative">
-  <img [src]="heroImage()" [alt]="blog()?.title" class="inset-0 w-full h-full absolute object-cover">
+  @if (blog() && heroImage() && heroImage() !== '/images/placeholder.png') {
+  <img [ngSrc]="heroImage()" priority fill [alt]="blog()?.title" class="object-cover">
+  } @else {
+  <img src="/images/project.webp" fill [alt]="blog()?.title || 'Tech House'"
+    class="inset-0 size-full absolute object-cover">
+  }
   <div class="blog-hero-overlay"></div>
   <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
     <div class="blog-hero-content h-full flex items-center justify-center text-center" dir="rtl"></div>
@@ -12,11 +17,8 @@
   </h1>
   <div class="flex items-center gap-4 mb-8 pb-6 border-b border-gray-100" dir="rtl">
     <div class="flex items-center gap-2 px-4 py-2 bg-[#ED2924]/10 rounded-full border border-[#ED2924]/20">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[#ED2924]" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
+      <img src="/images/icons/calender-icon.svg" loading="lazy" decoding="async" alt="" role="presentation" width="20"
+        height="20">
 
       <span class="text-sm md:text-base font-medium text-gray-700">
         تم النشر في:
@@ -47,7 +49,7 @@
         <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
           <div class="toc-container">
             <div class="flex items-center gap-2 mb-4 md:mb-6">
-              <img src="images/title/title.webp" alt="title-icon">
+              <img src="images/title/title.webp" alt="title-icon" loading="lazy" decoding="async">
               <h2 class="toc-title">محتويات المقالة</h2>
             </div>
             <div class="max-h-77.5 overflow-y-auto [direction:ltr]!">
@@ -56,10 +58,6 @@
                 <li class="toc-item" [class.toc-item-active]="isSectionActive(i)" (click)="navigateToSection(i)">
                   <span class="toc-number">{{ i + 1 }}.</span>
                   <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
-                  <!-- @if (isSectionActive(i)) {
-    
-                  <span class="toc-active-bar"></span>
-                  } -->
                 </li>
                 }
                 @if (sections().length === 0) {
@@ -72,11 +70,11 @@
           </div>
         </div>
 
-        <!-- Related Blogs -->
+
         <ng-template #relatedBlogsTemplate>
           <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8 mt-8 lg:mt-0">
             <div class="flex items-center gap-2 mb-4 md:mb-6">
-              <img src="images/title/title.webp" alt="title-icon">
+              <img src="images/title/title.webp" alt="title-icon" loading="lazy" decoding="async">
               <h2 class="text-xl md:text-2xl font-bold text-[#440000]">المشاركات الأخيرة</h2>
             </div>
 
@@ -86,8 +84,8 @@
                 (click)="navigateToRelatedBlog(related)">
                 @if (related.image) {
                 <div class="w-full h-48 overflow-hidden">
-                  <img loading="lazy" [src]="getResponsiveImageFromObject(related.image)" [alt]="related.title"
-                    class="w-full h-full object-cover rounded-2xl" />
+                  <img loading="lazy" decoding="async" [src]="getResponsiveImageFromObject(related.image)"
+                    [alt]="related.title" class="size-full object-cover rounded-2xl" />
                 </div>
                 }
                 <div class="p-4">

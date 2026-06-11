@@ -1,4 +1,5 @@
-import { Injectable, inject, signal, computed } from '@angular/core';
+import { Injectable, inject, signal, computed, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
+import { isPlatformServer } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { API_END_POINTS } from '../constant/ApiEndPoints';
@@ -13,7 +14,12 @@ import { SeparatedSeoTags } from './separated-seo-tags';
 export class SharedFeatureService {
   private http = inject(HttpClient);
   private readonly baseUrl = environment.apiUrl;
-private separatedSeoTags = inject(SeparatedSeoTags)
+  private separatedSeoTags = inject(SeparatedSeoTags)
+  private transferState = inject(TransferState);
+  private platformId = inject(PLATFORM_ID);
+  private readonly CONTACT_US_KEY = makeStateKey<ContactUsData>('contact-us-data');
+  private readonly SERVICES_SECTION_KEY = makeStateKey<ServiceTitle[]>('services-section-data');
+
   // 🔹 Internal API Response Signal Reference
   private countersResponseSignal = signal<Counter[] | null>(null);
   private contactUsResponseSignal = signal<ContactUsData | null>(null);
@@ -29,6 +35,17 @@ private separatedSeoTags = inject(SeparatedSeoTags)
   private countersLoading = false;
   private partnersClientsLoading = false;
   private privacyPolicyLoading = false;
+
+  constructor() {
+    const cachedContact = this.transferState.get(this.CONTACT_US_KEY, null);
+    if (cachedContact) {
+      this.contactUsResponseSignal.set(cachedContact);
+    }
+    const cachedServices = this.transferState.get(this.SERVICES_SECTION_KEY, null);
+    if (cachedServices) {
+      this.servicesSectionSignal.set(cachedServices);
+    }
+  }
 
   // 🔹 Counters Data Signal (computed from API response)
   counters = computed(() => this.countersResponseSignal());
@@ -155,15 +172,25 @@ private separatedSeoTags = inject(SeparatedSeoTags)
   // =====================
   // CONTACT US API (for Footer) - Returns Observable for parallel loading
   // =====================
-  loadContactUsData(): Observable<ContactUsData | null> {    
-    if (this.contactUsResponseSignal() || this.contactUsLoading) {
+  loadContactUsData(): Observable<ContactUsData | null> {
+    if (this.contactUsResponseSignal()) {
       return of(this.contactUsResponseSignal());
+    }
+
+    const cachedData = this.transferState.get(this.CONTACT_US_KEY, null);
+    if (cachedData) {
+      this.contactUsResponseSignal.set(cachedData);
+      return of(cachedData);
+    }
+
+    if (this.contactUsLoading) {
+      return of(null);
     }
 
     this.contactUsLoading = true;
 
     return this.http.get<ContactUsResponse | any>(`${this.baseUrl}${API_END_POINTS.CONTACT_US}`).pipe(
-      tap((data) => {                
+      tap((data) => {
         const contactUs = data.contactUs || data;
         if (contactUs) {
           const contactData: ContactUsData = {
@@ -193,6 +220,9 @@ private separatedSeoTags = inject(SeparatedSeoTags)
             } : undefined
           };
           this.contactUsResponseSignal.set(contactData);
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.CONTACT_US_KEY, contactData);
+          }
         }
         this.contactUsLoading = false;
       }),
@@ -211,7 +241,17 @@ private separatedSeoTags = inject(SeparatedSeoTags)
   // SERVICES SECTION API (for Footer)
   // =====================
   loadServicesSection(): void {
-    if (this.servicesSectionSignal() || this.servicesSectionLoading) {
+    if (this.servicesSectionSignal()) {
+      return;
+    }
+
+    const cachedData = this.transferState.get(this.SERVICES_SECTION_KEY, null);
+    if (cachedData) {
+      this.servicesSectionSignal.set(cachedData);
+      return;
+    }
+
+    if (this.servicesSectionLoading) {
       return;
     }
 
@@ -248,6 +288,9 @@ private separatedSeoTags = inject(SeparatedSeoTags)
 
         if (services.length > 0) {
           this.servicesSectionSignal.set(services);
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.SERVICES_SECTION_KEY, services);
+          }
         }
         this.servicesSectionLoading = false;
       },

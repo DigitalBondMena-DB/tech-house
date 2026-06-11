@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, AfterViewInit, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectionStrategy } from '@angular/core';
 import { SharedFeatureService } from '../../../core/services/sharedFeatureService';
 
 @Component({
@@ -12,22 +12,15 @@ import { SharedFeatureService } from '../../../core/services/sharedFeatureServic
 export class CircleSidebar implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);
 
-  // Contact Us Data from API
   contactUsData = this.sharedFeatureService.contactUsData;
 
   ngOnInit(): void {
-    // Load data in ngOnInit (runs on both server and client)
-    // Note: This may be called from other components as well, but service has guard to prevent duplicate calls
-    // Subscribe to Observable - data will be set in signal automatically
     this.sharedFeatureService.loadContactUsData().subscribe();
   }
 
-  // Helper method to format WhatsApp URL
   getWhatsAppUrl(phoneNumber: string | undefined): string {
     if (!phoneNumber) return '#';
-    // Remove any non-digit characters
     const cleaned = phoneNumber.replace(/\D/g, '');
-    // Format as WhatsApp URL
     return `https://wa.me/${cleaned}`;
   }
 }

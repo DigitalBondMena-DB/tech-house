@@ -1,5 +1,5 @@
-import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { Component, computed, DestroyRef, effect, inject, NgZone, OnInit, PLATFORM_ID, signal, ViewEncapsulation, HostListener } from "@angular/core";
+import { CommonModule, isPlatformBrowser, NgOptimizedImage } from "@angular/common";
+import { Component, computed, DestroyRef, effect, ElementRef, inject, NgZone, PLATFORM_ID, Renderer2, signal, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
@@ -7,18 +7,17 @@ import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-
 import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SharedFeatureService } from "../../core/services/sharedFeatureService";
-import { fromEvent, throttleTime } from "rxjs";
+import { fromEvent, throttleTime, switchMap, map, of, timer, takeWhile, tap } from "rxjs";
 
 @Component({
   selector: 'app-blog-det',
   standalone: true,
-  imports: [CommonModule, ContactUsSec, SafeHtmlPipe],
+  imports: [CommonModule, ContactUsSec, SafeHtmlPipe, NgOptimizedImage],
   templateUrl: './blog-det.html',
   styleUrl: './blog-det.css',
   encapsulation: ViewEncapsulation.None
 })
 export class BlogDet {
-  private readonly timeouts = new Map<string, NodeJS.Timeout>()
   private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
   private route = inject(ActivatedRoute);
@@ -27,6 +26,9 @@ export class BlogDet {
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private sharedFeatureService = inject(SharedFeatureService);
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+
   contactUsData = this.sharedFeatureService.contactUsData;
   isBrowser = isPlatformBrowser(this.platformId);
 
@@ -66,7 +68,6 @@ export class BlogDet {
 
 
   fullContent = computed(() => {
-    const activeIndex = this.activeSectionIndex();
     let html = this.blog()?.text ?? '';
 
     if (html) {
@@ -85,7 +86,7 @@ export class BlogDet {
           ? attributes.replace(/id="[^"]*"/, `id="section-${finalIndex}"`)
           : `${attributes} id="section-${finalIndex}"`;
 
-        const currentH2 = `<h2${newAttributes} class="${finalIndex === activeIndex ? 'section-heading-active' : 'section-heading'}">${content}</h2>`;
+        const currentH2 = `<h2${newAttributes} class="section-heading">${content}</h2>`;
 
         // --- الجزء الجديد: حقن الـ CTA بعد كل 3 أو 5 عناوين ---
         if (h2Count === 2 || h2Count % 4 === 0) { // هنا سيضعها بعد العنوان الرابع والثامن وهكذا
@@ -128,18 +129,30 @@ export class BlogDet {
   });
 
   constructor() {
-    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
-      const slug = params['slug'];
-      if (!slug) {
-        this.router.navigate(['/المقالات']);
-        return;
-      }
-      this.featureService.loadBlogDetails(slug).subscribe(data => {
+    // Synchronously check the snapshot slug to populate TransferState cache immediately
+    const initialSlug = this.route.snapshot.params['slug'];
+    if (initialSlug) {
+      this.featureService.loadBlogDetails(initialSlug).subscribe();
+    }
+
+    this.route.params
+      .pipe(
+        map(params => params['slug']),
+        switchMap(slug => {
+          if (!slug) {
+            this.router.navigate(['/المقالات']);
+            return of(null);
+          }
+          return this.featureService.loadBlogDetails(slug);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(data => {
+        if (data === null) return;
         if (!data || !data.blog) {
           this.router.navigate(['/المقالات']);
         }
       });
-    });
 
     effect(() => {
       const html = this.blog()?.text;
@@ -149,24 +162,28 @@ export class BlogDet {
     });
 
     effect(() => {
+      if (!this.isBrowser) return;
+
       const activeIndex = this.activeSectionIndex();
       const sections = this.sections();
-      if (activeIndex >= 0 && sections.length > 0 && this.isBrowser) {
-        const timeoutId = setTimeout(() => {
-          sections.forEach((section, index) => {
-            const element = document.getElementById(`section-${index}`);
-            if (element) {
-              if (index === activeIndex) {
-                element.classList.add('section-heading-active');
-                element.classList.remove('section-heading');
-              } else {
-                element.classList.remove('section-heading-active');
-                element.classList.add('section-heading');
-              }
-            }
-          });
-        }, 100);
-        this.timeouts.set('effect1', timeoutId);
+      if (sections.length === 0) return;
+
+      const hostElement = this.el.nativeElement as HTMLElement;
+
+      // 1. Reset all currently active headings to default
+      const activeElements = hostElement.querySelectorAll('.section-heading-active');
+      activeElements.forEach(el => {
+        this.renderer.removeClass(el, 'section-heading-active');
+        this.renderer.addClass(el, 'section-heading');
+      });
+
+      // 2. Set the active class on the active heading element
+      if (activeIndex >= 0 && activeIndex < sections.length) {
+        const activeEl = hostElement.querySelector(`#section-${activeIndex}`);
+        if (activeEl) {
+          this.renderer.addClass(activeEl, 'section-heading-active');
+          this.renderer.removeClass(activeEl, 'section-heading');
+        }
       }
     });
 
@@ -175,10 +192,24 @@ export class BlogDet {
     }
   }
 
+
   private checkScreenSize() {
+    if (!this.isBrowser) return;
     this.isDesktop.set(window.innerWidth >= 1024);
-    fromEvent(window, 'resize').pipe(throttleTime(100), takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-      this.isDesktop.set(window.innerWidth >= 1024);
+    this.ngZone.runOutsideAngular(() => {
+      fromEvent(window, 'resize')
+        .pipe(
+          throttleTime(100),
+          takeUntilDestroyed(this.destroyRef)
+        )
+        .subscribe(() => {
+          const nextVal = window.innerWidth >= 1024;
+          if (this.isDesktop() !== nextVal) {
+            this.ngZone.run(() => {
+              this.isDesktop.set(nextVal);
+            });
+          }
+        });
     });
   }
 
@@ -223,17 +254,19 @@ export class BlogDet {
       this.activeSectionIndex.set(i);
       if (this.isBrowser) {
         this.ngZone.runOutsideAngular(() => {
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              const sectionId = `section-${i}`;
-              let attempts = 0;
-              const findAndScroll = () => {
-                const targetElement = document.getElementById(sectionId);
+          const sectionId = `section-${i}`;
+          let attempts = 0;
+
+          timer(200, 100)
+            .pipe(
+              takeUntilDestroyed(this.destroyRef),
+              map(() => this.el.nativeElement.querySelector(`#${sectionId}`)),
+              tap((targetElement) => {
+                attempts++;
                 if (targetElement) {
                   requestAnimationFrame(() => {
-                    // Cache values to avoid multiple reads
                     const elementPosition = targetElement.getBoundingClientRect().top;
-                    const scrollY = window.pageYOffset;
+                    const scrollY = window.scrollY || window.pageYOffset;
                     const offsetPosition = elementPosition + scrollY - 120;
 
                     window.scrollTo({
@@ -241,14 +274,11 @@ export class BlogDet {
                       behavior: 'smooth'
                     });
                   });
-                } else if (attempts < 5) {
-                  attempts++;
-                  setTimeout(findAndScroll, 100);
                 }
-              };
-              findAndScroll();
-            }, 200);
-          });
+              }),
+              takeWhile((targetElement) => !targetElement && attempts < 5, true)
+            )
+            .subscribe();
         });
       }
     }

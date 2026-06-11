@@ -1,6 +1,3 @@
-/* You can add global styles to this file, and also import other style files */
-/* @import "flag-icons/css/flag-icons.min.css"; */
-
 @import "tailwindcss";
 
 
@@ -56,23 +53,20 @@ h2 {
     position: relative;
 }
 
-.section-pattern::before {
-    content: '';
+.section-pattern-img {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: url('/images/hero/pattern.webp');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     opacity: 1;
     z-index: 0;
     pointer-events: none;
 }
 
-.section-pattern>* {
+.section-pattern>:not(.section-pattern-img) {
     position: relative;
     z-index: 1;
 }
