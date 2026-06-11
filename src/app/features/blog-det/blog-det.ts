@@ -1,21 +1,24 @@
-import { CommonModule, isPlatformBrowser, NgOptimizedImage } from "@angular/common";
-import { Component, computed, DestroyRef, effect, ElementRef, inject, NgZone, PLATFORM_ID, Renderer2, signal, ViewEncapsulation } from "@angular/core";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, NgZone, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
-import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SharedFeatureService } from "../../core/services/sharedFeatureService";
-import { fromEvent, throttleTime, switchMap, map, of, timer, takeWhile, tap } from "rxjs";
+import { fromEvent, throttleTime, switchMap, map, of } from "rxjs";
+import { BlogArticle } from "./components/blog-article/blog-article";
+import { RelatedBlogs } from "./components/related-blogs/related-blogs";
+import { BlogToc } from "./components/blog-toc/blog-toc";
 
 @Component({
   selector: 'app-blog-det',
   standalone: true,
-  imports: [CommonModule, ContactUsSec, SafeHtmlPipe, NgOptimizedImage],
+  imports: [CommonModule, ContactUsSec, BlogArticle, RelatedBlogs, BlogToc],
   templateUrl: './blog-det.html',
   styleUrl: './blog-det.css',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class BlogDet {
   private readonly destroyRef = inject(DestroyRef)
@@ -26,8 +29,6 @@ export class BlogDet {
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private sharedFeatureService = inject(SharedFeatureService);
-  private el = inject(ElementRef);
-  private renderer = inject(Renderer2);
 
   contactUsData = this.sharedFeatureService.contactUsData;
   isBrowser = isPlatformBrowser(this.platformId);
@@ -55,16 +56,6 @@ export class BlogDet {
 
   // ===== SECTIONS =====
   sections = signal<any[]>([]);
-  activeSectionIndex = signal<number>(-1);
-
-  activeSection = computed(() => {
-    const index = this.activeSectionIndex();
-    const sections = this.sections();
-    if (index >= 0 && index < sections.length) {
-      return sections[index] ?? null;
-    }
-    return null;
-  });
 
 
   fullContent = computed(() => {
@@ -161,31 +152,7 @@ export class BlogDet {
       }
     });
 
-    effect(() => {
-      if (!this.isBrowser) return;
 
-      const activeIndex = this.activeSectionIndex();
-      const sections = this.sections();
-      if (sections.length === 0) return;
-
-      const hostElement = this.el.nativeElement as HTMLElement;
-
-      // 1. Reset all currently active headings to default
-      const activeElements = hostElement.querySelectorAll('.section-heading-active');
-      activeElements.forEach(el => {
-        this.renderer.removeClass(el, 'section-heading-active');
-        this.renderer.addClass(el, 'section-heading');
-      });
-
-      // 2. Set the active class on the active heading element
-      if (activeIndex >= 0 && activeIndex < sections.length) {
-        const activeEl = hostElement.querySelector(`#section-${activeIndex}`);
-        if (activeEl) {
-          this.renderer.addClass(activeEl, 'section-heading-active');
-          this.renderer.removeClass(activeEl, 'section-heading');
-        }
-      }
-    });
 
     if (this.isBrowser) {
       this.checkScreenSize();
@@ -229,7 +196,6 @@ export class BlogDet {
 
     if (matches.length === 0) {
       this.sections.set([]);
-      this.activeSectionIndex.set(-1);
       return;
     }
 
@@ -246,47 +212,6 @@ export class BlogDet {
     }
 
     this.sections.set(result);
-    this.activeSectionIndex.set(0);
-  }
-
-  navigateToSection(i: number) {
-    if (i >= 0 && i < this.sections().length) {
-      this.activeSectionIndex.set(i);
-      if (this.isBrowser) {
-        this.ngZone.runOutsideAngular(() => {
-          const sectionId = `section-${i}`;
-          let attempts = 0;
-
-          timer(200, 100)
-            .pipe(
-              takeUntilDestroyed(this.destroyRef),
-              map(() => this.el.nativeElement.querySelector(`#${sectionId}`)),
-              tap((targetElement) => {
-                attempts++;
-                if (targetElement) {
-                  requestAnimationFrame(() => {
-                    const elementPosition = targetElement.getBoundingClientRect().top;
-                    const scrollY = window.scrollY || window.pageYOffset;
-                    const offsetPosition = elementPosition + scrollY - 120;
-
-                    window.scrollTo({
-                      top: offsetPosition,
-                      behavior: 'smooth'
-                    });
-                  });
-                }
-              }),
-              takeWhile((targetElement) => !targetElement && attempts < 5, true)
-            )
-            .subscribe();
-        });
-      }
-    }
-  }
-
-  isSectionActive(index: number): boolean {
-    const currentIndex = this.activeSectionIndex();
-    return currentIndex >= 0 && currentIndex === index;
   }
 
   navigateToRelatedBlog(blog: any) {

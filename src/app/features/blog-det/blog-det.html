@@ -1,9 +1,7 @@
 <section class="blog-hero-section relative">
   @if (blog() && heroImage() && heroImage() !== '/images/placeholder.png') {
-  <img [ngSrc]="heroImage()" priority fill [alt]="blog()?.title" class="object-cover">
-  } @else {
-  <img src="/images/project.webp" fill [alt]="blog()?.title || 'Tech House'"
-    class="inset-0 size-full absolute object-cover">
+  <img [src]="heroImage()" fetchpriority="high" decoding="async" loading="eager" [alt]="blog()?.title"
+    class="object-cover">
   }
   <div class="blog-hero-overlay"></div>
   <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
@@ -46,77 +44,45 @@
     <!-- TOC - Table of Contents -->
     <div class="lg:col-span-1">
       <div class="sticky top-37.5">
-        <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
-          <div class="toc-container">
-            <div class="flex items-center gap-2 mb-4 md:mb-6">
-              <img src="images/title/title.webp" alt="title-icon" loading="lazy" decoding="async">
-              <h2 class="toc-title">محتويات المقالة</h2>
-            </div>
-            <div class="max-h-77.5 overflow-y-auto [direction:ltr]!">
-              <ul class="toc-list">
-                @for (section of sections(); track section.id; let i = $index) {
-                <li class="toc-item" [class.toc-item-active]="isSectionActive(i)" (click)="navigateToSection(i)">
-                  <span class="toc-number">{{ i + 1 }}.</span>
-                  <span class="toc-text" [innerHTML]="section.title | safeHtml"></span>
-                </li>
-                }
-                @if (sections().length === 0) {
-                <li class="toc-item">
-                  <span class="toc-text">لا توجد عناوين متاحة</span>
-                </li>
-                }
-              </ul>
-            </div>
-          </div>
-        </div>
+        @defer(hydrate on interaction) {
+        <app-blog-toc [sections]="sections()"></app-blog-toc>
+        } @placeholder {
+        <div class="min-h-[200px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
+        }
 
-
-        <ng-template #relatedBlogsTemplate>
-          <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8 mt-8 lg:mt-0">
-            <div class="flex items-center gap-2 mb-4 md:mb-6">
-              <img src="images/title/title.webp" alt="title-icon" loading="lazy" decoding="async">
-              <h2 class="text-xl md:text-2xl font-bold text-[#440000]">المشاركات الأخيرة</h2>
-            </div>
-
-            <div class="space-y-6">
-              @for (related of relatedBlogs(); track related.slug) {
-              <div class=" rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                (click)="navigateToRelatedBlog(related)">
-                @if (related.image) {
-                <div class="w-full h-48 overflow-hidden">
-                  <img loading="lazy" decoding="async" [src]="getResponsiveImageFromObject(related.image)"
-                    [alt]="related.title" class="size-full object-cover rounded-2xl" />
-                </div>
-                }
-                <div class="p-4">
-                  <p class="text-sm text-gray-500 mb-2">{{ related.publish_at_ar }}</p>
-                  <h3 class="text-base md:text-lg font-semibold text-[#440000] line-clamp-2">
-                    {{ related.title }}
-                  </h3>
-                </div>
-              </div>
-              }
-            </div>
-          </div>
-        </ng-template>
 
         @if (isDesktop()) {
-        <ng-container *ngTemplateOutlet="relatedBlogsTemplate"></ng-container>
+        @defer (on viewport) {
+        <app-related-blogs [blogs]="relatedBlogs()" (blogSelected)="navigateToRelatedBlog($event)"></app-related-blogs>
+        } @placeholder {
+        <div class="min-h-[200px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
+        }
         }
       </div>
     </div>
 
     <!-- Article Content -->
     <div class="lg:col-span-2">
-      <div class="article-content" [innerHTML]="fullContent()"></div>
-
+      @defer (on idle) {
+      <app-blog-article [content]="fullContent()"></app-blog-article>
+      } @placeholder {
+      <div class="min-h-[400px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
+      }
     </div>
 
   </div>
 </section>
+@defer(hydrate on viewport) {
 <app-contact-us-sec [slug]="blog()?.slug" [type]="'المقالات'" />
+}
+
+
 <div class="container mx-auto px-5">
   @if (!isDesktop()) {
-  <ng-container *ngTemplateOutlet="relatedBlogsTemplate"></ng-container>
+  @defer (on viewport) {
+  <app-related-blogs [blogs]="relatedBlogs()" (blogSelected)="navigateToRelatedBlog($event)"></app-related-blogs>
+  } @placeholder {
+  <div class="min-h-[200px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
+  }
   }
 </div>

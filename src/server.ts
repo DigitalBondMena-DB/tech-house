@@ -6,11 +6,12 @@ import {
 } from '@angular/ssr/node';
 import express from 'express';
 import { join } from 'node:path';
+
+
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
 const app = express();
-
-const angularApp = new AngularNodeAppEngine();
+const angularApp = new AngularNodeAppEngine({ allowedHosts: ['techhouseksa.com'], trustProxyHeaders: true });
 
 app.use(
   express.static(browserDistFolder, {

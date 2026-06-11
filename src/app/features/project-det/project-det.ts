@@ -10,7 +10,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 @Component({
   selector: 'app-project-det',
   standalone: true,
-  imports: [CommonModule, CarouselModule],
+  imports: [CommonModule, CarouselModule, ContactUsSec],
   templateUrl: './project-det.html',
   styleUrl: './project-det.css',
   encapsulation: ViewEncapsulation.None

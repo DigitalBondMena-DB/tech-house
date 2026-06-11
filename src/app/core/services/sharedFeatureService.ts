@@ -95,8 +95,8 @@ export class SharedFeatureService {
         return null;
       }),
       catchError((err) => {
-        // Only log if it's not a network/CORS error (status 0)
-        if (err.status !== 0) {
+        // Only log if it's not a network/CORS error (status 0) unless on server
+        if (err.status !== 0 || isPlatformServer(this.platformId)) {
           console.error('Error loading counters:', err);
         }
         this.countersLoading = false;
@@ -160,8 +160,8 @@ export class SharedFeatureService {
         this.contactHeroLoading = false;
       },
       error: (err) => {
-        // Only log if it's not a network/CORS error (status 0)
-        if (err.status !== 0) {
+        // Only log if it's not a network/CORS error (status 0) unless on server
+        if (err.status !== 0 || isPlatformServer(this.platformId)) {
           console.error('Error loading contact hero:', err);
         }
         this.contactHeroLoading = false;
@@ -181,6 +181,10 @@ export class SharedFeatureService {
     if (cachedData) {
       this.contactUsResponseSignal.set(cachedData);
       return of(cachedData);
+    }
+
+    if (isPlatformServer(this.platformId)) {
+      return of(null);
     }
 
     if (this.contactUsLoading) {
@@ -227,8 +231,8 @@ export class SharedFeatureService {
         this.contactUsLoading = false;
       }),
       catchError((err) => {
-        // Only log if it's not a network/CORS error (status 0)
-        if (err.status !== 0) {
+        // Only log if it's not a network/CORS error (status 0) unless on server
+        if (err.status !== 0 || isPlatformServer(this.platformId)) {
           console.error('Error loading contact us data:', err);
         }
         this.contactUsLoading = false;
@@ -248,6 +252,10 @@ export class SharedFeatureService {
     const cachedData = this.transferState.get(this.SERVICES_SECTION_KEY, null);
     if (cachedData) {
       this.servicesSectionSignal.set(cachedData);
+      return;
+    }
+
+    if (isPlatformServer(this.platformId)) {
       return;
     }
 
@@ -295,8 +303,8 @@ export class SharedFeatureService {
         this.servicesSectionLoading = false;
       },
       error: (err) => {
-        // Only log if it's not a network/CORS error (status 0)
-        if (err.status !== 0) {
+        // Only log if it's not a network/CORS error (status 0) unless on server
+        if (err.status !== 0 || isPlatformServer(this.platformId)) {
           console.error('Error loading services section:', err);
         }
         this.servicesSectionLoading = false;
@@ -312,6 +320,10 @@ export class SharedFeatureService {
       return of(this.partnersClientsResponseSignal());
     }
 
+    if (isPlatformServer(this.platformId)) {
+      return of(null);
+    }
+
     this.partnersClientsLoading = true;
 
     return this.http.get<PartnersClientsResponse>(`${this.baseUrl}${API_END_POINTS.BANNERS}`).pipe(
@@ -322,7 +334,7 @@ export class SharedFeatureService {
         this.partnersClientsLoading = false;
       }),
       catchError((err) => {
-        if (err.status !== 0) {
+        if (err.status !== 0 || isPlatformServer(this.platformId)) {
           console.error('Error loading partners/clients:', err);
         }
         this.partnersClientsLoading = false;
@@ -415,7 +427,7 @@ export class SharedFeatureService {
         this.privacyPolicyLoading = false;
       },
       error: (err) => {
-        if (err.status !== 0) {
+        if (err.status !== 0 || isPlatformServer(this.platformId)) {
           console.error('Error loading privacy policy:', err);
         }
         this.privacyPolicyLoading = false;
