@@ -79,8 +79,7 @@ export class HomeAbout implements AfterViewInit, OnDestroy {
 
   private updateLoadingState(): void {
     const hasAboutData = !!this.aboutData()?.title;
-    const hasCounters = this.counters() && this.counters()!.length > 0;
-    this.isLoadingSignal.set(!hasAboutData || !hasCounters);
+    this.isLoadingSignal.set(!hasAboutData);
   }
 
 

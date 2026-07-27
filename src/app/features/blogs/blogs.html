@@ -23,9 +23,10 @@
         @if (blogItems().length > 0) {
         <div class="blogs-list">
             @for (blog of blogItems(); track blog.id) {
-            <article class="relative blog-item mb-12 md:mb-16 last:mb-0 cursor-pointer transition-all duration-500 hover:opacity-90"
-                >
-                <a [routerLink]="['/المقالات', blog.slug]" class="absolute inset-0 z-10" [attr.aria-label]="blog.title"></a>
+            <article
+                class="relative blog-item mb-12 md:mb-16 last:mb-0 cursor-pointer transition-all duration-500 hover:opacity-90">
+                <a [routerLink]="['/المقالات', blog.slug]" class="absolute inset-0 z-10"
+                    [attr.aria-label]="blog.title"></a>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                     <!-- Image Side (Left in RTL) -->
                     <div class="blog-image">

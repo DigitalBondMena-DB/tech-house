@@ -168,17 +168,21 @@ export class SEOService {
   private setAdditionalMetaTags(seoData: Seotag): void {
     const isSeoTag = this.isSeotag(seoData);
 
-    // الكلمات المفتاحية
-    
-      
-
     // الصورة
-    const imgPath = !isSeoTag && (seoData as SEOData).image ? (seoData as SEOData).image : this.defaultImage;
-    this.meta.updateTag({ property: 'og:image', content: this.baseUrl + imgPath });
+    const rawImg = seoData?.image_url || (!isSeoTag && (seoData as SEOData).image ? (seoData as SEOData).image : null);
+    let fullImgUrl = `${this.baseUrl}${this.defaultImage}`;
 
-    // إعدادات افتراضية
+    if (rawImg) {
+      if (rawImg.startsWith('http://') || rawImg.startsWith('https://')) {
+        fullImgUrl = rawImg;
+      } else {
+        fullImgUrl = rawImg.startsWith('/') ? `${this.baseUrl}${rawImg}` : `${this.baseUrl}/${rawImg}`;
+      }
+    }
+
+    this.meta.updateTag({ property: 'og:image', content: fullImgUrl });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
-    this.meta.updateTag({ property: 'twitter:image', content: seoData?.image_url ?? '' });
+    this.meta.updateTag({ property: 'twitter:image', content: fullImgUrl });
     this.meta.updateTag({ property: 'twitter:card', content: 'summary_large_image' });
     this.meta.updateTag({ property: 'twitter:site', content: '@techHouse' });
     this.meta.updateTag({ property: 'twitter:creator', content: '@techHouse' });

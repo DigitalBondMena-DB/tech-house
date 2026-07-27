@@ -2,11 +2,43 @@
 <html lang="ar" dir="rtl">
 
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8ZNJKYZZGJ"></script>
-  <script>   window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-8ZNJKYZZGJ');
+  <script>
+    (function () {
+      let gaLoaded = false;
+
+      function loadGA() {
+        if (gaLoaded) return;
+        gaLoaded = true;
+
+        // إنشاء dataLayer
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () {
+          dataLayer.push(arguments);
+        };
+
+        // تحميل gtag.js
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-8ZNJKYZZGJ';
+
+        script.onload = function () {
+          gtag('js', new Date());
+          gtag('config', 'G-8ZNJKYZZGJ');
+        };
+
+        document.head.appendChild(script);
+      }
+
+      ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'].forEach(function (event) {
+        window.addEventListener(event, loadGA, {
+          passive: true,
+          once: true
+        });
+      });
+
+      // تحميل تلقائي بعد 3.5 ثانية لو المستخدم متفاعلش
+      setTimeout(loadGA, 3500);
+    })();
   </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">

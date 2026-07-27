@@ -1,6 +1,6 @@
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, inject, OnDestroy, OnInit, PLATFORM_ID, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { SkeletonModule } from 'primeng/skeleton';
 import { environment } from '../../../environments/environment';
@@ -19,14 +19,13 @@ import { SectionTitle } from '../../shared/components/section-title/section-titl
     PaginatorModule,
     SkeletonModule,
     RouterLink
-],
+  ],
   templateUrl: './blogs.html',
   styleUrl: './blogs.css'
 })
 export class Blogs implements OnInit, AfterViewInit, OnDestroy {
   private timeoutRef!: NodeJS.Timeout;
   private featureService = inject(FeatureService);
-  private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private isBrowser = isPlatformBrowser(this.platformId);
 

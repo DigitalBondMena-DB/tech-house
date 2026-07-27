@@ -6,7 +6,7 @@ import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { SharedFeatureService } from "../../core/services/sharedFeatureService";
-import { fromEvent, throttleTime, switchMap, map, of } from "rxjs";
+import { fromEvent, throttleTime, switchMap, map, of, distinctUntilChanged } from "rxjs";
 import { BlogArticle } from "./components/blog-article/blog-article";
 import { RelatedBlogs } from "./components/related-blogs/related-blogs";
 import { BlogToc } from "./components/blog-toc/blog-toc";
@@ -81,14 +81,17 @@ export class BlogDet {
 
         // --- الجزء الجديد: حقن الـ CTA بعد كل 3 أو 5 عناوين ---
         if (h2Count === 2 || h2Count % 4 === 0) { // هنا سيضعها بعد العنوان الرابع والثامن وهكذا
+          const contactData = this.contactUsData();
+          const whatsappUrl = contactData?.whatsapp_number || '#';
+          const phoneUrl = contactData?.phone ? `tel:${contactData.phone}` : '#';
           const ctaHtml = `<div class="contact-box flex flex-col lg:flex-row text-center justify-between items-center mt-6 px-10 p-6 border border-[#B91C17] rounded-2xl">
       <div>
         <h5 class="text-[#B91C17]!">تبي زيادة أرباح مشروعك؟</h5>
         <p class="text-lg text-[#B91C17]! font-medium">احصل على استشارتك المجانية الآن مع خبير من بيت التكنولوجيا</p>
       </div>
       <div class="mt-3 gap-2 flex items-center justify-center">
-        <a href="${this.contactUsData()?.whatsapp_number}" target="_blank" class="px-6 py-2 bg-green-500 hover:bg-green-400 transition-colors duration-150 rounded-full text-white">واتس اب</a>
-        <a href="tel:${this.contactUsData()?.phone}" target="_blank" class="px-6 py-2 bg-[#B91C17] hover:bg-[#ED2924] transition-colors duration-150 rounded-full text-white">اتصل بنا</a>
+        <a href="${whatsappUrl}" target="_blank" class="px-6 py-2 bg-green-500 hover:bg-green-400 transition-colors duration-150 rounded-full text-white">واتس اب</a>
+        <a href="${phoneUrl}" target="_blank" class="px-6 py-2 bg-[#B91C17] hover:bg-[#ED2924] transition-colors duration-150 rounded-full text-white">اتصل بنا</a>
       </div>
     </div>`;
           return ctaHtml + currentH2; // سيتم وضع الـ CTA "قبل" العنوان الذي وصل للرقم المحدد
@@ -120,15 +123,12 @@ export class BlogDet {
   });
 
   constructor() {
-    // Synchronously check the snapshot slug to populate TransferState cache immediately
-    const initialSlug = this.route.snapshot.params['slug'];
-    if (initialSlug) {
-      this.featureService.loadBlogDetails(initialSlug).subscribe();
-    }
+    this.sharedFeatureService.loadContactUsData().subscribe();
 
     this.route.params
       .pipe(
         map(params => params['slug']),
+        distinctUntilChanged(),
         switchMap(slug => {
           if (!slug) {
             this.router.navigate(['/المقالات']);

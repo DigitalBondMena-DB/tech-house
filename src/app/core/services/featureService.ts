@@ -2,7 +2,7 @@
 import { Injectable, computed, inject, signal, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { Observable, of } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, distinctUntilChanged, tap } from 'rxjs/operators';
 import { API_END_POINTS } from '../constant/ApiEndPoints';
 
 import { AboutResponse, BlogDetailsResponse, BlogsResponse, HomeResponse, JobDetailsResponse, JobsResponse, ProjectDetailsResponse, ProjectsResponse, ServiceDetailsResponse, ServicesResponse } from '../models/home.model';
@@ -183,6 +183,28 @@ export class FeatureService {
     ).subscribe();
   }
 
+  private getBlogMainImage(blog?: any): string | undefined {
+    if (!blog) return undefined;
+    const banner = blog.banner_image;
+    if (typeof banner === 'string' && banner) return banner;
+    if (Array.isArray(banner) && banner.length > 0) return banner[2] || banner[0];
+
+    const img = blog.image;
+    if (typeof img === 'string' && img) return img;
+    if (Array.isArray(img) && img.length > 0) return img[2] || img[0];
+
+    return undefined;
+  }
+
+  private updateBlogSeo(data: BlogDetailsResponse): void {
+    const mainImg = this.getBlogMainImage(data?.blog) || data?.seotag?.image_url;
+    const blogSeo = {
+      ...data?.seotag,
+      image_url: mainImg
+    };
+    this.separatedSeoTags.getSeoTagsDirect(blogSeo, 'blogDetails');
+  }
+
   // =====================
   // BLOG DETAILS API
   // =====================
@@ -196,7 +218,7 @@ export class FeatureService {
     } catch (e) {
       cleanSlug = slug;
     }
-    cleanSlug = cleanSlug.replace(/\s+/g, '');
+    // Do not remove spaces from the slug to keep them intact
     const encodedSlug = encodeURIComponent(cleanSlug);
     const endpoint = API_END_POINTS.BLOG_DETAILS.replace('{slug}', encodedSlug);
 
@@ -207,23 +229,29 @@ export class FeatureService {
     const cachedData = this.transferState.get(cacheKey, null);
     if (cachedData) {
       this.blogDetailsResponseSignal.set(cachedData);
-      this.separatedSeoTags.getSeoTagsDirect(cachedData.seotag, 'blogDetails');
+      this.updateBlogSeo(cachedData);
       return of(cachedData);
     }
 
-    // 4. Fetch from API if not cached
+    // 4. Check in-memory signal cache
+    const currentData = this.blogDetailsResponseSignal();
+    if (currentData?.blog?.slug === cleanSlug || currentData?.blog?.slug === slug) {
+      this.updateBlogSeo(currentData);
+      return of(currentData);
+    }
+
+    // 5. Fetch from API if not cached
     return this.apiService.get<BlogDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.blogDetailsResponseSignal.set(data);
-          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'blogDetails');
+          this.updateBlogSeo(data);
           // Save to cache if on server
           if (isPlatformServer(this.platformId)) {
             this.transferState.set(cacheKey, data);
           }
         }
-      }),
-      catchError((err) => {
+      }), catchError((err) => {
         console.error('Error loading blog details:', err);
         return of(null);
       })
@@ -272,10 +300,6 @@ export class FeatureService {
       // If decoding fails, use the original slug
       cleanSlug = slug;
     }
-
-    // Remove spaces from the slug
-    cleanSlug = cleanSlug.replace(/\s+/g, '');
-
 
     // Encode the slug to handle Arabic characters
     // Use encodeURIComponent which properly handles special characters

@@ -91,14 +91,11 @@ export class Home implements OnInit, OnDestroy {
   clients = computed(() => this.sharedFeatureService.clients());
   videoRef = viewChild<ElementRef<HTMLVideoElement>>('videoRef')
   // 🔹 Loading states for each section
-  isAboutLoaded = computed(() => {
-    const counters = this.counters();
-    return !!(this.aboutHome() && counters && counters.length > 0);
-  });
+  isAboutLoaded = computed(() => !!this.aboutHome());
   isBannersLoaded = computed(() => {
     const partners = this.partners();
     const clients = this.clients();
-    return !!(partners && partners.length > 0 && clients && clients.length > 0);
+    return !!((partners && partners.length > 0) || (clients && clients.length > 0));
   });
   isServicesLoaded = computed(() => this.services()?.length > 0);
   isProjectsLoaded = computed(() => this.projects()?.length > 0);

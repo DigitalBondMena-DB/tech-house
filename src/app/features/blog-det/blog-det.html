@@ -1,7 +1,7 @@
 <section class="blog-hero-section relative">
   @if (blog() && heroImage() && heroImage() !== '/images/placeholder.png') {
   <img [src]="heroImage()" fetchpriority="high" decoding="async" loading="eager" [alt]="blog()?.title"
-    class="object-cover">
+    class="object-cover inset-0 size-full absolute">
   }
   <div class="blog-hero-overlay"></div>
   <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
@@ -63,11 +63,9 @@
 
     <!-- Article Content -->
     <div class="lg:col-span-2">
-      @defer (on idle) {
+
       <app-blog-article [content]="fullContent()"></app-blog-article>
-      } @placeholder {
-      <div class="min-h-[400px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
-      }
+
     </div>
 
   </div>

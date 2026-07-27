@@ -19,6 +19,8 @@ export class SharedFeatureService {
   private platformId = inject(PLATFORM_ID);
   private readonly CONTACT_US_KEY = makeStateKey<ContactUsData>('contact-us-data');
   private readonly SERVICES_SECTION_KEY = makeStateKey<ServiceTitle[]>('services-section-data');
+  private readonly COUNTERS_KEY = makeStateKey<Counter[]>('counters-data');
+  private readonly PARTNERS_CLIENTS_KEY = makeStateKey<PartnersClientsResponse>('partners-clients-data');
 
   // 🔹 Internal API Response Signal Reference
   private countersResponseSignal = signal<Counter[] | null>(null);
@@ -44,6 +46,14 @@ export class SharedFeatureService {
     const cachedServices = this.transferState.get(this.SERVICES_SECTION_KEY, null);
     if (cachedServices) {
       this.servicesSectionSignal.set(cachedServices);
+    }
+    const cachedCounters = this.transferState.get(this.COUNTERS_KEY, null);
+    if (cachedCounters) {
+      this.countersResponseSignal.set(cachedCounters);
+    }
+    const cachedPartnersClients = this.transferState.get(this.PARTNERS_CLIENTS_KEY, null);
+    if (cachedPartnersClients) {
+      this.partnersClientsResponseSignal.set(cachedPartnersClients);
     }
   }
 
@@ -77,9 +87,18 @@ export class SharedFeatureService {
   // COUNTERS API - Returns Observable for parallel loading
   // =====================
   loadCounters(): Observable<Counter[] | null> {
-    // إذا كانت البيانات موجودة بالفعل أو جاري التحميل، لا تفعل شيء
-    if (this.countersResponseSignal() || this.countersLoading) {
+    if (this.countersResponseSignal()) {
       return of(this.countersResponseSignal());
+    }
+
+    const cachedData = this.transferState.get(this.COUNTERS_KEY, null);
+    if (cachedData) {
+      this.countersResponseSignal.set(cachedData);
+      return of(cachedData);
+    }
+
+    if (this.countersLoading) {
+      return of(null);
     }
 
     this.countersLoading = true;
@@ -88,6 +107,9 @@ export class SharedFeatureService {
       map((data) => {
         if (data && data.counters) {
           this.countersResponseSignal.set(data.counters);
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.COUNTERS_KEY, data.counters);
+          }
           this.countersLoading = false;
           return data.counters;
         }
@@ -95,8 +117,9 @@ export class SharedFeatureService {
         return null;
       }),
       catchError((err) => {
-        // Only log if it's not a network/CORS error (status 0) unless on server
-        if (err.status !== 0 || isPlatformServer(this.platformId)) {
+        if (isPlatformServer(this.platformId)) {
+          console.warn('SSR Warning: Unable to connect to counters API on server, client browser will retry.');
+        } else if (err.status !== 0) {
           console.error('Error loading counters:', err);
         }
         this.countersLoading = false;
@@ -183,10 +206,6 @@ export class SharedFeatureService {
       return of(cachedData);
     }
 
-    if (isPlatformServer(this.platformId)) {
-      return of(null);
-    }
-
     if (this.contactUsLoading) {
       return of(null);
     }
@@ -232,7 +251,7 @@ export class SharedFeatureService {
       }),
       catchError((err) => {
         // Only log if it's not a network/CORS error (status 0) unless on server
-        if (err.status !== 0 || isPlatformServer(this.platformId)) {
+        if (err.status !== 0) {
           console.error('Error loading contact us data:', err);
         }
         this.contactUsLoading = false;
@@ -252,10 +271,6 @@ export class SharedFeatureService {
     const cachedData = this.transferState.get(this.SERVICES_SECTION_KEY, null);
     if (cachedData) {
       this.servicesSectionSignal.set(cachedData);
-      return;
-    }
-
-    if (isPlatformServer(this.platformId)) {
       return;
     }
 
@@ -303,8 +318,9 @@ export class SharedFeatureService {
         this.servicesSectionLoading = false;
       },
       error: (err) => {
-        // Only log if it's not a network/CORS error (status 0) unless on server
-        if (err.status !== 0 || isPlatformServer(this.platformId)) {
+        if (isPlatformServer(this.platformId)) {
+          console.warn('SSR Warning: Unable to load services section on server, client browser will retry.');
+        } else if (err.status !== 0) {
           console.error('Error loading services section:', err);
         }
         this.servicesSectionLoading = false;
@@ -316,11 +332,17 @@ export class SharedFeatureService {
   // PARTNERS/CLIENTS API - Returns Observable for parallel loading
   // =====================
   loadPartnersClients(): Observable<PartnersClientsResponse | null> {
-    if (this.partnersClientsResponseSignal() || this.partnersClientsLoading) {
+    if (this.partnersClientsResponseSignal()) {
       return of(this.partnersClientsResponseSignal());
     }
 
-    if (isPlatformServer(this.platformId)) {
+    const cachedData = this.transferState.get(this.PARTNERS_CLIENTS_KEY, null);
+    if (cachedData) {
+      this.partnersClientsResponseSignal.set(cachedData);
+      return of(cachedData);
+    }
+
+    if (this.partnersClientsLoading) {
       return of(null);
     }
 
@@ -330,11 +352,16 @@ export class SharedFeatureService {
       tap((data) => {
         if (data && (data.clients || data.partners)) {
           this.partnersClientsResponseSignal.set(data);
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.PARTNERS_CLIENTS_KEY, data);
+          }
         }
         this.partnersClientsLoading = false;
       }),
       catchError((err) => {
-        if (err.status !== 0 || isPlatformServer(this.platformId)) {
+        if (isPlatformServer(this.platformId)) {
+          console.warn('SSR Warning: Unable to connect to partners/clients API on server, client browser will retry.');
+        } else if (err.status !== 0) {
           console.error('Error loading partners/clients:', err);
         }
         this.partnersClientsLoading = false;
