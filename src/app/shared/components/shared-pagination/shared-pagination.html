@@ -1,0 +1,48 @@
+@if(totalPages() > 1) {
+<nav aria-label="Pagination" class="pagination-container">
+  <ul class="pagination-list">
+    <!-- Previous Button -->
+    <li class="pagination-item">
+      <a class="pagination-link nav-btn" [class.disabled]="currentPage() === 1"
+        [routerLink]="currentPage() === 1 ? null : baseRoute()"
+        [queryParams]="currentPage() === 1 ? null : getRouteParams(currentPage() - 1)"
+        [attr.aria-disabled]="currentPage() === 1 ? 'true' : null" [attr.rel]="currentPage() === 1 ?  null : 'prev'"
+        aria-label="Previous page">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+      </a>
+    </li>
+
+    <!-- Page Numbers -->
+    @for(page of pages(); track page) {
+    <li class="pagination-item">
+      @if(page === '...') {
+      <span class="pagination-ellipsis">...</span>
+      } @else {
+      <a class="pagination-link" [class.active]="page === currentPage()" [routerLink]="baseRoute()"
+        [queryParams]="getRouteParams($any(page))" [attr.aria-current]="page === currentPage() ? 'page' : null"
+        [attr.aria-label]="'Page ' + page">
+        {{ page }}
+      </a>
+      }
+    </li>
+    }
+
+    <!-- Next Button -->
+    <li class="pagination-item">
+      <a class="pagination-link nav-btn" [class.disabled]="currentPage() === totalPages()"
+        [routerLink]="currentPage() === totalPages() ? null : baseRoute()"
+        [queryParams]="currentPage() === totalPages() ? null : getRouteParams(currentPage() + 1)"
+        [attr.aria-disabled]="currentPage() === totalPages() ? 'true' : null"
+        [attr.rel]="currentPage() === totalPages() ?  null : 'next'" aria-label="Next page">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </a>
+    </li>
+  </ul>
+</nav>
+}

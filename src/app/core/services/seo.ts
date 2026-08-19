@@ -110,6 +110,26 @@ export class SEOService {
     return link;
   }
 
+  setPaginationLinks(prevUrl?: string | null, nextUrl?: string | null): void {
+    // Remove existing pagination links
+    const existing = this.document.querySelectorAll('link[rel="prev"], link[rel="next"]');
+    existing.forEach(el => this.renderer.removeChild(this.document.head, el));
+
+    const anchor = this.getAnchor();
+
+    if (prevUrl) {
+      const fullPrev = prevUrl.startsWith('http') ? prevUrl : `${this.baseUrl}${prevUrl.startsWith('/') ? '' : '/'}${prevUrl}`;
+      const prevLink = this.createLinkElement('prev', fullPrev);
+      this.renderer.insertBefore(this.document.head, prevLink, anchor);
+    }
+
+    if (nextUrl) {
+      const fullNext = nextUrl.startsWith('http') ? nextUrl : `${this.baseUrl}${nextUrl.startsWith('/') ? '' : '/'}${nextUrl}`;
+      const nextLink = this.createLinkElement('next', fullNext);
+      this.renderer.insertBefore(this.document.head, nextLink, anchor);
+    }
+  }
+
   updateSEOFromBackend(seoData: Seotag, config: SEOConfig = { updateLinks: true, fallbackToDefault: false }): void {
     this.clearExistingMetaTags();
 
@@ -192,6 +212,78 @@ export class SEOService {
   private clearExistingMetaTags(): void {
     const tags = ['name="description"', 'property="og:title"', 'property="og:url"'];
     tags.forEach(tag => this.meta.removeTag(tag));
+    this.removeArticleSchema();
+  }
+
+  /**
+   * Remove injected Article Schema script if present
+   */
+  removeArticleSchema(): void {
+    const existing = this.document.querySelectorAll('script.article-schema');
+    existing.forEach(el => this.renderer.removeChild(el.parentNode || this.document.head, el));
+  }
+
+  /**
+   * Generates and injects Schema.org Article JSON-LD script for Blog Details pages.
+   */
+  setArticleSchema(blog: any): void {
+    this.removeArticleSchema();
+
+    if (!blog) return;
+
+    let imageUrl = '/images/logo/logo.webp';
+    if (typeof blog.banner_image === 'string' && blog.banner_image) {
+      imageUrl = blog.banner_image;
+    } else if (Array.isArray(blog.banner_image) && blog.banner_image.length > 0) {
+      imageUrl = blog.banner_image[2] || blog.banner_image[0];
+    } else if (typeof blog.image === 'string' && blog.image) {
+      imageUrl = blog.image;
+    } else if (Array.isArray(blog.image) && blog.image.length > 0) {
+      imageUrl = blog.image[2] || blog.image[0];
+    }
+
+    const fullImageUrl = imageUrl.startsWith('http') ? imageUrl : `${this.baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+    const articleUrl = `${this.baseUrl}/المقالات/${encodeURIComponent(blog.slug || '')}`;
+
+    const schemaObj = {
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      'headline': blog.title || blog.meta_title || '',
+      'description': blog.small_text || blog.meta_description || '',
+      'image': [fullImageUrl],
+      'url': articleUrl,
+      'mainEntityOfPage': {
+        '@type': 'WebPage',
+        '@id': articleUrl
+      },
+      'author': {
+        '@type': 'Organization',
+        'name': 'بيت التكنولوجيا',
+        'url': this.baseUrl
+      },
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'بيت التكنولوجيا',
+        'url': this.baseUrl,
+        'logo': {
+          '@type': 'ImageObject',
+          'url': `${this.baseUrl}/images/logo/logo.webp`
+        }
+      },
+      'datePublished': blog.publish_at_ar || undefined,
+      'dateModified': blog.update_date || blog.publish_at_ar || undefined
+    };
+
+    try {
+      const script = this.renderer.createElement('script');
+      this.renderer.setAttribute(script, 'type', 'application/ld+json');
+      this.renderer.addClass(script, 'article-schema');
+      const text = this.renderer.createText(JSON.stringify(schemaObj, null, 2));
+      this.renderer.appendChild(script, text);
+      this.renderer.appendChild(this.document.head, script);
+    } catch (e) {
+      console.error('Error injecting Article schema script:', e);
+    }
   }
 
   private isSeotag(data: any): data is Seotag {

@@ -22,7 +22,8 @@
                     <span class="flex items-center justify-start">
                         <img src="/images/social-icons/call-outline (1).webp" loading="lazy" decoding="async"
                             alt="phone " class="w-5 h-5 me-2">
-                        <a [href]="'tel:' + contactUsData()?.phone" class="hover:underline [direction:ltr]">
+                        <a [href]="'tel:' + contactUsData()?.phone" class="hover:underline [direction:ltr]"
+                            rel="noopener noreferrer nofollow">
                             {{ contactUsData()?.phone }}
                         </a>
                     </span>
@@ -31,7 +32,8 @@
                     <span class="flex items-center justify-start">
                         <img src="/images/social-icons/call-outline (2).webp" loading="lazy" decoding="async"
                             alt="email " class="w-5 h-5 me-2">
-                        <a [href]="'mailto:' + contactUsData()?.email" class="hover:underline">
+                        <a [href]="'mailto:' + contactUsData()?.email" class="hover:underline"
+                            rel="noopener noreferrer nofollow">
                             {{ contactUsData()?.email }}
                         </a>
                     </span>
@@ -42,7 +44,7 @@
                             alt="address " class="w-5 h-5 me-2">
                         @if (contactUsData()?.address) {
                         <a [href]="contactUsData()?.social?.map_url || getGoogleMapsUrl(contactUsData()?.address)"
-                            target="_blank" rel="noopener noreferrer" class="hover:underline">
+                            target="_blank" rel="noopener noreferrer nofollow" class="hover:underline">
                             {{ contactUsData()?.address }}
                         </a>
                         }
@@ -51,37 +53,40 @@
                 </div>
                 <div class="flex flex-row-reverse items-center justify-end gap-4">
                     @if (contactUsData()?.social?.facebook_url) {
-                    <a [href]="contactUsData()?.social?.facebook_url" target="_blank" rel="noopener noreferrer">
+                    <a [href]="contactUsData()?.social?.facebook_url" target="_blank"
+                        rel="noopener noreferrer nofollow">
                         <img src="/images/social-icons/facebook.webp" loading="lazy" decoding="async" alt="facebook"
                             class="w-5.5 h-5.5">
                     </a>
                     }
                     @if (contactUsData()?.social?.instagram_url) {
-                    <a [href]="contactUsData()?.social?.instagram_url" target="_blank" rel="noopener noreferrer">
+                    <a [href]="contactUsData()?.social?.instagram_url" target="_blank"
+                        rel="noopener noreferrer nofollow">
                         <img src="/images/social-icons/instagram.webp" loading="lazy" decoding="async" alt="instagram"
                             width="24" height="24">
                     </a>
                     }
                     @if (contactUsData()?.whatsapp_number) {
-                    <a [href]="contactUsData()?.whatsapp_number" target="_blank" rel="noopener noreferrer">
+                    <a [href]="contactUsData()?.whatsapp_number" target="_blank" rel="noopener noreferrer nofollow">
                         <img src="/images/social-icons/whatsapp.webp" loading="lazy" decoding="async" alt="whatsapp"
                             width="20" height="20">
                     </a>
                     }
                     @if (contactUsData()?.social?.linkedin_url) {
-                    <a [href]="contactUsData()?.social?.linkedin_url" target="_blank" rel="noopener noreferrer">
+                    <a [href]="contactUsData()?.social?.linkedin_url" target="_blank"
+                        rel="noopener noreferrer nofollow">
                         <img src="/images/social-icons/linked-in.webp" loading="lazy" decoding="async" alt="linkedin"
                             width="20" height="20">
                     </a>
                     }
                     @if (contactUsData()?.social?.twitter_url) {
-                    <a [href]="contactUsData()?.social?.twitter_url" target="_blank" rel="noopener noreferrer">
+                    <a [href]="contactUsData()?.social?.twitter_url" target="_blank" rel="noopener noreferrer nofollow">
                         <img src="/images/social-icons/x-icon.svg" loading="lazy" decoding="async" alt="x" width="20"
                             height="20">
                     </a>
                     }
                     @if (contactUsData()?.social?.tiktok_url) {
-                    <a [href]="contactUsData()?.social?.tiktok_url" target="_blank" rel="noopener noreferrer">
+                    <a [href]="contactUsData()?.social?.tiktok_url" target="_blank" rel="noopener noreferrer nofollow">
                         <img src="/images/social-icons/tiktok.webp" loading="lazy" decoding="async" alt="tiktok"
                             width="20" height="20">
                     </a>

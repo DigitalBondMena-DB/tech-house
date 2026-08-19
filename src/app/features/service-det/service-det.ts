@@ -8,6 +8,7 @@ import { SafeHtmlPipe } from "../../shared/pipes/safe-html.pipe";
 import { SectionTitle } from "../../shared/components/section-title/section-title";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { fromEvent, throttleTime } from "rxjs";
+import { addRelToLinks } from "../../core/utils/html-utils";
 
 @Component({
     selector: 'app-service-det',
@@ -105,6 +106,7 @@ export class ServiceDet implements OnDestroy {
                 }
                 return match;
             });
+            html = addRelToLinks(html);
         }
 
         return this.sanitizer.bypassSecurityTrustHtml(html);

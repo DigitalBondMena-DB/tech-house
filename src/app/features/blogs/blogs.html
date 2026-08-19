@@ -68,9 +68,11 @@
         <!-- Pagination -->
         @if (blogs() && totalRecords() > 0) {
         <div class="flex justify-center mt-12 md:mt-16" dir="ltr">
-            <p-paginator [first]="first()" [rows]="rows()" [totalRecords]="totalRecords()"
-                (onPageChange)="onPageChange($event)" class="custom-paginator">
-            </p-paginator>
+            <app-shared-pagination 
+                [currentPage]="currentPage()" 
+                [totalPages]="totalPages()" 
+                [baseRoute]="'/المقالات'">
+            </app-shared-pagination>
         </div>
         }
     </section>

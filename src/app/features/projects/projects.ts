@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import {  Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
-import {  RouterLink } from '@angular/router';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
+import {  RouterLink, ActivatedRoute } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
+import { SharedPaginationComponent } from '../../shared/components/shared-pagination/shared-pagination';
 import { FeatureService } from '../../core/services/featureService';
 import { SharedFeatureService } from '../../core/services/sharedFeatureService';
 import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-sec';
@@ -14,7 +14,7 @@ import { HeroSection } from '../../shared/components/hero-section/hero-section';
     CommonModule,
     HeroSection,
     ContactUsSec,
-    PaginatorModule,
+    SharedPaginationComponent,
     SkeletonModule,
     RouterLink
 ],
@@ -24,6 +24,8 @@ import { HeroSection } from '../../shared/components/hero-section/hero-section';
 export class Projects implements OnInit {
   private featureService = inject(FeatureService);
   private sharedFeatureService = inject(SharedFeatureService);
+  private route = inject(ActivatedRoute);
+  
   projectsData = computed(() => this.featureService.projectsData());
   bannerSection = computed(() => this.projectsData()?.bannerSection ?? null);
   projects = computed(() => this.projectsData()?.projects ?? null);
@@ -53,18 +55,16 @@ export class Projects implements OnInit {
 
 
   ngOnInit(): void {
-    this.loadProjects(1);
     this.sharedFeatureService.loadServicesSection();
+    this.route.queryParams.subscribe(params => {
+      const page = params['page'] ? parseInt(params['page'], 10) : 1;
+      this.loadProjects(page, this.selectedSlug());
+    });
   }
 
   loadProjects(page: number, slug?: string | null): void {
     this.featureService.loadProjectsData(page, slug || undefined);
   }
 
-  onPageChange(event: PaginatorState): void {
-    if (event.first !== undefined && event.rows !== undefined) {
-      const newPage = Math.floor(event.first / event.rows) + 1;
-      this.loadProjects(newPage, this.selectedSlug());
-    }
-  }
+
 }

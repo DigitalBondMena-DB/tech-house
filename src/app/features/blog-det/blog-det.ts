@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, NgZone, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, NgZone, OnDestroy, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
@@ -10,6 +10,8 @@ import { fromEvent, throttleTime, switchMap, map, of, distinctUntilChanged } fro
 import { BlogArticle } from "./components/blog-article/blog-article";
 import { RelatedBlogs } from "./components/related-blogs/related-blogs";
 import { BlogToc } from "./components/blog-toc/blog-toc";
+import { addRelToLinks } from "../../core/utils/html-utils";
+import { SEOService } from "../../core/services/seo";
 
 @Component({
   selector: 'app-blog-det',
@@ -20,7 +22,7 @@ import { BlogToc } from "./components/blog-toc/blog-toc";
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BlogDet {
+export class BlogDet implements OnDestroy {
   private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
   private route = inject(ActivatedRoute);
@@ -29,6 +31,7 @@ export class BlogDet {
   private platformId = inject(PLATFORM_ID);
   private ngZone = inject(NgZone);
   private sharedFeatureService = inject(SharedFeatureService);
+  private seoService = inject(SEOService);
 
   contactUsData = this.sharedFeatureService.contactUsData;
   isBrowser = isPlatformBrowser(this.platformId);
@@ -90,8 +93,8 @@ export class BlogDet {
         <p class="text-lg text-[#B91C17]! font-medium">احصل على استشارتك المجانية الآن مع خبير من بيت التكنولوجيا</p>
       </div>
       <div class="mt-3 gap-2 flex items-center justify-center">
-        <a href="${whatsappUrl}" target="_blank" class="px-6 py-2 bg-green-500 hover:bg-green-400 transition-colors duration-150 rounded-full text-white">واتس اب</a>
-        <a href="${phoneUrl}" target="_blank" class="px-6 py-2 bg-[#B91C17] hover:bg-[#ED2924] transition-colors duration-150 rounded-full text-white">اتصل بنا</a>
+        <a href="${whatsappUrl}" rel="noopener noreferrer nofollow" target="_blank" class="px-6 py-2 bg-green-500 hover:bg-green-400 transition-colors duration-150 rounded-full text-white">واتس اب</a>
+        <a href="${phoneUrl}" rel="noopener noreferrer nofollow" target="_blank" class="px-6 py-2 bg-[#B91C17] hover:bg-[#ED2924] transition-colors duration-150 rounded-full text-white">اتصل بنا</a>
       </div>
     </div>`;
           return ctaHtml + currentH2; // سيتم وضع الـ CTA "قبل" العنوان الذي وصل للرقم المحدد
@@ -117,6 +120,7 @@ export class BlogDet {
         }
         return match;
       });
+      html = addRelToLinks(html);
     }
 
     return this.sanitizer.bypassSecurityTrustHtml(html);
@@ -145,9 +149,10 @@ export class BlogDet {
       });
 
     effect(() => {
-      const html = this.blog()?.text;
-      if (html) {
-        this.extractSections(html);
+      const blog = this.blog();
+      if (blog) {
+        this.extractSections(blog.text || '');
+        this.seoService.setArticleSchema(blog);
       }
     });
 
@@ -225,5 +230,9 @@ export class BlogDet {
   getResponsiveImageFromObject(img: any): string {
     if (!img) return '/images/placeholder.png';
     return img.desktop ?? img.mobile;
+  }
+
+  ngOnDestroy(): void {
+    this.seoService.removeArticleSchema();
   }
 }

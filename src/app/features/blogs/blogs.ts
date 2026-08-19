@@ -8,6 +8,8 @@ import { FeatureService } from '../../core/services/featureService';
 import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-sec';
 import { HeroSection } from '../../shared/components/hero-section/hero-section';
 import { SectionTitle } from '../../shared/components/section-title/section-title';
+import { SharedPaginationComponent } from '../../shared/components/shared-pagination/shared-pagination';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-blogs',
@@ -16,7 +18,7 @@ import { SectionTitle } from '../../shared/components/section-title/section-titl
     HeroSection,
     ContactUsSec,
     SectionTitle,
-    PaginatorModule,
+    SharedPaginationComponent,
     SkeletonModule,
     RouterLink
   ],
@@ -27,6 +29,7 @@ export class Blogs implements OnInit, AfterViewInit, OnDestroy {
   private timeoutRef!: NodeJS.Timeout;
   private featureService = inject(FeatureService);
   private platformId = inject(PLATFORM_ID);
+  private route = inject(ActivatedRoute);
   private isBrowser = isPlatformBrowser(this.platformId);
 
   blogsData = computed(() => this.featureService.blogsData());
@@ -68,7 +71,11 @@ export class Blogs implements OnInit, AfterViewInit, OnDestroy {
     if (this.isBrowser) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
-    this.loadBlogs(1);
+    
+    this.route.queryParams.subscribe(params => {
+      const page = params['page'] ? parseInt(params['page'], 10) : 1;
+      this.loadBlogs(page);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -78,12 +85,7 @@ export class Blogs implements OnInit, AfterViewInit, OnDestroy {
     this.featureService.loadBlogsData(page);
   }
 
-  onPageChange(event: PaginatorState): void {
-    if (event.first !== undefined && event.rows !== undefined) {
-      const newPage = Math.floor(event.first / event.rows) + 1;
-      this.loadBlogs(newPage);
-    }
-  }
+
 
   getResponsiveImage(image: { desktop: string; tablet: string; mobile: string } | null | undefined): string {
     if (!image) return '/images/placeholder.webp';
