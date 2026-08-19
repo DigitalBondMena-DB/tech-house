@@ -71,6 +71,7 @@ app.use((req, res, next) => {
         });
         return writeResponseToNodeResponse(redirectedResponse, res);
       }
+
       return response ? writeResponseToNodeResponse(response, res) : next();
     })
     .catch(next);

@@ -139,9 +139,8 @@ export class BlogDet {
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(data => {
-        if (data === null) return;
         if (!data || !data.blog) {
-          this.router.navigate(['/المقالات']);
+          this.router.navigate(['/not-found']);
         }
       });
 

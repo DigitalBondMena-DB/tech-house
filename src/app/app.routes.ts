@@ -62,7 +62,10 @@ export const routes: Routes = [
                 path: 'الوظائف/:slug', loadComponent: () => import('./features/jop-det/jop-det').then(m => m.JopDet
                 )
             },
-            { path: '**', redirectTo: '', pathMatch: 'full' },
+            {
+                path: 'not-found', loadComponent: () => import('./features/not-found/not-found').then(m => m.NotFoundComponent)
+            },
+            { path: '**', loadComponent: () => import('./features/not-found/not-found').then(m => m.NotFoundComponent) },
         ]
     }
 ];
