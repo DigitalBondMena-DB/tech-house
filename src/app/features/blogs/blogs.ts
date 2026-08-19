@@ -68,11 +68,10 @@ export class Blogs implements OnInit, AfterViewInit, OnDestroy {
     if (this.isBrowser) {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
+    this.loadBlogs(1);
   }
 
   ngAfterViewInit(): void {
-    // Load blogs data when view initializes
-    this.loadBlogs(1);
   }
 
   loadBlogs(page: number): void {

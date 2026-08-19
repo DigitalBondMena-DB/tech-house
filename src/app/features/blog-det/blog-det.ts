@@ -86,7 +86,7 @@ export class BlogDet {
           const phoneUrl = contactData?.phone ? `tel:${contactData.phone}` : '#';
           const ctaHtml = `<div class="contact-box flex flex-col lg:flex-row text-center justify-between items-center mt-6 px-10 p-6 border border-[#B91C17] rounded-2xl">
       <div>
-        <h5 class="text-[#B91C17]!">تبي زيادة أرباح مشروعك؟</h5>
+        <p class="text-[#B91C17]! text-lg! font-bold!">تبي زيادة أرباح مشروعك؟</p>
         <p class="text-lg text-[#B91C17]! font-medium">احصل على استشارتك المجانية الآن مع خبير من بيت التكنولوجيا</p>
       </div>
       <div class="mt-3 gap-2 flex items-center justify-center">

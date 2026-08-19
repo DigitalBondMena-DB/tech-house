@@ -167,17 +167,39 @@ export class FeatureService {
   // BLOGS API
   // =====================
   loadBlogsData(page: number = 1): void {
+    const cacheKey = makeStateKey<BlogsResponse>('blogs-page-' + page);
+
+    const cachedData = this.transferState.get(cacheKey, null);
+    if (cachedData) {
+      this.blogsResponseSignal.set(cachedData);
+      this.separatedSeoTags.getSeoTagsDirect(cachedData.seotag, 'about');
+      return;
+    }
+
+    const currentData = this.blogsResponseSignal();
+    if (currentData && currentData.blogs?.current_page === page) {
+      this.separatedSeoTags.getSeoTagsDirect(currentData.seotag, 'about');
+      return;
+    }
+
     const endpoint = `${API_END_POINTS.BLOGS}?page=${page}`;
 
     this.apiService.get<BlogsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
           this.blogsResponseSignal.set(data);
-          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'about')
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'about');
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(cacheKey, data);
+          }
         }
       }),
       catchError((err) => {
-        console.error('Error loading blogs data:', err);
+        if (isPlatformServer(this.platformId)) {
+          console.warn('SSR Warning: Unable to load blogs data on server, client browser will retry.');
+        } else if (err.status !== 0) {
+          console.error('Error loading blogs data:', err);
+        }
         return of(null);
       })
     ).subscribe();
@@ -262,6 +284,21 @@ export class FeatureService {
   // PROJECTS API
   // =====================
   loadProjectsData(page: number = 1, slug?: string): void {
+    const cacheKey = makeStateKey<ProjectsResponse>(`projects-page-${page}-${slug || 'all'}`);
+
+    const cachedData = this.transferState.get(cacheKey, null);
+    if (cachedData) {
+      this.projectsResponseSignal.set(cachedData);
+      this.separatedSeoTags.getSeoTagsDirect(cachedData.seotag, 'projects');
+      return;
+    }
+
+    const currentData = this.projectsResponseSignal();
+    if (currentData && currentData.projects?.current_page === page) {
+      this.separatedSeoTags.getSeoTagsDirect(currentData.seotag, 'projects');
+      return;
+    }
+
     let endpoint = `${API_END_POINTS.PROJECTS}?page=${page}`;
     if (slug) {
       endpoint = `/projects/${slug}?page=${page}`;
@@ -271,11 +308,18 @@ export class FeatureService {
       tap((data) => {
         if (data) {
           this.projectsResponseSignal.set(data);
-          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'projects')
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'projects');
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(cacheKey, data);
+          }
         }
       }),
       catchError((err) => {
-        console.error('Error loading projects data:', err);
+        if (isPlatformServer(this.platformId)) {
+          console.warn('SSR Warning: Unable to load projects data on server, client browser will retry.');
+        } else if (err.status !== 0) {
+          console.error('Error loading projects data:', err);
+        }
         return of(null);
       })
     ).subscribe();
