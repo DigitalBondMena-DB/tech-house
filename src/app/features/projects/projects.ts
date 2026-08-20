@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import {  Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
-import {  RouterLink, ActivatedRoute } from '@angular/router';
+import { Component, computed, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SharedPaginationComponent } from '../../shared/components/shared-pagination/shared-pagination';
 import { FeatureService } from '../../core/services/featureService';
 import { SharedFeatureService } from '../../core/services/sharedFeatureService';
 import { ContactUsSec } from '../../shared/components/contact-us-sec/contact-us-sec';
 import { HeroSection } from '../../shared/components/hero-section/hero-section';
+import { SectionTitle } from "../../shared/components/section-title/section-title";
 
 @Component({
   selector: 'app-projects',
@@ -16,8 +17,9 @@ import { HeroSection } from '../../shared/components/hero-section/hero-section';
     ContactUsSec,
     SharedPaginationComponent,
     SkeletonModule,
-    RouterLink
-],
+    RouterLink,
+    SectionTitle
+  ],
   templateUrl: './projects.html',
   styleUrl: './projects.css'
 })
@@ -25,7 +27,7 @@ export class Projects implements OnInit {
   private featureService = inject(FeatureService);
   private sharedFeatureService = inject(SharedFeatureService);
   private route = inject(ActivatedRoute);
-  
+
   projectsData = computed(() => this.featureService.projectsData());
   bannerSection = computed(() => this.projectsData()?.bannerSection ?? null);
   projects = computed(() => this.projectsData()?.projects ?? null);

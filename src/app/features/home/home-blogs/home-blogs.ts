@@ -1,6 +1,6 @@
 import { NgOptimizedImage } from '@angular/common';
 import { Component, input, computed, ChangeDetectionStrategy, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Blog } from '../../../core/models/home.model';
 import { AppButton } from '../../../shared/components/app-button/app-button';
@@ -8,7 +8,7 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
 
 @Component({
   selector: 'app-home-blogs',
-  imports: [SectionTitle, AppButton, NgOptimizedImage, SkeletonModule],
+  imports: [SectionTitle, AppButton, NgOptimizedImage, SkeletonModule, RouterLink],
   templateUrl: './home-blogs.html',
   styleUrl: './home-blogs.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,11 +38,6 @@ export class HomeBlogs {
     this.activeCard.set(cardNumber);
   }
 
-  //! method to navigate to blog details
-  navigateToBlogDetails(blog: Blog, event: Event) {
-    event.stopPropagation();
-    this.router.navigate(['/المقالات', blog.slug]);
-  }
 
   //! method to navigate to project details
   navigateToProjectDetails(blog: Blog, event: Event) {

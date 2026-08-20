@@ -1,7 +1,8 @@
-<section class="service-hero-section relative" >
+<section class="service-hero-section relative">
     <img [src]="heroImage()" [alt]="service()?.title" class="inset-0 w-full h-full absolute object-cover">
     <div class="service-hero-overlay"></div>
-    <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+    <div class="container h-full mx-auto px-5 lg:px-20 relative z-10 pt-4 flex items-end justify-center">
+        <app-breadcrumb [customTitle]="service()?.title"></app-breadcrumb>
         <div class="service-hero-content h-full flex items-center justify-center text-center" dir="rtl"></div>
     </div>
 </section>
@@ -19,7 +20,7 @@
                     <div class="toc-container">
                         <div class="flex items-center gap-2 mb-4 md:mb-6">
                             <img src="images/title/title.webp" alt="title-icon">
-                            <h2 class="toc-title">محتويات الخدمة</h2>
+                            <span class="toc-title">محتويات الخدمة</span>
                         </div>
                         <div class="[direction:ltr]! max-h-77.5 overflow-y-auto">
                             <ul class="toc-list  ">
@@ -44,7 +45,7 @@
                     <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8 mt-8 lg:mt-0">
                         <div class="flex items-center gap-2 mb-4 md:mb-6">
                             <img src="images/title/title.webp" alt="title-icon">
-                            <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
+                            <span class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</span>
                         </div>
                         <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true"
                             [slug]="service()?.slug" [type]="'الخدمات'" />
@@ -52,7 +53,7 @@
                 </ng-template>
 
                 @if (isDesktop()) {
-                    <ng-container *ngTemplateOutlet="contactUsTemplate"></ng-container>
+                <ng-container *ngTemplateOutlet="contactUsTemplate"></ng-container>
                 }
 
             </div>
@@ -62,23 +63,22 @@
         <div class="lg:col-span-2">
             <div class="service-content prose prose-lg max-w-none text-base md:text-lg text-[#440000] leading-relaxed text-justify!"
                 [innerHTML]="fullContent()"></div>
-                
+
             @if (!isDesktop()) {
-                <ng-container *ngTemplateOutlet="contactUsTemplate"></ng-container>
+            <ng-container *ngTemplateOutlet="contactUsTemplate"></ng-container>
             }
         </div>
 
     </div>
 
     @if (relatedServices().length > 0) {
-    <app-section-title [title]="'الخدمات ذات الصلة'" [customClass]="'my-10'"></app-section-title>
+    <app-section-title [title]="'الخدمات ذات الصلة'" [isH2]="false" [customClass]="'my-10'"></app-section-title>
     <div class="services-related-grid grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         @for (relatedService of relatedServices(); track relatedService.slug) {
         <div class="service-related-card cursor-pointer " (click)="navigateToRelatedService(relatedService)">
             <div class="service-related-image mb-4">
                 <img [src]="relatedService.image_desktop" [alt]="relatedService.title"
-                    class="w-full h-75 rounded-2xl object-cover"
-                    (error)="$event.target.src = '/images/project.webp'">
+                    class="w-full h-75 rounded-2xl object-cover" (error)="$event.target.src = '/images/project.webp'">
             </div>
 
             <h3 class="text-xl md:text-2xl font-bold text-[#440000] mb-2">

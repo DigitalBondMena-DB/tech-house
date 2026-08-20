@@ -148,6 +148,8 @@ export class ContactUsSec implements OnInit, OnDestroy {
 
 
 
+  isContactPage = signal<boolean>(false);
+
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -156,17 +158,24 @@ export class ContactUsSec implements OnInit, OnDestroy {
     this.selectedCountry.set(COUNTRIES[0]);
     this.initializeForm();
 
-    // Check if URL contains "/done" and show popup if it does
+    // Check if URL is contact-us page and check for "/done"
+    this.checkIsContactPage();
     this.checkUrlForDone();
 
     // Listen to route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
+      this.checkIsContactPage();
       this.checkUrlForDone();
     });
 
     this.setupIntersectionObserver();
+  }
+
+  private checkIsContactPage(): void {
+    const currentUrl = decodeURIComponent(this.router.url.split('?')[0]);
+    this.isContactPage.set(currentUrl.includes('اتصل-بنا'));
   }
 
   ngOnDestroy() {

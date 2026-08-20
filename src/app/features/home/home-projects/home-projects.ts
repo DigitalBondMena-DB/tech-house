@@ -1,6 +1,6 @@
 import { NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, inject, input, PLATFORM_ID, signal, viewChildren, computed, ChangeDetectionStrategy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { gsap } from 'gsap';
 import { Flip } from 'gsap/all';
 import { SkeletonModule } from 'primeng/skeleton';
@@ -10,7 +10,7 @@ import { SectionTitle } from '../../../shared/components/section-title/section-t
 
 @Component({
   selector: 'app-home-projects',
-  imports: [SectionTitle, AppButton, NgOptimizedImage, SkeletonModule],
+  imports: [SectionTitle, AppButton, NgOptimizedImage, SkeletonModule, RouterLink],
   templateUrl: './home-projects.html',
   styleUrl: './home-projects.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -94,25 +94,6 @@ export class HomeProjects implements AfterViewInit {
     const displayedProjects = this.projects().slice(0, 3);
     const clickedProject = displayedProjects[clickedIndex];
     if (!clickedProject) {
-      return;
-    }
-
-
-
-    // On mobile, navigate directly to project details
-    if (this.getWindowWidth() < 1024) {
-      if (clickedProject.slug) {
-        this.router.navigate(['/المشاريع', clickedProject.slug]);
-      }
-      return;
-    }
-
-    // On desktop, handle active card click differently
-    if (clickedIndex === this.activeCardIndex) {
-      // If clicking the active card, navigate to project details
-      if (clickedProject.slug) {
-        this.router.navigate(['/المشاريع', clickedProject.slug]);
-      }
       return;
     }
 

@@ -17,7 +17,8 @@
     }
 
     <section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 relative">
-
+        <app-section-title [title]="'المشاريع'" customClass=" mb-8 md:mb-10">
+        </app-section-title>
         @if (projectItems().length > 0) {
         <div class="projects-grid grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             @for (project of projectItems(); track project.id) {
@@ -62,10 +63,7 @@
         <!-- Pagination -->
         @if (projects() && totalRecords() > 0) {
         <div class="flex justify-center mt-12 md:mt-16" dir="ltr">
-            <app-shared-pagination 
-                [currentPage]="currentPage()" 
-                [totalPages]="totalPages()" 
-                [baseRoute]="'/المشاريع'">
+            <app-shared-pagination [currentPage]="currentPage()" [totalPages]="totalPages()" [baseRoute]="'/المشاريع'">
             </app-shared-pagination>
         </div>
         }

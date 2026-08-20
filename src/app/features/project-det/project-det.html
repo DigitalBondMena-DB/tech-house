@@ -36,18 +36,16 @@
 <section class="project-hero-section relative" [style.background-image]="'url(' + heroImage() + ')'">
     <img [src]=" heroImage()" [alt]="project()?.client_name" class="inset-0 w-full h-full absolute object-cover">
     <div class="project-hero-overlay"></div>
-    <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
-        <div class="project-hero-content h-full flex items-end justify-start pb-8 md:pb-12 gap-4" dir="rtl">
-            <!-- Logo Circle -->
-            @if (projectLogo()) {
-            <div class="project-logo-circle">
-                <img [src]="projectLogo()" [alt]="project()?.client_name" class="logo-image">
-            </div>
-            }
-            <!-- Project Info Boxes -->
-            <div class="project-info-boxes flex flex-col gap-4">
-                <!-- Client Box -->
-                <div class="project-info-box backdrop-blur-2xl">
+    <div class="container h-full mx-auto px-5 lg:px-20 relative z-10  flex items-end pt-27">
+        <div>
+            <div class="project-hero-content h-full flex items-center justify-start gap-4 pb-4" dir="rtl">
+                @if (projectLogo()) {
+                <div class="project-logo-circle">
+                    <img [src]="projectLogo()" [alt]="project()?.client_name" class="logo-image">
+                </div>
+                }
+
+                <div class="project-info-box backdrop-blur-2xl w-full lg:w-auto">
                     <div class="info-label">عميل</div>
                     <h1 class="info-value">
                         @if (project()?.client_name) {
@@ -57,9 +55,7 @@
                         }
                     </h1>
                 </div>
-
-                <!-- Year Box -->
-                <div class="project-info-box backdrop-blur-2xl">
+                <div class="project-info-box backdrop-blur-2xl w-full lg:w-auto">
                     <div class="info-label">سنة</div>
                     <div class="info-value">
                         @if (project()?.year_creation) {
@@ -69,22 +65,18 @@
                         }
                     </div>
                 </div>
-
-
-            </div>
-            <!-- Type Box -->
-            <div class="project-info-box backdrop-blur-2xl">
-                <div class="info-label">نوع العمل</div>
-                <div class="info-value">
-                    @if (project()?.category_name) {
-                    {{ project()?.category_name }}
-                    } @else {
-                    <span class="text-gray-400">لا يوجد بيانات </span>
-                    }
+                <div class="project-info-box backdrop-blur-2xl w-full lg:w-auto">
+                    <div class="info-label">نوع العمل</div>
+                    <div class="info-value">
+                        @if (project()?.category_name) {
+                        {{ project()?.category_name }}
+                        } @else {
+                        <span class="text-gray-400">لا يوجد بيانات </span>
+                        }
+                    </div>
                 </div>
             </div>
-
-
+            <app-breadcrumb [customTitle]="project()?.title || project()?.client_name"></app-breadcrumb>
         </div>
     </div>
 </section>
@@ -96,7 +88,7 @@
     <div class="project-pillars-box mb-8 md:mb-12 p-6 md:p-8 flex items-center gap-2 overflow-hidden">
         <div class="flex items-center gap-2">
             <img src="images/title/title.webp" alt="title-icon">
-            <h2 class="box-title">ركائز المشروع</h2>
+            <span class="box-title">ركائز المشروع</span>
         </div>
 
         <!-- OWL CAROUSEL MODE -->
@@ -211,7 +203,7 @@
                 <div class="project-info-box-detail mb-8 border border-[#ED2924] rounded-2xl p-6 md:p-8">
                     <div class="flex items-center gap-2 mb-4 md:mb-6">
                         <img src="images/title/title.webp" alt="title-icon">
-                        <h2 class="box-title">معلومات عن المشروع</h2>
+                        <span class="box-title">معلومات عن المشروع</span>
                     </div>
                     @if (projectInformation().length > 0) {
                     <div class="project-info-list space-y-4">
@@ -248,7 +240,7 @@
                 <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8">
                     <div class="flex items-center gap-2 mb-4 md:mb-6">
                         <img src="images/title/title.webp" alt="title-icon">
-                        <h2 class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</h2>
+                        <span class="text-xl md:text-2xl font-bold text-[#440000]">تواصل معنا</span>
                     </div>
                     <app-contact-us-sec [withoutMap]="true" [withoutTitle]="true" [removeYPadding]="true"
                         [slug]="project()?.slug" [type]="'المشاريع'" />

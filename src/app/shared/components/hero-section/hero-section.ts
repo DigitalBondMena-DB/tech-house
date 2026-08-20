@@ -2,11 +2,12 @@ import { Component, AfterViewInit, ElementRef, OnChanges, SimpleChanges, inject,
 import { CommonModule, NgOptimizedImage, isPlatformBrowser } from '@angular/common';
 import { DomSanitizer } from '@angular/platform-browser';
 import { AppButton } from '../app-button/app-button';
+import { Breadcrumb } from '../breadcrumb/breadcrumb';
 import { gsap } from 'gsap';
 
 @Component({
   selector: 'app-hero-section',
-  imports: [AppButton, CommonModule, NgOptimizedImage],
+  imports: [AppButton, CommonModule, NgOptimizedImage, Breadcrumb],
   templateUrl: './hero-section.html',
   styleUrl: './hero-section.css',
   changeDetection: ChangeDetectionStrategy.OnPush

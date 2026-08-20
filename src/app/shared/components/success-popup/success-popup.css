@@ -1,22 +1,21 @@
 .popup-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 9999;
   padding: 20px;
-  animation: fadeIn 0.3s ease-in-out;
+  animation: _ngcontent-ng-c3958156661_fadeIn 0.3s ease-in-out;
+  padding-top: 90px;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -28,7 +27,7 @@
   border-radius: 16px;
   padding: 40px;
   max-width: 1000px;
-  height: 500px;
+  min-height: 60vh;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease-out;
@@ -48,6 +47,7 @@
     transform: translateY(30px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -61,7 +61,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: gray!important;
+  background-color: gray !important;
   border: none;
   cursor: pointer;
   display: flex;
@@ -194,4 +194,3 @@
     font-size: 16px;
   }
 }
-

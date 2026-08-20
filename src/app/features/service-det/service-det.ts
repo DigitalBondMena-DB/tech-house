@@ -9,11 +9,12 @@ import { SectionTitle } from "../../shared/components/section-title/section-titl
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 import { fromEvent, throttleTime } from "rxjs";
 import { addRelToLinks } from "../../core/utils/html-utils";
+import { Breadcrumb } from "../../shared/components/breadcrumb/breadcrumb";
 
 @Component({
     selector: 'app-service-det',
     standalone: true,
-    imports: [CommonModule, ContactUsSec, SafeHtmlPipe, SectionTitle],
+    imports: [CommonModule, ContactUsSec, SafeHtmlPipe, SectionTitle, Breadcrumb],
     templateUrl: './service-det.html',
     styleUrl: './service-det.css',
     encapsulation: ViewEncapsulation.None

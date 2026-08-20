@@ -2,7 +2,11 @@
   <div class="flex items-center gap-4 ">
   <img src="/images/title/title.webp" width="36" height="36" alt="" role="presentation" loading="lazy" decoding="async">
     @if (title()) {
-      <h2 class="font-semibold text-4xl">{{ title() }}</h2>
+      @if (isH2()) {
+        <h2 class="font-semibold text-4xl">{{ title() }}</h2>
+      } @else {
+        <span class="font-semibold text-4xl block">{{ title() }}</span>
+      }
     }
   </div>
 </div>

@@ -10,4 +10,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 export class SectionTitle {
   title = input<string>('');
   customClass = input<string>('');
+  isH2 = input<boolean>(true);
 }

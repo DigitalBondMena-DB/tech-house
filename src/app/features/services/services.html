@@ -22,14 +22,15 @@
     <section class="container mx-auto px-5 lg:px-20 py-12 md:py-20 section-pattern section-pattern-right">
         @for (service of services(); track service.title; let i = $index) {
         <div class="service-card mb-16 md:mb-20 last:mb-0">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            <article class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start relative">
                 <!-- Content Side -->
-                <div [class]="i % 2 === 0 ? 'order-2 lg:order-1' : 'order-2 lg:order-2'" dir="rtl">
+                <a [routerLink]="getServiceUrl(service)" [queryParams]="getServiceQueryParams(service)"
+                    class="absolute inset-0 z-20" [attr.aria-label]="service.title"></a>
+                <div [class]="$even ? 'order-2 lg:order-1' : 'order-2 lg:order-2'" dir="rtl">
                     <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold text-[#440000] mb-4 md:mb-6">{{ service.title
                         }}</h2>
                     <div class="text-base md:text-lg text-[#440000] leading-relaxed mb-6" [innerHTML]="service.text">
                     </div>
-
                     <!-- Service Keywords (Buttons) -->
                     @if (service.keywords && service.keywords.length > 0) {
                     <div class=" flex flex-wrap gap-3 mb-6">
@@ -43,14 +44,14 @@
                     }
 
                     <!-- View Projects Link -->
-                    <a [routerLink]="getServiceUrl(service)" [queryParams]="getServiceQueryParams(service)"
+                    <span
                         class="text-[#B90000] text-base md:text-lg font-semibold hover:underline mt-4 transition-colors flex items-center gap-2">
                         عرض الخدمة
                         <svg class="w-4 h-4 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
                             </path>
                         </svg>
-                    </a>
+                    </span>
                 </div>
 
                 <!-- Image Side - Alternates between right and left -->
@@ -63,7 +64,7 @@
                     </div>
                     }
                 </div>
-            </div>
+            </article>
         </div>
         }
     </section>

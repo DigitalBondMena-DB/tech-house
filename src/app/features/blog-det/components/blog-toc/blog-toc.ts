@@ -13,7 +13,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
       <div class="toc-container">
         <div class="flex items-center gap-2 mb-4 md:mb-6">
           <img src="images/title/title.webp" alt="title-icon" loading="lazy" decoding="async">
-          <h2 class="toc-title">محتويات المقالة</h2>
+          <span class="toc-title">محتويات المقالة</span>
         </div>
         <div class="max-h-77.5 overflow-y-auto [direction:ltr]!">
           <ul class="toc-list">

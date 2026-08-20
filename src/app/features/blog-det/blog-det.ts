@@ -12,11 +12,12 @@ import { RelatedBlogs } from "./components/related-blogs/related-blogs";
 import { BlogToc } from "./components/blog-toc/blog-toc";
 import { addRelToLinks } from "../../core/utils/html-utils";
 import { SEOService } from "../../core/services/seo";
+import { Breadcrumb } from "../../shared/components/breadcrumb/breadcrumb";
 
 @Component({
   selector: 'app-blog-det',
   standalone: true,
-  imports: [CommonModule, ContactUsSec, BlogArticle, RelatedBlogs, BlogToc],
+  imports: [CommonModule, ContactUsSec, BlogArticle, RelatedBlogs, BlogToc, Breadcrumb],
   templateUrl: './blog-det.html',
   styleUrl: './blog-det.css',
   encapsulation: ViewEncapsulation.None,

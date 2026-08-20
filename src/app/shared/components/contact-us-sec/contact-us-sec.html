@@ -5,7 +5,7 @@
             <!-- Right Side - Contact Form -->
             <div class="flex flex-col h-full min-h-150">
                 @if (!withoutTitle()) {
-                <app-section-title [title]="contactTitle" customClass="flex justify-start mb-4">
+                <app-section-title [title]="contactTitle" [isH2]="isContactPage()" customClass="flex justify-start mb-4">
                 </app-section-title>
                 }
                 <p class="text-[#636363] text-xl font-semibold mb-8">{{ contactSubtitle }}</p>

@@ -2,13 +2,12 @@
 .project-hero-section {
   position: relative;
   width: 100%;
-  height: 80vh;
-  min-height: 500px;
+  min-height: 80vh;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   display: flex;
-  align-items: center;
+  align-items: end;
   justify-content: center;
   overflow: hidden;
 }
@@ -281,7 +280,7 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
   .project-hero-section {
-    height: 70vh;
+    min-height: 70vh;
     min-height: 400px;
   }
 
@@ -302,7 +301,7 @@
 
 @media (max-width: 768px) {
   .project-hero-section {
-    height: 60vh;
+    min-height: 60vh;
     min-height: 350px;
   }
 
@@ -352,7 +351,7 @@
 
 @media (max-width: 480px) {
   .project-hero-section {
-    height: 50vh;
+    min-height: 50vh;
     min-height: 300px;
   }
 
@@ -574,15 +573,18 @@
   align-items: center;
   gap: 10px;
 }
+
 ::ng-deep owl-carousel-o {
-  direction: ltr !important; /* اجعل الكاروسيل نفسه LTR */
+  direction: ltr !important;
+  /* اجعل الكاروسيل نفسه LTR */
 }
 
 /* إذا أردت الصور تترتب من اليمين لليسار برغم ذلك */
 ::ng-deep .owl-stage {
   display: flex;
-  flex-direction: row-reverse; 
+  flex-direction: row-reverse;
 }
+
 .carousel-dot {
   width: 12px;
   height: 12px;

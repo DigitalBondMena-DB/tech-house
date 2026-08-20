@@ -6,11 +6,12 @@ import { CarouselComponent, CarouselModule, OwlOptions, SlidesOutputData } from 
 import { FeatureService } from "../../core/services/featureService";
 import { ContactUsSec } from "../../shared/components/contact-us-sec/contact-us-sec";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
+import { Breadcrumb } from "../../shared/components/breadcrumb/breadcrumb";
 
 @Component({
   selector: 'app-project-det',
   standalone: true,
-  imports: [CommonModule, CarouselModule, ContactUsSec],
+  imports: [CommonModule, CarouselModule, ContactUsSec, Breadcrumb],
   templateUrl: './project-det.html',
   styleUrl: './project-det.css',
   encapsulation: ViewEncapsulation.None

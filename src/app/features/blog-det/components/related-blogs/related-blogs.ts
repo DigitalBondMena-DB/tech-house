@@ -7,7 +7,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
     <div class="mb-8 md:mb-12 border border-[#440000] rounded-2xl p-8 mt-8 lg:mt-0">
       <div class="flex items-center gap-2 mb-4 md:mb-6">
         <img src="images/title/title.webp" alt="title-icon" loading="lazy" decoding="async">
-        <h2 class="text-xl md:text-2xl font-bold text-[#440000]">المشاركات الأخيرة</h2>
+        <span class="text-xl md:text-2xl font-bold text-[#440000]">المشاركات الأخيرة</span>
       </div>
 
       <div class="space-y-6">

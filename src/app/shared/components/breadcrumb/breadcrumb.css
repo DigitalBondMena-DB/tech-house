@@ -1,0 +1,12 @@
+.breadcrumb-bar {
+  --breadcrumb-bg: linear-gradient(135deg, rgba(120, 95, 92, 0.8) 0%, rgba(85, 65, 62, 0.9) 100%);
+  background: var(--breadcrumb-bg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+
+}
+
+.separator-icon {
+  display: inline-block;
+  vertical-align: middle;
+}

@@ -4,7 +4,8 @@
     class="object-cover inset-0 size-full absolute">
   }
   <div class="blog-hero-overlay"></div>
-  <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+  <div class="container h-full mx-auto px-5 lg:px-20 relative z-10 pt-4 flex items-end justify-center">
+    <app-breadcrumb [customTitle]="blog()?.title"></app-breadcrumb>
     <div class="blog-hero-content h-full flex items-center justify-center text-center" dir="rtl"></div>
   </div>
 </section>
@@ -47,7 +48,7 @@
         @defer(hydrate on interaction) {
         <app-blog-toc [sections]="sections()"></app-blog-toc>
         } @placeholder {
-        <div class="min-h-[200px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
+        <div class="min-h-50 bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
         }
 
 
@@ -55,7 +56,7 @@
         @defer (on viewport) {
         <app-related-blogs [blogs]="relatedBlogs()" (blogSelected)="navigateToRelatedBlog($event)"></app-related-blogs>
         } @placeholder {
-        <div class="min-h-[200px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
+        <div class="min-h-50 bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
         }
         }
       </div>
@@ -80,7 +81,7 @@
   @defer (on viewport) {
   <app-related-blogs [blogs]="relatedBlogs()" (blogSelected)="navigateToRelatedBlog($event)"></app-related-blogs>
   } @placeholder {
-  <div class="min-h-[200px] bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
+  <div class="min-h-50 bg-gray-50/50 rounded-2xl border border-gray-100 animate-pulse"></div>
   }
   }
 </div>

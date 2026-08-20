@@ -1,9 +1,9 @@
 <section class="bg-linear">
     <div class="hero-background-container overflow-hidden relative" [ngClass]="customClass()">
         <!-- Background Image for LCP Optimization -->
-        <img src="/images/hero/hero.webp" alt="{{ title() }}" role="presentation" class="hero-background-image" width="1920"
-            height="1080" fetchpriority="high" loading="eager" />
-        <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+        <img src="/images/hero/hero.webp" alt="{{ title() }}" role="presentation" class="hero-background-image"
+            width="1920" height="1080" fetchpriority="high" loading="eager" />
+        <div class="container h-full mx-auto px-5 lg:px-20 relative z-10 pt-4">
             <div class="hero-content relative h-full w-full flex  items-center justify-between " dir="rtl"
                 [class.image-left]="imagePosition() ==='left'" [class.image-center]="imagePosition() ==='center'"
                 [class.no-image]="imagePosition() ==='none'">
@@ -35,14 +35,10 @@
                         }
                     </div>
                     }
-
                     @if (btn()) {
                     <app-app-button [btnText]="btnText"
                         [customClass]="btnClass() || 'px-7 py-4 bg-black/60 text-white rounded-full flex items-center justify-center transition duration-300'">
                     </app-app-button>
-
-
-
                     }
                     <!-- Subtitle >> under >> main title -->
                     @if (subtitle() && !subtitleAboveTitle() && !jobInfo()) {
@@ -53,6 +49,8 @@
                     @if (paragraph()) {
                     <p class="text-lg lg:text-2xl font-medium  text-white mt-3 lg:mt-10 max-w-xl ">{{ paragraph() }}</p>
                     }
+                    <app-breadcrumb></app-breadcrumb>
+
                 </div>
 
                 <div class="flex justify-center items-center">

@@ -130,6 +130,58 @@ export class SEOService {
     }
   }
 
+  /**
+   * Remove injected Breadcrumb Schema script if present
+   */
+  removeBreadcrumbSchema(): void {
+    const existing = this.document.querySelectorAll('script.breadcrumb-schema');
+    existing.forEach(el => this.renderer.removeChild(el.parentNode || this.document.head, el));
+  }
+
+  /**
+   * Generates and injects Schema.org BreadcrumbList JSON-LD script.
+   */
+  setBreadcrumbSchema(items: { label: string; url?: string }[]): void {
+    this.removeBreadcrumbSchema();
+
+    if (!items || items.length === 0) return;
+
+    const itemListElement = items.map((item, index) => {
+      const fullUrl = item.url
+        ? (item.url.startsWith('http') ? item.url : `${this.baseUrl}${item.url.startsWith('/') ? '' : '/'}${item.url}`)
+        : undefined;
+
+      const listItem: any = {
+        '@type': 'ListItem',
+        'position': index + 1,
+        'name': item.label
+      };
+
+      if (fullUrl) {
+        listItem.item = fullUrl;
+      }
+
+      return listItem;
+    });
+
+    const schemaObj = {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      'itemListElement': itemListElement
+    };
+
+    try {
+      const script = this.renderer.createElement('script');
+      this.renderer.setAttribute(script, 'type', 'application/ld+json');
+      this.renderer.addClass(script, 'breadcrumb-schema');
+      const text = this.renderer.createText(JSON.stringify(schemaObj, null, 2));
+      this.renderer.appendChild(script, text);
+      this.renderer.appendChild(this.document.head, script);
+    } catch (e) {
+      console.error('Error injecting Breadcrumb schema script:', e);
+    }
+  }
+
   updateSEOFromBackend(seoData: Seotag, config: SEOConfig = { updateLinks: true, fallbackToDefault: false }): void {
     this.clearExistingMetaTags();
 

@@ -1,0 +1,28 @@
+@if (isVisible() && items().length > 0) {
+<nav aria-label="مسار التصفح" class="breadcrumb-container inline-flex my-3 z-20 relative" dir="rtl"
+  [ngClass]="customClass()">
+  <ol
+    class="breadcrumb-bar flex items-center flex-wrap gap-2 md:gap-3 px-6 py-2.5 rounded-full bg-[#6a5452]/70 backdrop-blur-md border border-white/20 text-white text-sm md:text-base font-semibold shadow-lg">
+    @for (item of items(); track $index; let last = $last) {
+    <li class="breadcrumb-item flex items-center gap-2 md:gap-3">
+      @if (!last && item.url) {
+      <a [routerLink]="item.url"
+        class="hover:text-red-300 transition-colors duration-200 text-white/90 underline-offset-4 hover:underline">
+        {{ item.label }}
+      </a>
+      <svg class="separator-icon w-4 h-4 text-white/80 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="6" cy="6" r="2.5" />
+        <circle cx="18" cy="18" r="2.5" />
+        <line x1="8" y1="8" x2="16" y2="16" />
+      </svg>
+      } @else {
+      <span class="active-page text-white font-bold" aria-current="page">
+        {{ item.label }}
+      </span>
+      }
+    </li>
+    }
+  </ol>
+</nav>
+}
