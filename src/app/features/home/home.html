@@ -1,13 +1,18 @@
-<section class="overflow-hidden relative" style="contain: layout style;">
+<section class="overflow-hidden relative z-10" style="contain: layout style;">
   <app-circle-sidebar class="hidden md:block"></app-circle-sidebar>
   <!-- Hero Section - Background image always visible for LCP optimization -->
-  <section class="bg-linear min-h-[90vh] lg:min-h-screen relative">
+  <section class="bg-linear min-h-[90vh] lg:min-h-screen relative z-1">
     <!-- LCP Background Image - Always rendered for optimal performance -->
+
     <div class="hero-lcp-container h-[90vh] lg:h-screen w-full relative">
+      @if(isNationalDay) {
+      <img src="/images/national-day/hero-bg-pattern.png" class="object-cover z-5 opacity-50"
+        style="width: 100%; height: 100%; position: absolute;" alt="">
+      }
       <!-- LCP Image - Baseline for ALL devices to ensure consistent LCP score -->
       @if(isSmallScreen()) {
       <img [ngSrc]="'/images/hero/hero.webp'" priority alt="ابتكارات تسويقية رقمية تصنع الفرق لشركتك"
-        class="hero-lcp-image absolute inset-0 w-full h-full object-cover z-0" width="1920" height="1080" />
+        class="hero-lcp-image absolute inset-0 w-full h-full object-cover -z-1" width="1920" height="1080" />
       }
 
       <!-- Video Background - Loaded after First Paint on larger screens -->
@@ -17,9 +22,9 @@
         [class.opacity-100]="videoReady()" width="1920" height="1080" aria-hidden="true" (canplay)="onVideoReady()">
       </video>
       }
-      <div class="container h-full mx-auto px-5 lg:px-20 relative z-10">
+      <div class="container h-full mx-auto px-5 lg:px-20 relative z-20">
         <div class="hero-content relative h-full w-full flex items-center justify-between lg:pe-15" dir="rtl">
-          <div class="min-h-30 md:min-h-35" style="contain: layout; overflow: hidden;">
+          <div class="min-h-30 md:min-h-35 z-20 relative" style="contain: layout; overflow: hidden;">
             <!-- H1 always rendered for LCP optimization - shows default text immediately -->
             <h1 class="text-3xl md:text-4xl font-semibold text-white max-w-sm lg:max-w-lg"
               style="min-height: 4.5rem; line-height: 1.5; overflow: hidden; text-overflow: ellipsis;">
@@ -50,110 +55,113 @@
       </div>
     </div>
   </section>
-  <app-home-banner class="translate-y-60 md:translate-y-40 relative z-20"
-    [scrollTitle]="heroSection()?.scroll_title || ''"></app-home-banner>
+  <div [class.national-day-pattern]="isNationalDay">
+    <app-home-banner class="translate-y-60 md:translate-y-40 relative z-20"
+      [scrollTitle]="heroSection()?.scroll_title || ''"></app-home-banner>
 
-  @if(isFoundingDay) {
-  <div class="container mx-auto">
-    <img src="/images/founding-day/banner.png" class="w-full max-w-242 max-h-75 mx-auto" height="300" alt="">
-  </div>
-  }
-  <!-- About Section - Deferred for better LCP -->
-  @defer (hydrate on viewport) {
-  <app-home-about [aboutData]="aboutHome()"></app-home-about>
-  } @placeholder {
-  <section class="container mx-auto px-5 lg:px-20 py-20 min-h-125" style="contain: layout style;">
-    <div class="flex justify-between items-center min-h-15 mb-10">
-      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="30px" class="rounded-lg"></p-skeleton>
+    @if(isFoundingDay) {
+    <div class="container mx-auto">
+      <img src="/images/founding-day/banner.png" class="w-full max-w-242 max-h-75 mx-auto" height="300" alt="">
     </div>
-    <div class="grid grid-cols-1 lg:grid-cols-2 items-start mt-10 min-h-125 gap-10">
-      <div class="min-h-100">
-        <p-skeleton width="100%" height="80px" class="mb-6 rounded-lg"></p-skeleton>
-        <div class="flex items-center justify-start mt-10 min-h-50">
-          @for (i of [1,2,3]; track i) {
-          <p-skeleton [shape]="'circle'" width="140px" height="140px" class="m-6"></p-skeleton>
+    }
+    <!-- About Section - Deferred for better LCP -->
+
+    @defer (hydrate on viewport) {
+    <app-home-about [aboutData]="aboutHome()"></app-home-about>
+    } @placeholder {
+    <section class="container mx-auto px-5 lg:px-20 py-20 min-h-125" style="contain: layout style;">
+      <div class="flex justify-between items-center min-h-15 mb-10">
+        <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+        <p-skeleton width="150px" height="30px" class="rounded-lg"></p-skeleton>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-2 items-start mt-10 min-h-125 gap-10">
+        <div class="min-h-100">
+          <p-skeleton width="100%" height="80px" class="mb-6 rounded-lg"></p-skeleton>
+          <div class="flex items-center justify-start mt-10 min-h-50">
+            @for (i of [1,2,3]; track i) {
+            <p-skeleton [shape]="'circle'" width="140px" height="140px" class="m-6"></p-skeleton>
+            }
+          </div>
+        </div>
+        <div class="ms-auto min-h-125 min-w-125">
+          <p-skeleton width="500px" height="500px" class="rounded-lg"></p-skeleton>
+        </div>
+      </div>
+    </section>
+    }
+
+    <!-- Clients & Partners Banners - Deferred for better LCP -->
+    @defer (hydrate on viewport) {
+    <app-home-banners-sec class=""></app-home-banners-sec>
+    } @placeholder {
+    <section class="container mx-auto px-5 lg:px-20 py-20 min-h-75">
+      <div class="flex flex-col items-center justify-center min-h-75">
+        <p-skeleton width="200px" height="40px" class="rounded-lg mb-8"></p-skeleton>
+        <div class="flex gap-4 w-full justify-center">
+          @for (i of [1,2,3,4,5,6]; track i) {
+          <p-skeleton width="120px" height="80px" class="rounded-lg"></p-skeleton>
           }
         </div>
       </div>
-      <div class="ms-auto min-h-125 min-w-125">
-        <p-skeleton width="500px" height="500px" class="rounded-lg"></p-skeleton>
-      </div>
-    </div>
-  </section>
-  }
+    </section>
+    }
 
-  <!-- Clients & Partners Banners - Deferred for better LCP -->
-  @defer (hydrate on viewport) {
-  <app-home-banners-sec class=""></app-home-banners-sec>
-  } @placeholder {
-  <section class="container mx-auto px-5 lg:px-20 py-20 min-h-75">
-    <div class="flex flex-col items-center justify-center min-h-75">
-      <p-skeleton width="200px" height="40px" class="rounded-lg mb-8"></p-skeleton>
-      <div class="flex gap-4 w-full justify-center">
-        @for (i of [1,2,3,4,5,6]; track i) {
-        <p-skeleton width="120px" height="80px" class="rounded-lg"></p-skeleton>
+    <!-- Services - Deferred for better LCP -->
+    @defer (hydrate on viewport) {
+    <app-home-services [services]="services()"></app-home-services>
+    } @placeholder {
+    <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
+      <div class="flex justify-between items-center mb-10">
+        <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+        <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @for (i of [1,2,3]; track i) {
+        <div class="min-h-100">
+          <p-skeleton width="100%" height="300px" class="rounded-lg mb-4"></p-skeleton>
+          <p-skeleton width="80%" height="30px" class="rounded-lg mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="60px" class="rounded-lg"></p-skeleton>
+        </div>
         }
       </div>
-    </div>
-  </section>
-  }
+    </section>
+    }
 
-  <!-- Services - Deferred for better LCP -->
-  @defer (hydrate on viewport) {
-  <app-home-services [services]="services()"></app-home-services>
-  } @placeholder {
-  <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
-    <div class="flex justify-between items-center mb-10">
-      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      @for (i of [1,2,3]; track i) {
-      <div class="min-h-100">
-        <p-skeleton width="100%" height="300px" class="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="80%" height="30px" class="rounded-lg mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="60px" class="rounded-lg"></p-skeleton>
+    <!-- Projects - Deferred for better LCP -->
+    @defer (hydrate on interaction) {
+    <app-home-projects [projects]="projects()"></app-home-projects>
+    } @placeholder {
+    <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
+      <div class="flex justify-between items-center mb-10">
+        <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+        <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
       </div>
-      }
-    </div>
-  </section>
-  }
-
-  <!-- Projects - Deferred for better LCP -->
-  @defer (hydrate on interaction) {
-  <app-home-projects [projects]="projects()"></app-home-projects>
-  } @placeholder {
-  <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
-    <div class="flex justify-between items-center mb-10">
-      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      @for (i of [1,2,3]; track i) {
-      <div class="min-h-87.5">
-        <p-skeleton width="100%" height="250px" class="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="70%" height="25px" class="rounded-lg mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="50px" class="rounded-lg"></p-skeleton>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @for (i of [1,2,3]; track i) {
+        <div class="min-h-87.5">
+          <p-skeleton width="100%" height="250px" class="rounded-lg mb-4"></p-skeleton>
+          <p-skeleton width="70%" height="25px" class="rounded-lg mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="50px" class="rounded-lg"></p-skeleton>
+        </div>
+        }
       </div>
-      }
-    </div>
-  </section>
-  }
+    </section>
+    }
 
-  <!-- Booking Section - Deferred for better LCP -->
-  @defer (hydrate on viewport) {
-  <app-home-booking [ctasection]="ctasection()"></app-home-booking>
-  } @placeholder {
-  <section class="container mx-auto px-5 lg:px-20 py-20 min-h-100">
-    <div
-      class="flex flex-col items-center justify-center min-h-100 bg-linear-to-l from-[#440000] to-[#ED2924] rounded-2xl p-10">
-      <p-skeleton width="300px" height="40px" class="rounded-lg mb-4"></p-skeleton>
-      <p-skeleton width="80%" height="60px" class="rounded-lg mb-6"></p-skeleton>
-      <p-skeleton width="200px" height="50px" class="rounded-full"></p-skeleton>
-    </div>
-  </section>
-  }
+    <!-- Booking Section - Deferred for better LCP -->
+    @defer (hydrate on viewport) {
+    <app-home-booking [ctasection]="ctasection()"></app-home-booking>
+    } @placeholder {
+    <section class="container mx-auto px-5 lg:px-20 py-20 min-h-100">
+      <div
+        class="flex flex-col items-center justify-center min-h-100 bg-linear-to-l from-[#440000] to-[#ED2924] rounded-2xl p-10">
+        <p-skeleton width="300px" height="40px" class="rounded-lg mb-4"></p-skeleton>
+        <p-skeleton width="80%" height="60px" class="rounded-lg mb-6"></p-skeleton>
+        <p-skeleton width="200px" height="50px" class="rounded-full"></p-skeleton>
+      </div>
+    </section>
+    }
+  </div>
 
   <!-- Clients Review - Deferred for better LCP -->
   @defer (hydrate on viewport) {
@@ -180,30 +188,32 @@
   </section>
   }
 
-  <!-- Blogs - Deferred for better LCP -->
-  @defer (hydrate on viewport) {
-  <app-home-blogs [blogs]="blogs()"></app-home-blogs>
-  } @placeholder {
-  <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
-    <div class="flex justify-between items-center mb-10">
-      <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
-      <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
-    </div>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      @for (i of [1,2,3]; track i) {
-      <div class="min-h-100">
-        <p-skeleton width="100%" height="250px" class="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="80%" height="25px" class="rounded-lg mb-2"></p-skeleton>
-        <p-skeleton width="100%" height="60px" class="rounded-lg mb-4"></p-skeleton>
-        <p-skeleton width="120px" height="30px" class="rounded-lg"></p-skeleton>
+  <div [class.national-day-pattern]="isNationalDay">
+
+    @defer (hydrate on viewport) {
+    <app-home-blogs [blogs]="blogs()"></app-home-blogs>
+    } @placeholder {
+    <section class="container mx-auto px-5 lg:px-20 py-20 min-h-150">
+      <div class="flex justify-between items-center mb-10">
+        <p-skeleton width="200px" height="40px" class="rounded-lg"></p-skeleton>
+        <p-skeleton width="150px" height="50px" class="rounded-full"></p-skeleton>
       </div>
-      }
-    </div>
-  </section>
-  }
-  <!-- contact-us - Deferred until main content is loaded for better SSR -->
-  @defer (hydrate on viewport){
-  <app-contact-us-sec></app-contact-us-sec>
-  }
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @for (i of [1,2,3]; track i) {
+        <div class="min-h-100">
+          <p-skeleton width="100%" height="250px" class="rounded-lg mb-4"></p-skeleton>
+          <p-skeleton width="80%" height="25px" class="rounded-lg mb-2"></p-skeleton>
+          <p-skeleton width="100%" height="60px" class="rounded-lg mb-4"></p-skeleton>
+          <p-skeleton width="120px" height="30px" class="rounded-lg"></p-skeleton>
+        </div>
+        }
+      </div>
+    </section>
+    }
+    <!-- contact-us - Deferred until main content is loaded for better SSR -->
+    @defer (hydrate on viewport){
+    <app-contact-us-sec></app-contact-us-sec>
+    }
+  </div>
 
 </section>

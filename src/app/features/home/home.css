@@ -120,3 +120,28 @@ app-home-banner {
 :host ::ng-deep .hero-banner-skeleton .p-skeleton::after {
   background: transparent !important;
 }
+
+.national-day-pattern {
+  position: relative;
+
+  &::after,
+  &::before {
+    content: "";
+    height: 100%;
+    width: 32px;
+    background: url("/images/national-day/national-day-pattern.png");
+    position: absolute;
+    inset-block: 0;
+    background-repeat: repeat-y;
+    background-size: contain;
+    background-position: center;
+  }
+
+  &::before {
+    inset-inline-start: 0;
+  }
+
+  &::after {
+    inset-inline-end: 0;
+  }
+}

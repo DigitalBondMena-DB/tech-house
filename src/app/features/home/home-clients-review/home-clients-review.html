@@ -1,4 +1,8 @@
 <section class="my-20 py-12 2xl:py-5 bg-client-linear min-h-100 section-pattern section-pattern-right">
+  @if(isNationalDay) {
+  <img src="/images/national-day/hero-bg-pattern.png" class="object-cover z-5 opacity-80"
+    style="width: 100%; height: 100%; position: absolute;" alt="">
+  }
   <div class="bg-clients flex items-center justify-center flex-col text-center min-h-100">
     <div class="container mx-auto px-5 lg:px-20 min-h-100">
       <!-- Skeleton Loader -->
@@ -38,8 +42,8 @@
         centerTestimonial()?.text || '' }}</p>
       <div class="flex items-center justify-center my-5 gap-1 min-h-10 fill-[#FDD835]">
         @for (item of [1,2,3,4,5]; track $index) {
-        <img src="/images/icons/star.svg" width="20" height="20"
-          class="w-4 h-4 md:w-5 md:h-5 icon-container" loading="lazy" decoding="async" alt="Star" />
+        <img src="/images/icons/star.svg" width="20" height="20" class="w-4 h-4 md:w-5 md:h-5 icon-container"
+          loading="lazy" decoding="async" alt="Star" />
         }
       </div>
       <span class="block text-2xl md:text-3xl lg:text-4xl mt-10 text-white font-semibold min-h-12.5">{{

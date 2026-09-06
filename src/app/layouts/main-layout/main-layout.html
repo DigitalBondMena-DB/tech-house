@@ -1,16 +1,31 @@
 <main class="relative">
-    <router-outlet class="overflow-hidden"></router-outlet>
-    @if(isFoundingDay) {
-    <div
-        class="bg-[url('/images/founding-day/decoration.png')] w-10 h-full top-0 bottom-0 bg-repeat-y left-0 absolute -z-10 bg-blend-soft-light">
-    </div>
-    <div
-        class="bg-[url('/images/founding-day/decoration.png')] w-10 h-full top-0 bottom-0 bg-repeat-y right-0 absolute -z-10 bg-blend-soft-light">
-    </div>
-    }
+  <router-outlet class="overflow-hidden"></router-outlet>
+  @if(isFoundingDay) {
+  <div
+    class="bg-[url('/images/founding-day/decoration.png')] w-10 h-full top-0 bottom-0 bg-repeat-y left-0 absolute -z-10 bg-blend-soft-light">
+  </div>
+  <div
+    class="bg-[url('/images/founding-day/decoration.png')] w-10 h-full top-0 bottom-0 bg-repeat-y right-0 absolute -z-10 bg-blend-soft-light">
+  </div>
+  }
 
 </main>
 <app-navbar class="flex justify-center items-center"></app-navbar>
 
 <app-footer />
+
+@if(!isNationalDay) {
 <app-whatsapp-btn></app-whatsapp-btn>
+} @else {
+<div class="fixed bottom-4 right-4 size-25 lg:size-32.5 overflow-hidden rounded-full z-50">
+  <img src="/images/national-day/floating-logo.gif" width="130" height="130" class="size-full object-cover"
+    alt="عزنا بطبعنا اليوم الوطني السعودي">
+</div>
+}
+
+@defer (when successPopupService.isOpen()) {
+<app-success-popup [isVisible]="successPopupService.isOpen()" [title]="successPopupService.title()"
+  [message]="successPopupService.message()" [buttonText]="successPopupService.buttonText()"
+  (close)="successPopupService.hide()">
+</app-success-popup>
+}

@@ -28,6 +28,7 @@ import { environment } from '../../../environments/environment';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Home implements OnInit, OnDestroy {
+  isNationalDay = environment.isNationalDay
   isFoundingDay = environment.isFoundingDay
   private readonly detroyRef = inject(DestroyRef);
   private featureService = inject(FeatureService);

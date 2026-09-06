@@ -14,10 +14,10 @@ import { filter } from "rxjs/operators";
 import { environment } from "../../../environments/environment";
 import { API_END_POINTS } from "../../core/constant/ApiEndPoints";
 import { FeatureService } from "../../core/services/featureService";
+import { SuccessPopupService } from "../../core/services/success-popup.service";
 import { AppButton } from "../../shared/components/app-button/app-button";
 import { COUNTRIES } from "../../shared/components/contact-us-sec/models/countries";
 import { Country } from "../../shared/components/contact-us-sec/models/country.model";
-import { SuccessPopup } from "../../shared/components/success-popup/success-popup";
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 @Component({
@@ -32,8 +32,7 @@ import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
     InputGroupModule,
     InputGroupAddonModule,
     SelectModule,
-    FloatLabelModule,
-    SuccessPopup
+    FloatLabelModule
   ],
   templateUrl: './jop-det.html',
   styleUrl: './jop-det.css',
@@ -44,6 +43,7 @@ export class JopDet implements OnDestroy {
   private readonly timeouts = new Map<string, NodeJS.Timeout>()
   private readonly destroyRef = inject(DestroyRef)
   private featureService = inject(FeatureService);
+  private successPopupService = inject(SuccessPopupService);
   private route = inject(ActivatedRoute);
   router = inject(Router);
   private sanitizer = inject(DomSanitizer);
@@ -182,17 +182,6 @@ export class JopDet implements OnDestroy {
     // Initialize forms
     this.initializeForm();
     this.initializeContactForm();
-
-    // Check if URL contains "/done" and show popup if it does
-    this.checkUrlForDone();
-
-    // Listen to route changes
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-      , takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => {
-      this.checkUrlForDone();
-    });
 
     this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       const slug = params['slug'];
@@ -443,7 +432,6 @@ export class JopDet implements OnDestroy {
   isSubmitting = signal(false);
   submitSuccess = signal(false);
   submitError = signal<string | null>(null);
-  showSuccessPopup = signal(false);
 
   private initializeForm() {
     // Custom validator for name (only letters, no numbers or symbols)
@@ -623,13 +611,12 @@ export class JopDet implements OnDestroy {
           this.isSubmitting.set(false);
           this.submitSuccess.set(true);
           this.jobApplicationForm.reset();
-          // Show success popup
-          this.showSuccessPopup.set(true);
-          // Add "Done" to the route path
-          const currentUrl = this.router.url.split('?')[0];
-          if (!currentUrl.endsWith('/تم')) {
-            this.router.navigateByUrl(currentUrl + '/تم', { replaceUrl: false });
-          }
+          // Show success popup via service
+          this.successPopupService.show({
+            title: 'شكرًا لاهتمامك بالعمل معنا!',
+            message: 'لقد استلمنا طلبك، وسيتواصل معك فريق الموارد البشرية في حال كانت خبراتك مناسبة لمتطلبات الوظيفة.',
+            buttonText: 'العودة إلى الصفحة الرئيسية'
+          });
         },
         error: (error) => {
           this.isSubmitting.set(false);
@@ -859,23 +846,6 @@ export class JopDet implements OnDestroy {
       if (control.errors?.['required']) return 'الرسالة مطلوبة';
     }
     return null;
-  }
-
-  onClosePopup(): void {
-    this.showSuccessPopup.set(false);
-    // Remove "Done" from the route path using Location API
-    const currentUrl = this.location.path().split('?')[0];
-    if (currentUrl.endsWith('/تم')) {
-      const baseUrl = currentUrl.replace('/تم', '');
-      this.location.replaceState(baseUrl);
-    }
-  }
-
-  private checkUrlForDone(): void {
-    const currentUrl = this.router.url.split('?')[0];
-    if (currentUrl.endsWith('/تم')) {
-      this.showSuccessPopup.set(true);
-    }
   }
   ngOnDestroy(): void {
     if (this.timeouts.size > 0) {

@@ -11,9 +11,9 @@ import { SelectModule } from 'primeng/select';
 import { TextareaModule } from 'primeng/textarea';
 import { filter } from 'rxjs/operators';
 import { API_END_POINTS } from '../../../core/constant/ApiEndPoints';
+import { SuccessPopupService } from '../../../core/services/success-popup.service';
 import { AppButton } from '../app-button/app-button';
 import { SectionTitle } from '../section-title/section-title';
-import { SuccessPopup } from '../success-popup/success-popup';
 import { COUNTRIES } from './models/countries';
 import { Country } from './models/country.model';
 
@@ -31,8 +31,7 @@ import { Country } from './models/country.model';
     InputGroupAddonModule,
     SelectModule,
     FloatLabelModule,
-    AppButton,
-    SuccessPopup
+    AppButton
   ],
   templateUrl: './contact-us-sec.html',
   styleUrl: './contact-us-sec.css',
@@ -44,6 +43,7 @@ export class ContactUsSec implements OnInit, OnDestroy {
   private router = inject(Router);
   private location = inject(Location);
   private el = inject(ElementRef);
+  private successPopupService = inject(SuccessPopupService);
   private observer: IntersectionObserver | null = null;
   private isCssLoaded = false;
   private readonly contactApiUrl = 'https://api.techhouseksa.com/api';
@@ -144,9 +144,6 @@ export class ContactUsSec implements OnInit, OnDestroy {
   isSubmitting = signal(false);
   submitSuccess = signal(false);
   submitError = signal<string | null>(null);
-  showSuccessPopup = signal(false);
-
-
 
   isContactPage = signal<boolean>(false);
 
@@ -158,16 +155,14 @@ export class ContactUsSec implements OnInit, OnDestroy {
     this.selectedCountry.set(COUNTRIES[0]);
     this.initializeForm();
 
-    // Check if URL is contact-us page and check for "/done"
+    // Check if URL is contact-us page
     this.checkIsContactPage();
-    this.checkUrlForDone();
 
     // Listen to route changes
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
       this.checkIsContactPage();
-      this.checkUrlForDone();
     });
 
     this.setupIntersectionObserver();
@@ -209,18 +204,10 @@ export class ContactUsSec implements OnInit, OnDestroy {
     }
   }
 
-  private checkUrlForDone(): void {
-    const currentUrl = this.router.url.split('?')[0];
-    if (currentUrl.endsWith('/تم')) {
-      this.showSuccessPopup.set(true);
-    }
-  }
-
   private initializeForm() {
-    // Custom validator for name (only letters, no numbers or symbols)
     const nameValidator = (control: AbstractControl): { [key: string]: any } | null => {
       if (!control.value) {
-        return null; // Let required validator handle empty values
+        return null;
       }
       const namePattern = /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFFa-zA-Z\s]+$/;
       if (!namePattern.test(control.value)) {
@@ -368,17 +355,12 @@ export class ContactUsSec implements OnInit, OnDestroy {
           this.submitSuccess.set(true);
           // Reset form after successful submission
           this.contactForm.reset();
-          // Show success popup
-          this.showSuccessPopup.set(true);
-          // Add "done" to the route path using Location API
-          const currentUrl = decodeURIComponent(this.location.path().split('?')[0]);
-          if (!currentUrl.endsWith('/تم')) {
-            const queryParams = this.router.parseUrl(this.router.url).queryParams;
-            const queryString = Object.keys(queryParams).length > 0
-              ? '?' + new URLSearchParams(queryParams as any).toString()
-              : '';
-            this.location.replaceState(currentUrl + '/تم' + queryString);
-          }
+          // Show success popup via service
+          this.successPopupService.show({
+            title: 'شكرا لتواصلك معنا!',
+            message: 'نشكركم على تواصلكم مع بيت التكنولوجيا، سيراجع فريقنا رسالتكم ويتواصل معكم في أقرب وقت ممكن.',
+            buttonText: 'العودة إلى الصفحة الرئيسية'
+          });
         },
         error: (error) => {
           this.isSubmitting.set(false);
@@ -470,19 +452,5 @@ export class ContactUsSec implements OnInit, OnDestroy {
       if (control.errors['required']) return 'الرسالة مطلوبة';
     }
     return null;
-  }
-
-  onClosePopup(): void {
-    this.showSuccessPopup.set(false);
-    // Remove "done" from the route path using Location API
-    const currentUrl = this.location.path().split('?')[0];
-    if (currentUrl.endsWith('/تم')) {
-      const baseUrl = currentUrl.replace('/تم', '');
-      const queryParams = this.router.parseUrl(this.router.url).queryParams;
-      const queryString = Object.keys(queryParams).length > 0
-        ? '?' + new URLSearchParams(queryParams as any).toString()
-        : '';
-      this.location.replaceState(baseUrl + queryString);
-    }
   }
 }

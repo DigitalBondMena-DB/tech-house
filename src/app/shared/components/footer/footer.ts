@@ -18,6 +18,7 @@ export class Footer implements OnInit {
   private sharedFeatureService = inject(SharedFeatureService);
   private sanitizer = inject(DomSanitizer);
   isFoundingDay = environment.isFoundingDay
+  isNationalDay = environment.isNationalDay
   // Contact Us Data from API
   contactUsData = this.sharedFeatureService.contactUsData;
 

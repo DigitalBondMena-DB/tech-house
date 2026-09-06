@@ -2,6 +2,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, effect, input, signal } from '@angular/core';
 import { SkeletonModule } from 'primeng/skeleton';
 import { Testimonial } from '../../../core/models/home.model';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-home-clients-review',
@@ -13,6 +14,7 @@ import { Testimonial } from '../../../core/models/home.model';
 })
 export class HomeClientsReview {
   testimonials = input<Testimonial[]>([]);
+  isNationalDay = environment.isNationalDay
 
   // 🔹 Loading state as signal
   isLoading = computed(() => !this.testimonials() || this.testimonials().length === 0);
