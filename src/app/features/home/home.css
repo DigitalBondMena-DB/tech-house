@@ -134,7 +134,7 @@ app-home-banner {
     inset-block: 0;
     background-repeat: repeat-y;
     background-size: contain;
-    background-position: center;
+    background-position: top;
   }
 
   &::before {
