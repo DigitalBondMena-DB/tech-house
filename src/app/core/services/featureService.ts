@@ -2,14 +2,12 @@
 import { Injectable, computed, inject, signal, PLATFORM_ID, TransferState, makeStateKey } from '@angular/core';
 import { isPlatformServer } from '@angular/common';
 import { Observable, of } from 'rxjs';
-import { catchError, distinctUntilChanged, tap } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 import { API_END_POINTS } from '../constant/ApiEndPoints';
 
 import { AboutResponse, BlogDetailsResponse, BlogsResponse, HomeResponse, JobDetailsResponse, JobsResponse, ProjectDetailsResponse, ProjectsResponse, ServiceDetailsResponse, ServicesResponse } from '../models/home.model';
 import { ApiService } from './apiservice';
 import { SeparatedSeoTags } from './separated-seo-tags';
-import { routes } from '../../app.routes';
-import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -20,6 +18,9 @@ export class FeatureService {
   private apiService = inject(ApiService);
   private transferState = inject(TransferState);
   private platformId = inject(PLATFORM_ID);
+  private readonly HOME_KEY = makeStateKey<HomeResponse>('home-data');
+  private readonly ABOUT_KEY = makeStateKey<AboutResponse>('about-data');
+  private readonly SERVICES_KEY = makeStateKey<ServicesResponse>('services-data');
 
   // 🔹 Internal API Response Signal Reference
   private apiResponseSignal = signal<HomeResponse | null>(null);
@@ -27,6 +28,21 @@ export class FeatureService {
   private servicesResponseSignal = signal<ServicesResponse | null>(null);
   private blogsResponseSignal = signal<BlogsResponse | null>(null);
   private separatedSeoTags = inject(SeparatedSeoTags)
+
+  constructor() {
+    const cachedHome = this.transferState.get(this.HOME_KEY, null);
+    if (cachedHome) {
+      this.apiResponseSignal.set(cachedHome);
+    }
+    const cachedAbout = this.transferState.get(this.ABOUT_KEY, null);
+    if (cachedAbout) {
+      this.aboutResponseSignal.set(cachedAbout);
+    }
+    const cachedServices = this.transferState.get(this.SERVICES_KEY, null);
+    if (cachedServices) {
+      this.servicesResponseSignal.set(cachedServices);
+    }
+  }
 
   // 🔹 Home Data Signal (computed from API response)
   homeData = computed(() => this.apiResponseSignal());
@@ -65,18 +81,28 @@ export class FeatureService {
   jobDetailsData = computed(() => this.jobDetailsResponseSignal());
 
   // =====================
-  // HOME API - Optimized with Observable
+  // HOME API - Optimized with Observable and TransferState
   // =====================
   loadHomeData(): Observable<HomeResponse | null> {
-    // Check if data already exists
+    // Check if data already exists in memory signal
     if (this.apiResponseSignal()) {
       return of(this.apiResponseSignal());
+    }
+
+    // Check TransferState cache from SSR
+    const cachedData = this.transferState.get(this.HOME_KEY, null);
+    if (cachedData) {
+      this.apiResponseSignal.set(cachedData);
+      return of(cachedData);
     }
 
     return this.apiService.get<HomeResponse>(API_END_POINTS.HOME).pipe(
       tap((data) => {
         if (data) {
           this.apiResponseSignal.set(data);
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.HOME_KEY, data);
+          }
         }
       }),
       catchError((err) => {
@@ -103,11 +129,21 @@ export class FeatureService {
       return;
     }
 
+    const cachedData = this.transferState.get(this.ABOUT_KEY, null);
+    if (cachedData) {
+      this.aboutResponseSignal.set(cachedData);
+      this.separatedSeoTags.getSeoTagsDirect(cachedData.seotag, 'about');
+      return;
+    }
+
     this.apiService.get<AboutResponse>(API_END_POINTS.ABOUT).pipe(
       tap((data) => {
         if (data) {
           this.aboutResponseSignal.set(data);
-          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'about')
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'about');
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.ABOUT_KEY, data);
+          }
         }
       }),
       catchError((err) => {
@@ -127,11 +163,21 @@ export class FeatureService {
       return;
     }
 
+    const cachedData = this.transferState.get(this.SERVICES_KEY, null);
+    if (cachedData) {
+      this.servicesResponseSignal.set(cachedData);
+      this.separatedSeoTags.getSeoTagsDirect(cachedData.seotag, 'services');
+      return;
+    }
+
     this.apiService.get<ServicesResponse>(API_END_POINTS.SERVICES).pipe(
       tap((data) => {
         if (data) {
           this.servicesResponseSignal.set(data);
-          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'services')
+          this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'services');
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.SERVICES_KEY, data);
+          }
         }
       }),
       catchError((err) => {
