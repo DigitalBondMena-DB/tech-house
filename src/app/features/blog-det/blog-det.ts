@@ -1,5 +1,5 @@
 import { CommonModule, isPlatformBrowser } from "@angular/common";
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, NgZone, OnDestroy, PLATFORM_ID, signal, ViewEncapsulation } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, NgZone, OnDestroy, PLATFORM_ID, RESPONSE_INIT, signal, ViewEncapsulation } from "@angular/core";
 import { DomSanitizer } from "@angular/platform-browser";
 import { ActivatedRoute, Router } from "@angular/router";
 import { FeatureService } from "../../core/services/featureService";
@@ -13,6 +13,7 @@ import { BlogToc } from "./components/blog-toc/blog-toc";
 import { addRelToLinks } from "../../core/utils/html-utils";
 import { SEOService } from "../../core/services/seo";
 import { Breadcrumb } from "../../shared/components/breadcrumb/breadcrumb";
+import { BlogDetail } from "../../core/models/home.model";
 
 @Component({
   selector: 'app-blog-det',
@@ -33,13 +34,18 @@ export class BlogDet implements OnDestroy {
   private ngZone = inject(NgZone);
   private sharedFeatureService = inject(SharedFeatureService);
   private seoService = inject(SEOService);
+  private responseInit = inject(RESPONSE_INIT, { optional: true });
 
   contactUsData = this.sharedFeatureService.contactUsData;
   isBrowser = isPlatformBrowser(this.platformId);
 
   // ===== DATA =====
   blogDetailsData = computed(() => this.featureService.blogDetailsData());
-  blog = computed(() => this.blogDetailsData()?.blog ?? null);
+  blog = computed<BlogDetail | null>(() => {
+    const b = this.blogDetailsData()?.blog;
+    if (!b || (b as any).redirect_to) return null;
+    return b as BlogDetail;
+  });
   relatedBlogs = computed(() => this.blogDetailsData()?.related_blogs ?? []);
 
   hasBlog = computed(() => !!this.blog());
@@ -63,7 +69,7 @@ export class BlogDet implements OnDestroy {
 
 
   fullContent = computed(() => {
-    let html = this.blog()?.text ?? '';
+    let html: string = this.blog()?.text ?? '';
 
     if (html) {
       const sections = this.sections();
@@ -137,14 +143,52 @@ export class BlogDet implements OnDestroy {
         switchMap(slug => {
           if (!slug) {
             this.router.navigate(['/المقالات']);
-            return of(null);
+            return of({ slug: '', data: null });
           }
-          return this.featureService.loadBlogDetails(slug);
+          return this.featureService.loadBlogDetails(slug).pipe(
+            map(data => ({ slug, data }))
+          );
         }),
         takeUntilDestroyed(this.destroyRef)
       )
-      .subscribe(data => {
-        if (!data || !data.blog) {
+      .subscribe(({ slug, data }) => {
+        if (!data) {
+          this.router.navigate(['/not-found']);
+          return;
+        }
+
+        // Handle 302 redirect when blog response has redirect_to
+        const redirectSlug = (data as any)?.blog?.redirect_to || (data as any)?.redirect_to;
+        if (redirectSlug) {
+          let targetSlug = String(redirectSlug).trim();
+          if (targetSlug.startsWith('http://') || targetSlug.startsWith('https://')) {
+            try {
+              const url = new URL(targetSlug);
+              const parts = url.pathname.split('/').filter(Boolean);
+              targetSlug = decodeURIComponent(parts[parts.length - 1] || targetSlug);
+            } catch (e) {}
+          } else if (targetSlug.includes('/')) {
+            const parts = targetSlug.split('/').filter(Boolean);
+            targetSlug = decodeURIComponent(parts[parts.length - 1] || targetSlug);
+          }
+
+          let cleanCurrentSlug = slug;
+          try {
+            if (slug && slug.includes('%')) {
+              cleanCurrentSlug = decodeURIComponent(slug);
+            }
+          } catch (e) {}
+
+          if (targetSlug && targetSlug !== cleanCurrentSlug && targetSlug !== slug) {
+            if (this.responseInit) {
+              this.responseInit.status = 302;
+            }
+            this.router.navigate(['/المقالات', targetSlug], { replaceUrl: true });
+            return;
+          }
+        }
+
+        if (!data.blog || (data as any).blog?.redirect_to) {
           this.router.navigate(['/not-found']);
         }
       });

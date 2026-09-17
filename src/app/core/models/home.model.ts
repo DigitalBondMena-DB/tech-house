@@ -431,13 +431,24 @@ export interface RelatedBlog {
   image: ResponsiveImage;
 }
 
+export interface BlogRedirect {
+  redirect_to: string;
+  redirect_url?: string;
+  status?: number;
+  slug?: string;
+}
+
 /**
  * Blog Details API Response
  */
 export interface BlogDetailsResponse {
-  blog: BlogDetail;
-  related_blogs: RelatedBlog[];
-  seotag:SeoITags
+  redirect?: boolean;
+  status?: number;
+  redirect_to?: string;
+  redirect_url?: string;
+  blog?: BlogDetail | BlogRedirect;
+  related_blogs?: RelatedBlog[];
+  seotag?: SeoITags;
 }
 
 /**

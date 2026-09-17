@@ -312,11 +312,14 @@ export class FeatureService {
     return this.apiService.get<BlogDetailsResponse>(endpoint).pipe(
       tap((data) => {
         if (data) {
-          this.blogDetailsResponseSignal.set(data);
-          this.updateBlogSeo(data);
-          // Save to cache if on server
-          if (isPlatformServer(this.platformId)) {
-            this.transferState.set(cacheKey, data);
+          const isRedirect = !!((data as any)?.blog?.redirect_to || (data as any)?.redirect_to || (data as any)?.redirect);
+          if (!isRedirect) {
+            this.blogDetailsResponseSignal.set(data);
+            this.updateBlogSeo(data);
+            // Save to cache if on server
+            if (isPlatformServer(this.platformId)) {
+              this.transferState.set(cacheKey, data);
+            }
           }
         }
       }), catchError((err) => {

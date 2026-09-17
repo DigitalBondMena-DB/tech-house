@@ -6,4 +6,4 @@ Disallow: /register/    # منع صفحات التسجيل
 
 Allow: /
 
-Sitemap: https://www.techhouseksa.com/sitemap.xml
+Sitemap: https://techhouseksa.com/sitemap.xml
