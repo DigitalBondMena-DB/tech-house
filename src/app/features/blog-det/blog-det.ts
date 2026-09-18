@@ -42,7 +42,9 @@ export class BlogDet implements OnDestroy {
   // ===== DATA =====
   blogDetailsData = computed(() => this.featureService.blogDetailsData());
   blog = computed<BlogDetail | null>(() => {
-    const b = this.blogDetailsData()?.blog;
+    const data = this.blogDetailsData();
+    if (!data || (data as any).redirect === true || (data as any).redirect_to) return null;
+    const b = data.blog;
     if (!b || (b as any).redirect_to) return null;
     return b as BlogDetail;
   });
@@ -157,9 +159,11 @@ export class BlogDet implements OnDestroy {
           return;
         }
 
-        // Handle 302 redirect when blog response has redirect_to
-        const redirectSlug = (data as any)?.blog?.redirect_to || (data as any)?.redirect_to;
-        if (redirectSlug) {
+        // Handle redirect when blog response has redirect: true, status: 301, or redirect_to
+        const isRedirect = (data as any)?.redirect === true || !!(data as any)?.redirect_to || !!(data as any)?.blog?.redirect_to;
+        const redirectSlug = (data as any)?.redirect_to || (data as any)?.blog?.redirect_to || (data as any)?.redirect_url;
+
+        if (isRedirect && redirectSlug) {
           let targetSlug = String(redirectSlug).trim();
           if (targetSlug.startsWith('http://') || targetSlug.startsWith('https://')) {
             try {
@@ -170,6 +174,10 @@ export class BlogDet implements OnDestroy {
           } else if (targetSlug.includes('/')) {
             const parts = targetSlug.split('/').filter(Boolean);
             targetSlug = decodeURIComponent(parts[parts.length - 1] || targetSlug);
+          } else {
+            try {
+              targetSlug = decodeURIComponent(targetSlug);
+            } catch (e) {}
           }
 
           let cleanCurrentSlug = slug;
@@ -180,15 +188,16 @@ export class BlogDet implements OnDestroy {
           } catch (e) {}
 
           if (targetSlug && targetSlug !== cleanCurrentSlug && targetSlug !== slug) {
+            const redirectStatus = (data as any)?.status || 301;
             if (this.responseInit) {
-              this.responseInit.status = 302;
+              this.responseInit.status = redirectStatus;
             }
             this.router.navigate(['/المقالات', targetSlug], { replaceUrl: true });
             return;
           }
         }
 
-        if (!data.blog || (data as any).blog?.redirect_to) {
+        if (!data.blog || (data as any).blog?.redirect_to || (data as any).redirect) {
           this.router.navigate(['/not-found']);
         }
       });
