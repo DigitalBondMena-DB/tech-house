@@ -204,9 +204,10 @@ export class BlogDet implements OnDestroy {
 
     effect(() => {
       const blog = this.blog();
+      const seotag = this.blogDetailsData()?.seotag;
       if (blog) {
         this.extractSections(blog.text || '');
-        this.seoService.setArticleSchema(blog);
+        this.seoService.setArticleSchema({ ...blog, seotag });
       }
     });
 

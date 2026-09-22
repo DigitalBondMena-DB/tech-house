@@ -284,7 +284,9 @@ export class SEOService {
     if (!blog) return;
 
     let imageUrl = '/images/logo/logo.webp';
-    if (typeof blog.banner_image === 'string' && blog.banner_image) {
+    if (blog.seotag?.image_url) {
+      imageUrl = blog.seotag.image_url;
+    } else if (typeof blog.banner_image === 'string' && blog.banner_image) {
       imageUrl = blog.banner_image;
     } else if (Array.isArray(blog.banner_image) && blog.banner_image.length > 0) {
       imageUrl = blog.banner_image[2] || blog.banner_image[0];

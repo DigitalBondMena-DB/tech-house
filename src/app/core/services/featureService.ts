@@ -265,7 +265,7 @@ export class FeatureService {
   }
 
   private updateBlogSeo(data: BlogDetailsResponse): void {
-    const mainImg = this.getBlogMainImage(data?.blog) || data?.seotag?.image_url;
+    const mainImg = data?.seotag?.image_url || this.getBlogMainImage(data?.blog);
     const blogSeo = {
       ...data?.seotag,
       image_url: mainImg
