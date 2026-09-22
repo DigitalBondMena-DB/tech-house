@@ -21,6 +21,7 @@ export class SharedFeatureService {
   private readonly SERVICES_SECTION_KEY = makeStateKey<ServiceTitle[]>('services-section-data');
   private readonly COUNTERS_KEY = makeStateKey<Counter[]>('counters-data');
   private readonly PARTNERS_CLIENTS_KEY = makeStateKey<PartnersClientsResponse>('partners-clients-data');
+  private readonly PRIVACY_POLICY_KEY = makeStateKey<PrivacyPolicyData>('privacy-policy-data');
 
   // 🔹 Internal API Response Signal Reference
   private countersResponseSignal = signal<Counter[] | null>(null);
@@ -54,6 +55,10 @@ export class SharedFeatureService {
     const cachedPartnersClients = this.transferState.get(this.PARTNERS_CLIENTS_KEY, null);
     if (cachedPartnersClients) {
       this.partnersClientsResponseSignal.set(cachedPartnersClients);
+    }
+    const cachedPrivacyPolicy = this.transferState.get(this.PRIVACY_POLICY_KEY, null);
+    if (cachedPrivacyPolicy) {
+      this.privacyPolicyResponseSignal.set(cachedPrivacyPolicy);
     }
   }
 
@@ -374,7 +379,19 @@ export class SharedFeatureService {
   // PRIVACY POLICY API
   // =====================
   loadPrivacyPolicy(): void {
-    if (this.privacyPolicyResponseSignal() || this.privacyPolicyLoading) {
+    if (this.privacyPolicyResponseSignal()) {
+      this.separatedSeoTags.getSeoTagsDirect(this.privacyPolicyResponseSignal()?.seotag, 'privacy policy');
+      return;
+    }
+
+    const cachedData = this.transferState.get(this.PRIVACY_POLICY_KEY, null);
+    if (cachedData) {
+      this.privacyPolicyResponseSignal.set(cachedData);
+      this.separatedSeoTags.getSeoTagsDirect(cachedData.seotag, 'privacy policy');
+      return;
+    }
+
+    if (this.privacyPolicyLoading) {
       return;
     }
 
@@ -383,6 +400,8 @@ export class SharedFeatureService {
     this.http.get<PrivacyPolicyResponse | any>(`${this.baseUrl}${API_END_POINTS.PRIVACYPOLICY}`).subscribe({
       next: (data) => {
         let privacyData: PrivacyPolicyData | null = null;
+        const seotag = data?.seotag || data?.data?.seotag;
+        this.separatedSeoTags.getSeoTagsDirect(seotag, 'privacy policy');
 
         if (data.bannerSection) {
           privacyData = {
@@ -391,7 +410,8 @@ export class SharedFeatureService {
             image: data.bannerSection.image,
             sections: data.sections || [],
             bannerSection: data.bannerSection,
-            privacyPolicy: data.privacyPolicy
+            privacyPolicy: data.privacyPolicy,
+            seotag: seotag
           };
         }
         else if (data.privacyPolicy && (data.privacyPolicy.title || data.privacyPolicy.text)) {
@@ -400,7 +420,8 @@ export class SharedFeatureService {
             paragraph: data.paragraph,
             image: data.image || { desktop: '', tablet: '', mobile: '' },
             sections: data.sections || [],
-            privacyPolicy: data.privacyPolicy
+            privacyPolicy: data.privacyPolicy,
+            seotag: seotag
           };
         }
         else if (data.title || data.image) {
@@ -408,7 +429,8 @@ export class SharedFeatureService {
             title: data.title || '',
             paragraph: data.paragraph,
             image: data.image,
-            sections: data.sections || []
+            sections: data.sections || [],
+            seotag: seotag
           };
         }
         else if (data.data) {
@@ -419,12 +441,14 @@ export class SharedFeatureService {
               image: data.data.bannerSection.image,
               sections: data.data.sections || [],
               bannerSection: data.data.bannerSection,
-              privacyPolicy: data.data.privacyPolicy || data.privacyPolicy
+              privacyPolicy: data.data.privacyPolicy || data.privacyPolicy,
+              seotag: seotag
             };
           } else if (data.data.privacyPolicy) {
             privacyData = {
               ...data.data.privacyPolicy,
-              privacyPolicy: data.data.privacyPolicy
+              privacyPolicy: data.data.privacyPolicy,
+              seotag: seotag
             };
           } else if (data.data.title || data.data.image) {
             privacyData = {
@@ -432,7 +456,8 @@ export class SharedFeatureService {
               paragraph: data.data.paragraph,
               image: data.data.image,
               sections: data.data.sections || [],
-              privacyPolicy: data.data.privacyPolicy || data.privacyPolicy
+              privacyPolicy: data.data.privacyPolicy || data.privacyPolicy,
+              seotag: seotag
             };
           }
         }
@@ -444,12 +469,19 @@ export class SharedFeatureService {
             image: data.bannerSection?.image || data.image || { desktop: '', tablet: '', mobile: '' },
             sections: data.sections || [],
             bannerSection: data.bannerSection,
-            privacyPolicy: data.privacyPolicy
+            privacyPolicy: data.privacyPolicy,
+            seotag: seotag
           };
         }
 
         if (privacyData) {
+          if (!privacyData.seotag && seotag) {
+            privacyData.seotag = seotag;
+          }
           this.privacyPolicyResponseSignal.set(privacyData);
+          if (isPlatformServer(this.platformId)) {
+            this.transferState.set(this.PRIVACY_POLICY_KEY, privacyData);
+          }
         }
         this.privacyPolicyLoading = false;
       },

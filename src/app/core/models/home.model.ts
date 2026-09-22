@@ -252,6 +252,7 @@ export interface PrivacyPolicyData {
   sections?: PrivacyPolicySection[];
   bannerSection?: BannerSection;
   privacyPolicy?: PrivacyPolicyContent;
+  seotag?: SeoITags;
 }
 
 /**
@@ -264,6 +265,7 @@ export interface PrivacyPolicyResponse {
   image?: ResponsiveImage;
   sections?: PrivacyPolicySection[];
   bannerSection?: BannerSection;
+  seotag?: SeoITags;
 }
 
 /**

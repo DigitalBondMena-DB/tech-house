@@ -1,9 +1,10 @@
-import { Component, OnInit, AfterViewInit, inject, computed } from '@angular/core';
+import { Component, OnInit, AfterViewInit, inject, computed, effect } from '@angular/core';
 import { HeroSection } from '../../shared/components/hero-section/hero-section';
 import { CommonModule } from '@angular/common';
 import { SkeletonModule } from 'primeng/skeleton';
 import { SharedFeatureService } from '../../core/services/sharedFeatureService';
 import { ResponsiveImage } from '../../core/models/home.model';
+import { SeparatedSeoTags } from '../../core/services/separated-seo-tags';
 
 @Component({
   selector: 'app-privacy-policy',
@@ -13,6 +14,16 @@ import { ResponsiveImage } from '../../core/models/home.model';
 })
 export class PrivacyPolicy implements OnInit, AfterViewInit {
   private sharedFeatureService = inject(SharedFeatureService);
+  private separatedSeoTags = inject(SeparatedSeoTags);
+
+  constructor() {
+    effect(() => {
+      const data = this.privacyPolicyData();
+      if (data?.seotag) {
+        this.separatedSeoTags.getSeoTagsDirect(data.seotag, 'privacy policy');
+      }
+    });
+  }
 
   // 🔹 Privacy Policy Data from API
   privacyPolicyData = computed(() => this.sharedFeatureService.privacyPolicyData());
@@ -67,10 +78,10 @@ export class PrivacyPolicy implements OnInit, AfterViewInit {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
+    // Load privacy policy data (runs on both server and client)
+    this.sharedFeatureService.loadPrivacyPolicy();
   }
 
   ngAfterViewInit(): void {
-    // Load privacy policy data when view initializes
-    this.sharedFeatureService.loadPrivacyPolicy();
   }
 }
