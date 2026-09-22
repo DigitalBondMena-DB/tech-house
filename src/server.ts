@@ -72,15 +72,7 @@ app.use((req, res, next) => {
       console.log(response);
 
       if (response && response.status === 302) {
-        const decodedUrl = decodeURIComponent(req.originalUrl || req.url || '');
-        const isBlogRoute = decodedUrl.includes('/المقالات/') || req.url.includes('%D8%A7%D9%84%D9%85%D9%82%D8%A7%D9%84%D8%A7%D8%AA');
-
-        if (isBlogRoute) {
-          // Keep 302 Found status as requested for blog redirects
-          return writeResponseToNodeResponse(response, res);
-        }
-
-        // Intercept 302 redirects and change them to 301 Moved Permanently for other routes
+        // Intercept 302 redirects and change them to 301 Moved Permanently
         const redirectedResponse = new Response(response.body, {
           status: 301,
           statusText: 'Moved Permanently',
